@@ -3,7 +3,7 @@
  */
 
 function MyPiece(scene, valueL, valueR) {
-    CFGobject.call(this,scene);
+    CGFobject.call(this,scene);
 
     this.valueL = valueL;
     this.valueR = valueR;

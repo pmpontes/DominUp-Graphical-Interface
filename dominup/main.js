@@ -15,12 +15,14 @@ serialInclude(['../lib/CGF.js', 'DominupScene.js',  'MyInterface.js', 'MyRectang
 
     'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'Plane.js', 'Patch.js', 'Terrain.js', 'MyPiece.js',
 
+    'MyEnvironment.js', 'MySpaceEnvironment.js', 'MyForestEnvironment.js', 'Player.js',
+
 main=function()
 {
 	// Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
-    var myScene = new DominupScene();
     var myInterface = new MyInterface();
+    var myScene = new DominupScene();
 
     app.init();
     app.setScene(myScene);

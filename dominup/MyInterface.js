@@ -17,24 +17,45 @@ MyInterface.prototype.constructor = MyInterface;
  */
 MyInterface.prototype.init = function(application) {
 	CGFinterface.prototype.init.call(this, application);
-	this.gui = new dat.GUI();
-
-	var group=this.gui.addFolder("Animation");
-	group.add(this.scene, 'pause');
-	group.add(this.scene, 'loop');
 	return true;
 };
 
-/*
- * listLigths
- * Create entries on application menu to act as switchers for the scene's ligths.
- * @param amplifS amplification factor s
- * @param amplifT amplification factor t
- */
-MyInterface.prototype.listLights = function() {
-	var lights = this.gui.addFolder("Lights");
-	var i;
-	for (i = 0; i < this.scene.lights.length; i++)
-		if(this.scene.lights[i].name!=undefined)
-			lights.add(this.scene, this.scene.lights[i].name);	
+MyInterface.prototype.initInterface = function() {
+	this.mainMenu = new dat.GUI();
+
+	this.startGameMenu = this.mainMenu.addFolder("Start new game");	
+	this.newGameMenu = this.startGameMenu.addFolder("New game");	
+	this.newGameMenu.add(this.scene, 'gameType', this.scene.gameTypes);
+	this.startGameMenu.add(this, 'resumeSavedGame');
+
+	// add game settings
+	this.addSettings();
 };
+
+
+MyInterface.prototype.addSettings = function(){
+	this.gameSettings = this.mainMenu.addFolder("Settings");	
+	this.gameEnvironment = this.gameSettings.addFolder("Environment");	
+	this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
+	this.gameLookFolder = this.gameSettings.addFolder("Appearance");	
+	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
+}
+
+MyInterface.prototype.resumeSavedGame = function(){
+	removeGui(this.newGameMenu, this);
+};
+
+MyInterface.prototype.initGame = function(){	
+	this.mainMenu.remove(this.gameSettings);
+
+	this.gameOptionsMenu = this.mainMenu.addFolder("Options");
+	this.gameOptionsMenu.add(this.scene, 'pauseGame');
+	this.gameOptionsMenu.add(this.scene, 'saveGame');
+
+	addSettings();
+}
+
+MyInterface.prototype.showGameLevels = function(Player){
+	this.gameLevel = this.newGameMenu.addFolder('Level for ' + Player);	
+	this.gameLevel.add(this.scene, 'gameLevel', this.scene.gameLevels);
+}
