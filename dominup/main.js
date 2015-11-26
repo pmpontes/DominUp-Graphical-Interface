@@ -4,18 +4,18 @@ serialInclude=function(a){var b=console,c=serialInclude.l;if(a.length>0)c.splice
 
 function getUrlVars() {
     var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,    
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,
     function(m,key,value) {
       vars[decodeURIComponent(key)] = decodeURIComponent(value);
     });
     return vars;
-}	 
+}
 
-serialInclude(['../lib/CGF.js', 'DominupScene.js',  'MyInterface.js', 'MyRectangle.js', 'MyCylinder.js', 'MySphere.js', 'MyTriangle.js', 
+serialInclude(['../lib/CGF.js', 'DominupScene.js',  'MyInterface.js', 'MyRectangle.js', 'MyCylinder.js', 'MySphere.js', 'MyTriangle.js',
 
     'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'Plane.js', 'Patch.js', 'Terrain.js', 'MyPiece.js',
 
-    'MyEnvironment.js', 'MySpaceEnvironment.js', 'MyForestEnvironment.js', 'Player.js',
+    'MyEnvironment.js', 'Player.js', 'MySceneGraph.js',
 
 main=function()
 {
@@ -27,10 +27,14 @@ main=function()
     app.init();
     app.setScene(myScene);
     app.setInterface(myInterface);
-    
+
     myInterface.setActiveCamera(myScene.camera);
     myScene.setMyInterface(myInterface);
-	
+
+    // create and load graph, and associate it to scene.
+	  // loading errors are printed on console
+	  var myGraph = new MyGameGraph(filename, myScene);
+
 	// start
     app.run();
 }

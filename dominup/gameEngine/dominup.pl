@@ -8,6 +8,7 @@
 %      	   Game initial state  			%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+:- dynamic table/1.
 table([ [ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
   		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
   		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
@@ -34,123 +35,6 @@ dominoes([ [0,0], [0,1], [0,2], [0,3], [0,4], [0,5], [0,6], [0,7],
  		   [6,6], [6,7],
  		   [7,7] ]).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%      		  Table display	   			%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-clear_screen:- write('\e[2J').
-
-show_table(Tab):-
-	nl, show_header, nl,
-	show_lines(0,Tab).
-
-show_header:-
-	table_size(XMax, _),
-	letters(L),
-	write('\t'), show_header(0, L, XMax).
-show_header(X, [L|OtherLetters], XMax):-
-	X=<XMax, X=<24, X1 is X +1,
-	write('| '), write(L), write(' '), show_header(X1, OtherLetters, XMax).
-show_header(X, [L|OtherLetters], XMax):-
-	X=<XMax, X1 is X +1,
-	write('|'), write(L), write(' '), show_header(X1, OtherLetters, XMax).
-show_header(_, _, _).
-
-show_lines(_,[]).
-show_lines(N,[H|T]):-
-	write('---------'),
-	show_separator, nl,
-	write(N), write('\t'), show_line(H), write(' '), nl,
-	N2 is N+1,
-	show_lines(N2, T).
-
-show_separator:-
-	table_size(XMax, _),
-	show_separator(0, XMax).
-
-show_separator(X, XMax):-
-	X=<XMax, X1 is X+1, write('----'), show_separator(X1, XMax).
-show_separator(_, _).
-
-show_line([]).
-show_line([H|T]):-
-	show_content(H),
-	show_line(T).
-
-show_content([N, L]):-
-N \= 8,	write('|'), write(N), write('L'), write(L). 
-show_content([N, _]):-
-N==8,	write('|'), write('   ').
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%      		Dominoes display	   		%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-show_dominoes(Player, Dominoes):-
-	nl, write('---------------------------------'), nl,
-		write('\t|||  '), write(Player), write('  |||'), nl,
-		write('---------------------------------'), nl,
-		write('|           Dominoes            |'), nl,
-		write('---------------------------------'), nl,
-		show_domino_pieces(0, Dominoes).
-
-show_domino_pieces(_, []):- write('---------------------------------'), nl.
-show_domino_pieces(N, [ NextDomino | RestDominoes]):-
-	write(N), write('\t '), show_domino(NextDomino), nl,
-	N2 is N+1,
-	show_domino_pieces(N2, RestDominoes).
-
-show_domino([P1, P2]):-
-write('['), write(P1), write('|'), write(P2), write(']').
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%			  Start Game			   	%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-start:- main_menu.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%			  	 Main Menu			   	%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-main_menu:-	repeat, clear_screen,
-			write('-------------------------------------------'), nl,
-			write('|                 Dominup                 |'), nl,
-			write('-------------------------------------------'), nl,
-			write('0\t| Player<>Player'), nl,
-			write('1\t| Player<>Computer'), nl,
-			write('2\t| Resume 2 Player game'), nl,
-			write('3\t| Computer<>Computer'), nl,
-			write('4\t| 4 player game'), nl,
-			write('5\t| Resume 4 player saved game'), nl,
-			write('6\t| About'), nl,
-			write('7\t| Quit'), nl,
-			write('------------------------------------------'), nl,
-			write('| Option ? '),
-			read(Option), number(Option), execute_option(Option).
-
-execute_option(7):- exit_game.
-execute_option(6):- show_credits, !, fail.
-execute_option(5):-	resume_game(4), !, fail.
-execute_option(4):- set_num_players(4), four_player_mode, !, fail.
-execute_option(3):- set_num_players(2), computer_computer, !, fail.
-execute_option(2):-	resume_game(2), !, fail.
-execute_option(1):- set_num_players(2), player_computer, !, fail.
-execute_option(0):- set_num_players(2), player_player, !, fail.
-execute_option(_):- nl, write('Invalid option. Try again.'), !, fail.
-
-exit_game:- clear_screen, 
-	write('---------------------------------'), nl,
-	write('|        Exiting Dominup        |'), nl,
-	write('---------------------------------'), nl.
-
-show_credits:- clear_screen, 
-	write('---------------------------------'), nl,
-	write('|           Dominup             |'), nl,
-	write('---------------------------------'), nl,
-	write('Coded by DominguesGM and pmpontes.'), nl,
-	write('| Press "Enter" to continue...'), nl,
-	get_char(_), get_code(_).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %		  	     Resume game    	   	%
@@ -158,7 +42,7 @@ show_credits:- clear_screen,
 
 % resume game of 4 previously saved
 resume_game(4):-
-		set_num_players(4), 
+		set_num_players(4),
 		game_from_file(Table, XMax, YMax, Name1, Name2, Name3, Name4, P1D, P2D, P3D, P4D, P1T, P2T, P3T, P4T, Diff1, Diff2, Diff3, Diff4),
  		set_table_size(XMax, YMax),
         save_player(Name1, P1D), save_player(Name2, P2D), save_player(Name3, P3D), save_player(Name4, P4D),
@@ -182,39 +66,39 @@ resume_game(2):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % prepare game of 2
-prepare_game(Dominoes):- 
+prepare_game(Dominoes):-
 	num_players(2),
-	random_permutation(Dominoes, RandomDominoes), 
+	random_permutation(Dominoes, RandomDominoes),
 	distribute_dominoes(RandomDominoes, P1, P2),
 	quick_sort(P1, DominoesP1), quick_sort(P2, DominoesP2),
 	save_first(DominoesP1), save_first(DominoesP2).
 
 % prepare game of 4
-prepare_game(Dominoes):- 
-	num_players(4), 
-	random_permutation(Dominoes, RandomDominoes), 
+prepare_game(Dominoes):-
+	num_players(4),
+	random_permutation(Dominoes, RandomDominoes),
 	distribute_dominoes_four(RandomDominoes, P1, P2, P3, P4),
 	quick_sort(P1, DominoesP1), quick_sort(P2, DominoesP2), quick_sort(P3, DominoesP3), quick_sort(P4, DominoesP4),
 	PlayIter is 4,
-	save_first_four(DominoesP1, PlayIter, PlayIter1), 
-	save_first_four(DominoesP2, PlayIter1, PlayIter2), 
-	save_first_four(DominoesP3, PlayIter2, PlayIter3), 
+	save_first_four(DominoesP1, PlayIter, PlayIter1),
+	save_first_four(DominoesP2, PlayIter1, PlayIter2),
+	save_first_four(DominoesP3, PlayIter2, PlayIter3),
 	save_first_four(DominoesP4, PlayIter3, _).
 
 % determine first and second player
-save_first(Dominoes):- 
+save_first(Dominoes):-
 	member([7,7], Dominoes),
 	save_player(player1, Dominoes).
-save_first(Dominoes):- 
+save_first(Dominoes):-
 	\+ member([7,7], Dominoes),
 	save_player(player2, Dominoes).
 
 % determine player order
-save_first_four(Dominoes, PlayerIter, NewPlayerIter):- 
+save_first_four(Dominoes, PlayerIter, NewPlayerIter):-
 	member([7,7], Dominoes),
-	NewPlayerIter is PlayerIter, 
+	NewPlayerIter is PlayerIter,
 	save_player(player1, Dominoes).
-save_first_four(Dominoes, PlayerIter, NewPlayerIter):- 
+save_first_four(Dominoes, PlayerIter, NewPlayerIter):-
 	\+ member([7,7], Dominoes),
 	get_player(Ident, PlayerIter),
 	NewPlayerIter is PlayerIter - 1, !,
@@ -225,18 +109,18 @@ get_player(Ident, 3) :- Ident = player3.
 get_player(Ident, 2) :- Ident = player4.
 
 % distrubue even number of dominoes by players
-distribute_dominoes(Dominoes, DominoesP1, DominoesP2):- 
-	append(DominoesP1, DominoesP2, Dominoes), 
-	length(DominoesP1, N), length(DominoesP2, N). 	
+distribute_dominoes(Dominoes, DominoesP1, DominoesP2):-
+	append(DominoesP1, DominoesP2, Dominoes),
+	length(DominoesP1, N), length(DominoesP2, N).
 
 % distrubue dominoes among players (must be divisible by 4)
-distribute_dominoes_four(Dominoes, DominoesP1, DominoesP2, DominoesP3, DominoesP4):- 
-	append(DominoesP1, Rest1, Dominoes), 
-	append(DominoesP2, Rest2, Rest1), 
-	append(DominoesP3, DominoesP4, Rest2), 
-	length(DominoesP1, N), 
-	length(DominoesP2, N), 
-	length(DominoesP3, N), 
+distribute_dominoes_four(Dominoes, DominoesP1, DominoesP2, DominoesP3, DominoesP4):-
+	append(DominoesP1, Rest1, Dominoes),
+	append(DominoesP2, Rest2, Rest1),
+	append(DominoesP3, DominoesP4, Rest2),
+	length(DominoesP1, N),
+	length(DominoesP2, N),
+	length(DominoesP3, N),
 	length(DominoesP4, N).
 
 quick_sort([X|Xs], Ys):-
@@ -254,28 +138,76 @@ partiotion([[X, X1] | Xs], [Y,Y1], Ls, [[X, X1]| Bs]):- X > Y, partiotion(Xs, [Y
 partiotion([], [_, _], [], []).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%				  Play   				%
+%				  API   				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+get_next_player(CurPlayer, NextPlayer):-
+	num_players(NumPlayers),
+	next_player(CurPlayer, NextPlayer, NumPlayers).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%			  Player vs Player 		   	%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+player_player(Table):-
+	set_num_players(2),
+	table(Table),
+	set_table_size(9,9),
+	dominoes(Dom),
+	prepare_game(Dom),!,
+	save_player_type(player1, human),
+	save_player_type(player2, human).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		    Player vs Computer 		   	%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+player_computer(Table):-
+	set_num_players(2),
+	table(Table),
+	set_table_size(9,9),
+	dominoes(Dom),
+	prepare_game(Dom),!,
+	save_player_type(player1, human), save_player_type(player2, computer).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%		  Computer vs Computer 		   	%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+computer_computer(Table):-
+	set_num_players(2),
+	table(Table),
+	set_table_size(9,9),
+	dominoes(Dom),
+	prepare_game(Dom),!,
+	save_player_type(player1, computer), save_player_type(player2, computer).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%				  Play   				%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % make moves while the game is not over
 play(Player, Table):-
 	make_moves(Player, Table, NewTable), !,
-	\+ game_over(Player), 
+	\+ game_over(Player),
 	num_players(NumPlayers),
 	next_player(Player, NextPlayer, NumPlayers), !,
 	play(NextPlayer, NewTable).
 
+
+
 % if it is the fisrt play, make single move
 make_moves(Player, Table, NewTable):-
 	table(Table),
-	make_move(Player, Table, NewTable1), 
+	make_move(Player, Table, NewTable1),
 	check_for_resize(NewTable1, NewTable), !.
 
 % while there are vertical plays available, perform them
 make_moves(Player, Table, NewTable):-
 	try_vertical_play(Player, Table), !,
 	make_move(Player, Table, NewTable1),
-	check_for_resize(NewTable1, NewTable2), !, 
+	check_for_resize(NewTable1, NewTable2), !,
 	make_moves(Player, NewTable2, NewTable).
 
 % if no vertical plays are available, perform expansion play
@@ -294,61 +226,21 @@ try_expansion_play(Player, Table):-
 	player(Player, Dominoes),
 	\+ list_expansion_plays(Dominoes, Table, []).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%			  Player vs Player 		   	%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-player_player:- 
-	table(Table),
-	set_table_size(9,9),
-	dominoes(Dom),
-	prepare_game(Dom),!,
-	save_player_type(player1, human), 
-	save_player_type(player2, human), !,
-	play(player1, Table).
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%		    Player vs Computer 		   	%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-player_computer:- 
-	table(Table), 
-	set_table_size(9,9),
-	dominoes(Dom), 
-	prepare_game(Dom),!,
-	save_player_type(player1, human), save_player_type(player2, computer), !,
-	select_difficulty(player2), !,
-	play(player1, Table).
-	
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%		  Computer vs Computer 		   	%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-computer_computer:- 
-	table(Table), 
-	set_table_size(9,9),
-	dominoes(Dom), 
-	prepare_game(Dom),!,
-	save_player_type(player1, computer), save_player_type(player2, computer), !,
-	select_difficulty(player1), select_difficulty(player2), !,
-	play(player1, Table).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %		  	  4 Player Mode		    	%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-four_player_mode:- 
-	table(Table), 
+four_player_mode(Table) :-
+	set_num_players(4),
+	table(Table),
 	set_table_size(9,9),
-	dominoes(Dom), 
+	dominoes(Dom),
 	prepare_game(Dom),!,
 	select_role(player1), !,
 	select_role(player2), !,
 	select_role(player3), !,
-	select_role(player4), !,
-	play(player1, Table).
+	select_role(player4).
 
 select_role(Player):-	repeat, clear_screen,
 			write('---------------------------------'), nl,
@@ -368,13 +260,7 @@ int_to_type(Player, 1) :- save_player_type(Player, computer), !, select_difficul
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 game_over(Player):-
-player(Player, []), !,
-write('---------------------------------'), nl,
-write('|           Dominup             |'), nl,
-write('---------------------------------'), nl,
-write('| '), write(Player), write(' won!'), nl,
-write('| Press "Enter" to continue...'), nl,
-get_char(_), get_code(_).
+player(Player, []).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %				Computer	 		   	%
@@ -389,8 +275,8 @@ select_difficulty(Player):-
 	write('1\t| Defense'), nl,
 	write('2\t| Attack'), nl,
 	write('| Option ? '), nl,
-	read(Option), number(Option), 
-	member(Option, [0, 1, 2]), 
+	read(Option), number(Option),
+	member(Option, [0, 1, 2]),
 	set_difficulty(Player, Option).
 
 select_difficulty_no_defense(Player):-
@@ -401,24 +287,9 @@ select_difficulty_no_defense(Player):-
 	write('0\t| Random'), nl,
 	write('2\t| Attack'), nl,
 	write('| Option ? '), nl,
-	read(Option), number(Option), 
-	member(Option, [0, 2]), 
+	read(Option), number(Option),
+	member(Option, [0, 2]),
 	set_difficulty(Player, Option).
-
-% performs a valid move, randomly ---------------------------Not so good
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
-%	player(Player, Dominoes),
-%	repeat,
-%	length(Dominoes, MaxLength), 
-%	random(0, MaxLength, Piece),
-%	nth0(Piece, Dominoes, Domino),
-%	table_size(XMax, YMax), XMax1 is XMax +1, YMax1 is YMax +1,
-%	random(0, XMax1, AX), random(0, YMax1, AY),
-%	random(0, XMax1, BX), random(0, YMax1, BY),
-%	execute_play(Dominoes, Domino-[AX,AY]-[BX, BY], Table, NewTable),!,
-%	delete(Dominoes, Domino, NewDominoes),
-%	save_player(Player, NewDominoes).
 
 
 % performs a valid move, randomly ----------------------------Improved
@@ -436,7 +307,7 @@ random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	player(Player, Dominoes),
 	repeat,
-	length(Dominoes, MaxLength), 
+	length(Dominoes, MaxLength),
 	random(0, MaxLength, Piece),
 	nth0(Piece, Dominoes, Domino),
 	table_size(XMax, YMax), XMax1 is XMax +1, YMax1 is YMax +1,
@@ -507,7 +378,7 @@ find_worst_play( [ Domino-[AX,AY]-[BX, BY] | OtherPlays], OtherDominoes, Dominoe
 	det_worst_play(TempPlay, CurWorst, Domino-[AX,AY]-[BX, BY], NPossiblePlays, NewTemp, NewWorst), !,
 	find_worst_play(OtherPlays, OtherDominoes, Dominoes, Table, WorstPlay, NewTemp, NewWorst).
 
-det_worst_play(Play1, N1Possibilities, _, N2Possibilities, Play1, N1Possibilities):- 
+det_worst_play(Play1, N1Possibilities, _, N2Possibilities, Play1, N1Possibilities):-
 	N1Possibilities<N2Possibilities, !.
 det_worst_play(_, _, Play2, N2Possibilities, Play2, N2Possibilities).
 
@@ -526,7 +397,7 @@ find_best_play( [ Domino-[AX,AY]-[BX, BY] | OtherPlays], Dominoes, Table, BestPl
 	det_best_play(TempPlay, CurBest, Domino-[AX,AY]-[BX, BY], NPossiblePlays, NewTemp, NewBest), !,
 	find_best_play(OtherPlays, Dominoes, Table, BestPlay, NewTemp, NewBest).
 
-det_best_play(Play1, N1Possibilities, _, N2Possibilities, Play1, N1Possibilities):- 
+det_best_play(Play1, N1Possibilities, _, N2Possibilities, Play1, N1Possibilities):-
 	N1Possibilities>N2Possibilities, !.
 det_best_play(_, _, Play2, N2Possibilities, Play2, N2Possibilities).
 
@@ -539,40 +410,25 @@ advanced_level(Player):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % advanced levels
-make_move(Player, Table, NewTable):-
+make_move(Player, Table, NewTable, Move):-
 	type(Player, computer),
 	advanced_level(Player), !,
 	clear_screen,
 	show_table(Table),
-	nl, write('| '), write(Player), write(' \'s turn:'), nl, 
+	nl, write('| '), write(Player), write(' \'s turn:'), nl,
 	write('| Determining next play...'), nl,
-	auto_move(Player, Table, NewTable, Domino-PosA-PosB), !,
-	clear_screen,
-	show_table(NewTable),
-	player(Player, Dominoes),
-	show_dominoes(Player, Dominoes),
-	write('| '), write(Player), write(' has played:'), nl, 
-	write('| Domino '), show_domino(Domino), write(' to '), show_position(PosA), show_position(PosB), nl,
-	write('| Press "Enter" to continue...'), nl,
-	get_char(_), get_code(_).
+	auto_move(Player, Table, NewTable, Move).
+
 
 % level 0
-make_move(Player, Table, NewTable):-
+make_move(Player, Table, NewTable, Move):-
 	type(Player, computer),
 	difficulty(Player, 0),
 	clear_screen,
 	show_table(Table),
-	nl, write('| '), write(Player), write(' \'s turn:'), nl, 
+	nl, write('| '), write(Player), write(' \'s turn:'), nl,
 	write('| Determining next play...'), nl,
-	random_move(Player, Table, NewTable, Domino-PosA-PosB), 
-	clear_screen,
-	show_table(NewTable),
-	player(Player, Dominoes),
-	show_dominoes(Player, Dominoes),
-	write('| '), write(Player), write(' has played:'), nl, 
-	write('| Domino '), show_domino(Domino), write(' to '), show_position(PosA), show_position(PosB), nl,
-	write('| Press "Enter" to continue...'), nl,
-	get_char(_), get_code(_).
+	random_move(Player, Table, NewTable, Move).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %			  	Human Player 			%
@@ -580,37 +436,11 @@ make_move(Player, Table, NewTable):-
 
 % make move, if the player is human
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-make_move(Player, Table, NewTable):-
+make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 			type(Player, human),
-			select_piece(Player, Table, NewTable).
-
-select_piece(Player, Table, NewTable):-
-			clear_screen,
-			show_table(Table),
-			player(Player, Dominoes),
-			show_dominoes(Player, Dominoes),
-			write('| Option/q/s? '),
-			read(Option), !,
-			read_move(Option, Player, Table, NewTable).
-
-read_move('q', _, _, _):- !, fail.
-read_move('s', Player, Table, _):- save_game(Player, Table), !, fail.
-read_move(Option, Player, Table, NewTable):-
-			number(Option),
-			player(Player, Dominoes),
-			nth0(Option, Dominoes, Domino),
-			nth0(0, Domino, Domino1),
-			nth0(1, Domino, Domino2),
-			write('| Domino  '), show_domino(Domino), nl,
-			read_position(Domino1, [AX, AY]),
-			read_position(Domino2, [BX, BY]),
 			execute_play(Dominoes, Domino-[AX,AY]-[BX, BY], Table, NewTable),!,
 			delete(Dominoes, Domino, NewDominoes),
 			save_player(Player, NewDominoes), !.
-
-read_move(Option, Player, Table, NewTable):-
-			Option \= 's', Option \='q', !,
-			select_piece(Player, Table, NewTable).
 
 save_game(Player, Table):-
 	num_players(2),
@@ -640,15 +470,6 @@ save_game(Player, Table):-
     table_size(X, Y),
     game_to_file(Table, X, Y, Player, Player2, Player3, Player4, Dominoes, Dominoes2, Dominoes3, Dominoes4, human, Type2, Type3, Type4, none, Diff2, Diff3, Diff4).
 
-read_position(Domino, [X, Y]):-
-			table_size(XMax, YMax),
-			char_to_coordinate(C, XMax),
-			write('| Coordinates to '), write(Domino), nl,
-			write('| a-'), write(C), write(' ?\t'),
-			read(XTemp), char_to_coordinate(XTemp, X),
-			write('| 0-'), write(YMax), write(' ?\t'),
-			read(Y), 
-			number(Y).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %			 Evaluate play	 		   	%
@@ -688,7 +509,7 @@ next_to_piece(_-[BX, BY], Table):-
 %tells if the play is a vertical play
 vertical_play([A, B]-[AX, AY]-[BX, BY], Table):-
 	check_coordinates([AX, AY], [BX, BY], Table),!,
-	\+ get_level([AX, AY], Table, 0), !, 
+	\+ get_level([AX, AY], Table, 0), !,
 	\+ get_level([BX, BY], Table, 0), !,
 	get_content([AX, AY], Table, A), !,
 	get_content([BX, BY], Table, B), !.
@@ -701,7 +522,7 @@ valid_play(_, _-[AX, AY]-[BX, BY], Table):-
 % vertical play is valid if the coordinates check
 valid_play(_, [A, B]-[AX, AY]-[BX, BY], Table):-
 	vertical_play([A, B]-[AX, AY]-[BX, BY], Table), !.
-	
+
 % expansion play is valid if the coordinates check and there are no vertical plays available
 valid_play(Dominoes, [A, B]-[AX, AY]-[BX, BY], Table):-
 	expansion_play([A, B]-[AX, AY]-[BX, BY], Table),
@@ -720,14 +541,14 @@ list_all_plays(vertical_play, Dominoes, Table, [], Result).
 % generates a list of all plays of type 'Type' available
 list_all_plays(_, [], _, Result, Result).
 list_all_plays(Type, [Domino | Rest], Table, PlaysTemp, Result):-
-	list_plays_Y(Type, Domino, Table, [0,0], [], PlaysY), 
+	list_plays_Y(Type, Domino, Table, [0,0], [], PlaysY),
 	append(PlaysY, PlaysTemp, PlaysTemp1),
 	list_all_plays(Type, Rest, Table, PlaysTemp1, Result).
 
 list_plays_Y(_, _, _, [_, YMax], Result, Result):- table_size(_, YMax).
 list_plays_Y(Type, [A,B], Table, [X, Y], TempPlays, Plays):-
 	table_size(_, YMax),
-	Y=<YMax, list_plays_X(Type, [A,B], Table, [X, Y], [], PlaysX), 
+	Y=<YMax, list_plays_X(Type, [A,B], Table, [X, Y], [], PlaysX),
 	append(PlaysX, TempPlays, TempPlays1),
 	Y1 is Y+1, list_plays_Y(Type, [A,B], Table, [X, Y1], TempPlays1, Plays).
 
@@ -735,25 +556,25 @@ list_plays_Y(Type, [A,B], Table, [X, Y], TempPlays, Plays):-
 list_plays_X(_, _, _, [XMax, _], Plays, Plays):-table_size(XMax, _).
 list_plays_X(Type, [A,B], Table, [X, Y], TempPlays, Plays):-
 	table_size(XMax, _),
-	X=<XMax, play_right(Type, [A,B], Table, [X,Y], MoveRight), 
-	append(MoveRight, TempPlays, TempPlays1), 
-	play_down(Type, [A,B], Table, [X,Y], MoveDown), 
+	X=<XMax, play_right(Type, [A,B], Table, [X,Y], MoveRight),
+	append(MoveRight, TempPlays, TempPlays1),
+	play_down(Type, [A,B], Table, [X,Y], MoveDown),
 	append(MoveDown, TempPlays1, TempPlays2),
 	X1 is X +1, list_plays_X(Type, [A,B], Table, [X1, Y], TempPlays2, Plays).
 
 play_right(Type, [A,B], Table, [X, Y], [[A,B]-[X,Y]-[X, Y1]]):-
-	Y1 is Y + 1, 
+	Y1 is Y + 1,
 	call(Type, [A,B]-[X,Y]-[X, Y1], Table), !.
 play_right(Type, [A,B], Table, [X, Y], [[A,B]-[X,Y1]-[X, Y]]):-
-	Y1 is Y + 1, 
+	Y1 is Y + 1,
 	call(Type, [B,A]-[X,Y]-[X, Y1], Table), !.
 play_right(_, _, _, _, []).
 
 play_down(Type, [A,B], Table, [X, Y], [[A,B]-[X,Y]-[X1, Y]]):-
-	X1 is X + 1, 
+	X1 is X + 1,
 	call(Type, [A,B]-[X,Y]-[X1, Y], Table), !.
 play_down(Type, [A,B], Table, [X, Y], [[A,B]-[X1,Y]-[X, Y]]):-
-	X1 is X + 1, 
+	X1 is X + 1,
 	call(Type, [B,A]-[X,Y]-[X1, Y], Table), !.
 play_down(_, _, _, _, []).
 
@@ -800,7 +621,7 @@ check_for_resize_column(Table, NewTable, C):-
 	table_size(XMax, YMax),
 	XMax < 30,
 	\+ check_column(Table, YMax, C),
-	insert_column(Table, NewTable, C, XMax, YMax), !.	
+	insert_column(Table, NewTable, C, XMax, YMax), !.
 check_for_resize_column(Table, Table, _).
 
 check_column(Table, _, C):-
@@ -891,28 +712,28 @@ place_piece([A, B]-ACoord-BCoord, CurTable, NewTable):-
 process_lines(_, _, _, _, [], TempTable, NewTable):- reverse(TempTable, NewTable).
 
 process_lines([A, B], [AX,AY], [BX, BY], Yi, [Line | OtherLines], TempTable, NewTable):-
-	Yi\=AY, Yi\=BY, Y1 is Yi+1, 
+	Yi\=AY, Yi\=BY, Y1 is Yi+1,
 	process_lines([A, B], [AX,AY], [BX, BY], Y1, OtherLines, [Line | TempTable], NewTable).
 
 process_lines([A, B], [AX,AY], [BX, BY], Yi, [Line | OtherLines], TempTable, NewTable):-
-	Yi==AY, AY==BY, Y1 is Yi+1, 
-	process_line(A, AX, 0, Line, [], NewLine), process_line(B, BX, 0, NewLine, [], NewLine1), 
+	Yi==AY, AY==BY, Y1 is Yi+1,
+	process_line(A, AX, 0, Line, [], NewLine), process_line(B, BX, 0, NewLine, [], NewLine1),
 process_lines([A, B], [AX,AY], [BX, BY], Y1, OtherLines, [NewLine1 | TempTable], NewTable).
 
 process_lines([A, B], [AX,AY], [BX, BY], Yi, [Line | OtherLines], TempTable, NewTable):-
-	Yi==AY, Y1 is Yi+1, process_line(A, AX, 0, Line, [], NewLine), 
+	Yi==AY, Y1 is Yi+1, process_line(A, AX, 0, Line, [], NewLine),
 	process_lines([A, B], [AX,AY], [BX, BY], Y1, OtherLines, [NewLine | TempTable], NewTable).
 
 process_lines([A, B], [AX,AY], [BX, BY], Yi, [Line | OtherLines], TempTable, NewTable):-
-	Yi==BY, Y1 is Yi+1, process_line(B, BX, 0, Line, [], NewLine), 
+	Yi==BY, Y1 is Yi+1, process_line(B, BX, 0, Line, [], NewLine),
 	process_lines([A, B], [AX,AY], [BX, BY], Y1, OtherLines, [NewLine | TempTable], NewTable).
 
 process_line(_, _, _, [], TempLine, NewLine):- reverse(TempLine, NewLine).
 	process_line(Domino, X, Xi, [ Piece | OtherPieces], TempLine, NewLine):-
-	Xi\=X, X1 is Xi+1, 
+	Xi\=X, X1 is Xi+1,
 	process_line(Domino, X, X1, OtherPieces, [Piece | TempLine], NewLine).
 process_line(Domino, X, Xi, [ _ | OtherPieces], TempLine, NewLine):-
-	Xi==X, X1 is Xi+1, 
+	Xi==X, X1 is Xi+1,
 	process_line(Domino, X, X1, OtherPieces, [Domino | TempLine], NewLine).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -932,7 +753,7 @@ game_to_file(Table, XMax, YMax, Player1Name, Player2Name, Player1Dominoes, Playe
         write(Str, Player2Type), write(Str, '.'), nl(Str),
         write(Str, AutoPlayerDifficulty), write(Str, '.'),
         close(Str).
- 
+
 game_from_file(Table, XMax, YMax, Player1Name, Player2Name, Player1Dominoes, Player2Dominoes, Player1Type, Player2Type, AutoPlayerDifficulty):-
         open('savefile.txt', read, Str),
         read(Str, Table),
@@ -969,7 +790,7 @@ game_to_file(Table, XMax, YMax, Player1Name, Player2Name, Player3Name, Player4Na
         write(Str, Diff3), write(Str, '.'), nl(Str),
         write(Str, Diff4), write(Str, '.'),
         close(Str).
- 
+
 game_from_file(Table, XMax, YMax, Player1Name, Player2Name, Player3Name, Player4Name, Player1Dominoes, Player2Dominoes, Player3Dominoes, Player4Dominoes, Player1Type, Player2Type, Player3Type, Player4Type, Diff1, Diff2, Diff3, Diff4):-
         open('savefilefourplayer.txt', read, Str),
         read(Str, Table),
@@ -1056,12 +877,14 @@ generate_new_letter(Letter):-
 	nth0(I, L, Letter1),
 	atom_concat(Letter1, Letter1, Letter).
 
-show_position([X, Y]):-
-	write('['), char_to_coordinate(XChar, X), write(XChar), write(','), write(Y), write(']').
-
-char_to_coordinate(Char, Coordinate):- 
+char_to_coordinate(Char, Coordinate):-
 	letters(L), nth0(Coordinate, L, Char).
 
 valid_coordinates([X, Y]):-
 	table_size(XMax, YMax),
 	X=<XMax, X>=0, Y=<YMax, Y>=0.
+
+
+set_table(NewTable):-
+	retractall(table(_)),
+	asserta(table(NewTable)).

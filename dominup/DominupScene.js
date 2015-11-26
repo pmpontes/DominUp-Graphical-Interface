@@ -47,6 +47,7 @@ DominupScene.prototype.init = function (application) {
 	this.axis=new CGFaxis(this);
 
 	this.setUpdatePeriod(30);
+	this.setPickEnabled(true);
 
 	// Game settings
 	this.initGame();
@@ -170,7 +171,7 @@ DominupScene.prototype.initGamePieces = function () {
 DominupScene.prototype.initGameSurface = function () {
 	this.gameSurfaceSizeX = 10;
 	this.gameSurfaceSizeY = 10;
-	this.gameSurface = new Plane(this, 10, this.gameSurfaceSizeX, this.gameSurfaceSizeY);
+	this.gameSurface = new Plane(this, this.gameSurfaceSizeX, this.gameSurfaceSizeY);
 };
 
 /*
@@ -354,13 +355,28 @@ DominupScene.prototype.loadLooks = function () {
 };
 
 DominupScene.prototype.showTable = function() {
-	this.scene.pushMatrix();
-		this.scene.scale(this.scaleX, this.scaleY, 1, 0);
+	this.pushMatrix();
 		this.materials[this.gameLook].setTexture(this.textures[this.gameLook]['gameSurface']);
 		this.materials[this.gameLook].apply();
 		this.gameSurface.display();
-	this.scene.popMatrix();
+	this.popMatrix();
 };
+
+DominupScene.prototype.logPicking = function ()
+{
+	if (this.pickMode == false) {
+		if (this.pickResults != null && this.pickResults.length > 0) {
+			for (var i=0; i< this.pickResults.length; i++) {
+				var obj = this.pickResults[i][0];
+				if (obj){
+					var customId = this.pickResults[i][1];				
+					console.log("Picked object: " + obj + ", with pick id " + customId);
+				}
+			}
+			this.pickResults.splice(0,this.pickResults.length);
+		}		
+	}
+}
 
 /*
  * display
@@ -385,6 +401,17 @@ DominupScene.prototype.display = function () {
 	this.environments[this.gameEnvironment].display();
 
 	if(this.state == 'Playing'){
+	
+		/*// draw pieces
+		for (i =0; i<this.objects.length; i++){
+			this.pushMatrix();
+			
+			this.registerForPick(i+1, this.objects[i]);
+			
+			this.objects[i].display();
+			this.popMatrix();
+		}*/
+
 		this.showTable();
 	}
 };
