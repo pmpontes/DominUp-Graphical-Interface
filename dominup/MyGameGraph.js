@@ -8,6 +8,7 @@
 function MyGameGrpah(filename, scene){
 	this.loadedOk = null;
 	this.nElements = 0;
+	this.environmentName = filename;
 
 	// Establish bidirectional references between scene and graph
 	this.scene = scene;
@@ -21,7 +22,7 @@ function MyGameGrpah(filename, scene){
 	 * After the file is read, the reader calls onXMLReady on this object.
 	 * If any error occurs, the reader calls onXMLError on this object, with an error message
 	 */
-	this.reader.open('themes/' + filename, this);
+	this.reader.open('themes/'+filename+'.lsx', this);
 	if(filename!=undefined)
 		this.path='themes/' + filename.substring(0, filename.lastIndexOf("/")) + '/';
 };
@@ -56,7 +57,7 @@ MyGameGrpah.prototype.criticalErrors=function(errors){
  * Performs parsing of the information read.
  */
 MyGameGrpah.prototype.onXMLReady=function(){
-	console.log("Game configuration loaded.");
+	console.log("File loading finished.");
 
 	var rootElement = this.reader.xmlDoc.documentElement;
 	var errors = [];
@@ -93,10 +94,11 @@ MyGameGrpah.prototype.onXMLReady=function(){
 	if(this.criticalErrors(errors))
 		return null;
 
+	console.log("Graph loaded.");
 	this.loadedOk=true;
 
 	// signal the scene so that any additional initialization depending on the graph can take place
-	this.scene.configurationLoaded();
+	this.scene.initGameEnvironment(this.environmentName, this);
 };
 
 /**********************************************************************************************

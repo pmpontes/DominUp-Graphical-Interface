@@ -1,4 +1,3 @@
-
 /*
  * DominupScene
  * @constructor
@@ -8,7 +7,6 @@ function DominupScene() {
 }
 
 DominupScene.prototype = Object.create(CGFscene.prototype);
-
 DominupScene.prototype.constructor = DominupScene;
 
 /*
@@ -35,22 +33,19 @@ DominupScene.prototype.init = function (application) {
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     this.gl.clearDepth(100.0);
     this.gl.enable(this.gl.DEPTH_TEST);
-	this.gl.enable(this.gl.CULL_FACE);
+	  this.gl.enable(this.gl.CULL_FACE);
     this.gl.depthFunc(this.gl.LEQUAL);
     this.enableTextures(true);
 
     // create matrix
-	this.matrix = mat4.create();
-	// set to identity
+	  this.matrix = mat4.create();
     mat4.identity(this.matrix);
 
-	this.axis=new CGFaxis(this);
+	  this.setUpdatePeriod(30);
+	  this.setPickEnabled(true);
 
-	this.setUpdatePeriod(30);
-	this.setPickEnabled(true);
-
-	// Game settings
-	this.initGame();
+	  // Game settings
+	  this.initGame();
 };
 
 DominupScene.prototype.newGame = function(){
@@ -64,7 +59,7 @@ DominupScene.prototype.updateGameState = function(){
 				this.state = 'START_GAME';
 				this.players.push(new Player(), new Player());
 			}else if(this.gameType == this.gameTypes[1] || this.gameType == this.gameTypes[2]){
-				this.state = 'SELECT_GAME_LEVEL_PL1';			
+				this.state = 'SELECT_GAME_LEVEL_PL1';
 				this.myInterface.showGameLevels('player1');
 			}
 			break;
@@ -87,7 +82,7 @@ DominupScene.prototype.updateGameState = function(){
 		case 'SELECT_GAME_LEVEL_PL2':
 			if(this.gameLevel != this.gameLevel[0]){
 				this.myInterface.hideGameLevels('player2');
-				this.players.push(new Player(this.level));	
+				this.players.push(new Player(this.level));
 				this.state='START_GAME';
 			}
 			break;
@@ -98,6 +93,15 @@ DominupScene.prototype.updateGameState = function(){
 };
 
 DominupScene.prototype.update = function(currTime) {
+/*
+  if(this.graph.loadedOk){
+    if(!this.pause){
+      for(id in this.animations)
+        this.animations[id].update(currTime-this.timePaused);
+    }else this.timePaused += (currTime - this.previousTime);
+  }
+
+  this.previousTime = currTime;*/
 
 	if(!this.pauseGame){
 	//	this.clock.update(currTime);
@@ -118,43 +122,50 @@ DominupScene.prototype.saveGame = function (){
 DominupScene.prototype.initGame = function () {
 	this.state = 'SELECT_GAME_TYPE';
 	this.moves = [];
-	//this.clock = new MyClock(scene);
-	
+	//this.clock = new MyClock(this);
+
 	this.pauseGame=false;
 	this.timePaused = 0;
 	this.previousTime;
 
+  // types of game
 	this.gameTypes = ['(select type)', 'Human-Human', 'Human-Computer', 'Computer-Computer'];
 	this.gameType = this.gameTypes[0];
 
+  // game levels
 	this.gameLevels = ['(select level)', 'Random', 'Attack', 'Defense'];
 	this.gameLevel = this.gameLevels[0];
 
 	this.initGameSurface();
 	this.initGameEnvironments();
+  this.initGameLooks();
 	this.initGamePieces();
 	this.initGamePlayers();
-	this.loadLooks();
 };
 
+/*
+ * initGameEnvironment
+ * Initiate the scene's lights by default.
+ */
+DominupScene.prototype.initGameEnvironment = function (environmentName, graph) {
+  if(this.gameEnvironments.indexOf(environmentName)!=-1)
+    this.environments[environmentName] = new MyEnvironment(this, graph);
+};
 
 /*
  * initGameEnvironments
- * Initiate the scene's lights by default.
+ * Initiate the scene's environments.
  */
 DominupScene.prototype.initGameEnvironments = function () {
-	this.gameEnvironments = ['default', 'space', 'forest'];
+  // game environments options
+	this.gameEnvironments = ['default', 'space', 'desert'];
 	this.gameEnvironment = this.gameEnvironments[0];
-
 	this.environments = [];
-	this.environments['default'] = new MyEnvironment(this);
-	this.environments['florest'] = new MyForestEnvironment(this);
-	this.environments['space'] = new MySpaceEnvironment(this);
 };
 
 /*
  * initGamePieces
- * Initiate the scene's lights by default.
+ * Initiate the game's pieces.
  */
 DominupScene.prototype.initGamePieces = function () {
 	this.pieces = [];
@@ -171,7 +182,7 @@ DominupScene.prototype.initGamePieces = function () {
 DominupScene.prototype.initGameSurface = function () {
 	this.gameSurfaceSizeX = 10;
 	this.gameSurfaceSizeY = 10;
-	this.gameSurface = new Plane(this, this.gameSurfaceSizeX, this.gameSurfaceSizeY);
+	this.gameSurface = new GameSurface(this, this.gameSurfaceSizeX, this.gameSurfaceSizeY); // TODO check this
 };
 
 /*
@@ -206,85 +217,6 @@ DominupScene.prototype.setDefaultAppearance = function () {
 };
 
 /*
- * initShaders
- * Initiate the shaders.
- */
-DominupScene.prototype.initShaders = function () {
-	this.terrainShader = new CGFshader(this.gl, "shaders/terrainShader.vert", "shaders/terrainShader.frag");
-	this.terrainShader.setUniformsValues({normScale: 1.0});
-	this.terrainShader.setUniformsValues({uSampler2: 1});
-};
-
-
-function degToRad(degrees) {
-    return degrees * Math.PI / 180;
-}
-
-/*
- * initAnimations
- * Initiate the scene's animations according to the information read.
- */
-DominupScene.prototype.initAnimations = function () {
-	
-};
-
-/*
- * setIllumunation
- * Create the scene's illumination accoording to the specified settings.
- */
-DominupScene.prototype.setIllumination = function () {
-	/*this.setGlobalAmbientLight( this.graph.illumination['ambient'][0],
-								this.graph.illumination['ambient'][1],
-								this.graph.illumination['ambient'][2],
-								this.graph.illumination['ambient'][3]);
-	this.gl.clearColor( this.graph.illumination['background'][0],
-						this.graph.illumination['background'][1],
-						this.graph.illumination['background'][2],
-						this.graph.illumination['background'][3]);*/
-};
-
-/*
- * initLights
- * Create the scene's lights accoording to the specified settings.
- */
-DominupScene.prototype.initLights = function(){
-
-	var lightDefinitions = [];
-	lightDefinitions[0]=[];
-	lightDefinitions[0]['position'] = [0,0,0,0];
-	lightDefinitions[0]['ambient'] = [0,0,0,0];
-	lightDefinitions[0]['diffuse'] = [0,0,0,0];
-	lightDefinitions[0]['specular'] = [0,0,0,0];
-	
-	for(var i = 0; i < lightDefinitions.length; i++){
-		this.lights[i].setVisible(true);
-		this.lights[i].enable();
-
-		this.lights[i].setPosition( lightDefinitions[i]['position'][0],
-									lightDefinitions[i]['position'][1],
-									lightDefinitions[i]['position'][2],
-									lightDefinitions[i]['position'][3]);
-
-		this.lights[i].setAmbient(  lightDefinitions[i]['ambient'][0],
-									lightDefinitions[i]['ambient'][1],
-									lightDefinitions[i]['ambient'][2],
-									lightDefinitions[i]['ambient'][3]);
-
-		this.lights[i].setDiffuse(  lightDefinitions[i]['diffuse'][0],
-									lightDefinitions[i]['diffuse'][1],
-									lightDefinitions[i]['diffuse'][2],
-									lightDefinitions[i]['diffuse'][3]);
-
-		this.lights[i].setSpecular( lightDefinitions[i]['specular'][0],
-									lightDefinitions[i]['specular'][1],
-									lightDefinitions[i]['specular'][2],
-									lightDefinitions[i]['specular'][3]);
-	}
-
-	this.updateLights();
-};
-
-/*
  * updateLights
  * Update the lights.
  */
@@ -294,15 +226,16 @@ DominupScene.prototype.updateLights = function() {
 }
 
 /*
- * loadLooks
- * Load the scene's textures and create materials.
+ * initGameLooks
+ * Load the textures and create materials for the game's surface and pieces.
  */
-DominupScene.prototype.loadLooks = function () {
-	
+DominupScene.prototype.initGameLooks = function () {
+
+  // TODO add looks and textures
 	// accepted game looks
 	this.gameLooks = ['default', 'wood'];
-	this.gameLook = this.gameType[0];
-	
+	this.gameLook = this.gameLooks[0];
+
 	this.lookMaterials = [];
 	this.lookMaterials['default'] = [];
 	this.lookMaterials['default']['ambient'] = [.5,.5,.5,.5];
@@ -323,16 +256,16 @@ DominupScene.prototype.loadLooks = function () {
 		this.textures[look] = [];
 
 		for(var n = 0; n<8; n++)
-			this.textures[look][n] = new CGFtexture(this, 'textures/' + look + n + '.png');
+			 this.textures[look][n] = new CGFtexture(this, 'textures/' + look + n + '.png');
 
-		this.textures[look]['gameSurface'] = new CGFtexture(this, 'textures/' + look + 'gameSurface.png');
+    this.textures[look]['gameSurface'] = new CGFtexture(this, 'textures/' + look + 'gameSurface.png');
 
 		this.materials[look] = new CGFappearance(this);
 		this.materials[look].setAmbient( this.lookMaterials[look]['ambient'][0],
 										 this.lookMaterials[look]['ambient'][1],
 										 this.lookMaterials[look]['ambient'][2],
 										 this.lookMaterials[look]['ambient'][3]);
-		
+
 		this.materials[look].setDiffuse( this.lookMaterials[look]['diffuse'][0],
 										 this.lookMaterials[look]['diffuse'][1],
 										 this.lookMaterials[look]['diffuse'][2],
@@ -350,7 +283,6 @@ DominupScene.prototype.loadLooks = function () {
 
 		this.materials[look].setShininess(this.lookMaterials[look]['shininess']);
 		this.materials[look].setTextureWrap("REPEAT","REPEAT");
-
 	}
 };
 
@@ -362,52 +294,52 @@ DominupScene.prototype.showTable = function() {
 	this.popMatrix();
 };
 
-DominupScene.prototype.logPicking = function ()
-{
+// TODO
+DominupScene.prototype.logPicking = function (){
 	if (this.pickMode == false) {
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
 				if (obj){
-					var customId = this.pickResults[i][1];				
+					var customId = this.pickResults[i][1];
 					console.log("Picked object: " + obj + ", with pick id " + customId);
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
-		}		
+		}
 	}
 }
 
 /*
  * display
- * Display the scene.
+ * Display the game scene.
  */
 DominupScene.prototype.display = function () {
 	// Clear image and depth buffer everytime we update the scene
-    this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+  this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+  this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 	// Initialize Model-View
 	this.updateProjectionMatrix();
-    this.loadIdentity();
+  this.loadIdentity();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
-
-    this.multMatrix(this.matrix);
 	this.setDefaultAppearance();
 	this.updateLights();
 
-	this.environments[this.gameEnvironment].display();
+  // display game environment when ready
+  if(this.gameEnvironment in this.environments)
+	   this.environments[this.gameEnvironment].display();
 
 	if(this.state == 'Playing'){
-	
+
 		/*// draw pieces
 		for (i =0; i<this.objects.length; i++){
 			this.pushMatrix();
-			
+
 			this.registerForPick(i+1, this.objects[i]);
-			
+
 			this.objects[i].display();
 			this.popMatrix();
 		}*/
