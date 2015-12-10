@@ -15,10 +15,9 @@ serialInclude(['../lib/CGF.js', 'DominupScene.js',  'MyInterface.js', 'MyRectang
 
     'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'Plane.js', 'Patch.js', 'Terrain.js', 'MyPiece.js',
 
-    'MyEnvironment.js', 'Player.js', 'MyGameGraph',
+    'MyEnvironment.js', 'Player.js', 'MyGameGraph.js', 'GameSurface.js',
 
-main=function()
-{
+main=function(){
 	  // Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var myInterface = new MyInterface();
@@ -34,8 +33,8 @@ main=function()
     // create and load graph, and associate it to scene.
   	// loading errors are printed on console
   	var defaultEnvironment = new MyGameGraph('default', myScene);
-    var spaceEnvironment = new MyGameGraph('space', myScene);
-    var desertEnvironment = new MyGameGraph('desert', myScene);
+    //var spaceEnvironment = new MyGameGraph('space', myScene);
+    //var desertEnvironment = new MyGameGraph('desert', myScene);
 
 	  // start
     app.run();

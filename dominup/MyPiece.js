@@ -7,8 +7,21 @@ function MyPiece(scene, valueL, valueR) {
 
     this.valueL = valueL;
     this.valueR = valueR;
+    this.id = -1;
 
     this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
+};
+
+MyPiece.prototype.setId = function(newId) {
+    this.id=newId;
+};
+
+MyPiece.prototype.getId = function() {
+    return this.id;
+};
+
+MyPiece.prototype.setSelectable = function() {
+    this.scene.registerForPick(this.id, this.rectangle);
 };
 
 MyPiece.prototype.display = function() {
@@ -34,17 +47,17 @@ MyPiece.prototype.makeHalfPiece = function (value){
         this.centerSide();
     this.scene.popMatrix();
     this.scene.pushMatrix();
-        this.scene.translate(1, 0, 0, 0);
+        this.scene.translate(0.5, 0, 0, 0);
         this.scene.rotate(Math.PI/2, 0, 1, 0);
         this.centerSide();
     this.scene.popMatrix();
     this.scene.pushMatrix();
-        this.scene.translate(0, -0.25, 0, 0);
-        this.scene.rotate(Math.PI, 0, 1, 0);
+        this.scene.translate(0, 0.25, 0, 0);
         this.centerTop(value);
     this.scene.popMatrix();
     this.scene.pushMatrix();
-        this.scene.translate(0, 0.25, 0, 0);
+        this.scene.translate(0, -0.25, 0, 0);
+        this.scene.rotate(Math.PI, 1, 0, 0);
         this.centerTop();
     this.scene.popMatrix();
 };

@@ -1,11 +1,11 @@
 /*
- * MyGameGrpah
+ * MyGameGraph
  * Opens and reads a file following a specific structure with information about a scene.
  * @constructor
  * @param filename
  * @param scene
  */
-function MyGameGrpah(filename, scene){
+function MyGameGraph(filename, scene){
 	this.loadedOk = null;
 	this.nElements = 0;
 	this.environmentName = filename;
@@ -23,6 +23,7 @@ function MyGameGrpah(filename, scene){
 	 * If any error occurs, the reader calls onXMLError on this object, with an error message
 	 */
 	this.reader.open('themes/'+filename+'.lsx', this);
+	this.fileName = filename;
 	if(filename!=undefined)
 		this.path='themes/' + filename.substring(0, filename.lastIndexOf("/")) + '/';
 };
@@ -33,7 +34,7 @@ function MyGameGrpah(filename, scene){
  * @param errors list of errors and warnings of type {[type, message],(...)}
  * @return true if a critical error occurred, false otherwise
  */
-MyGameGrpah.prototype.criticalErrors=function(errors){
+MyGameGraph.prototype.criticalErrors=function(errors){
 
 	if (errors != null){
 		var n;
@@ -56,8 +57,9 @@ MyGameGrpah.prototype.criticalErrors=function(errors){
  * Callback to be executed after successful reading.
  * Performs parsing of the information read.
  */
-MyGameGrpah.prototype.onXMLReady=function(){
-	console.log("File loading finished.");
+MyGameGraph.prototype.onXMLReady=function(){
+
+	console.log(this.fileName + " loading finished.");
 
 	var rootElement = this.reader.xmlDoc.documentElement;
 	var errors = [];
@@ -112,7 +114,7 @@ MyGameGrpah.prototype.onXMLReady=function(){
  * @param required
  * @return set of coordenates of type [x, y, z], null if an error occurred
  */
-MyGameGrpah.prototype.getTranslation= function(element, required) {
+MyGameGraph.prototype.getTranslation= function(element, required) {
 	var coordenates = this.getXYZ(element, ['x', 'y','z'], required);
 
 	if(!this.validElement(coordenates))
@@ -127,7 +129,7 @@ MyGameGrpah.prototype.getTranslation= function(element, required) {
  * @param required
  * @return set of coordenates of type [x, y, z], null if an error occurred
  */
-MyGameGrpah.prototype.getControlPoint= function(element, required) {
+MyGameGraph.prototype.getControlPoint= function(element, required) {
 	var coordenates = this.getXYZ(element, ['x', 'y','z'], required);
 
 	if(!this.validElement(coordenates))
@@ -142,7 +144,7 @@ MyGameGrpah.prototype.getControlPoint= function(element, required) {
  * @param required
  * @return element of type [sx, sy, sz], null if an error occurred
  */
-MyGameGrpah.prototype.getScale= function(element, required) {
+MyGameGraph.prototype.getScale= function(element, required) {
 	var scale = this.getXYZ(element, ["sx", "sy", "sz"], required);
 
 	if(!this.validElement(scale))
@@ -157,7 +159,7 @@ MyGameGrpah.prototype.getScale= function(element, required) {
  * @param required
  * @return element of type [axis, angle], null if an error occurred
  */
-MyGameGrpah.prototype.getRotation= function(element, required) {
+MyGameGraph.prototype.getRotation= function(element, required) {
 	var rotation = [];
 	rotation[0] =  this.reader.getItem(element,'axis' , ['x', 'y', 'z'], required);
 	rotation[1] = this.reader.getFloat(element,'angle' , required);
@@ -174,7 +176,7 @@ MyGameGrpah.prototype.getRotation= function(element, required) {
  * @param required
  * @return element of type [x, y, z]
  */
-MyGameGrpah.prototype.getXYZ= function(element, tags, required) {
+MyGameGraph.prototype.getXYZ= function(element, tags, required) {
 	var coordenates = [];
 	coordenates[0] = this.reader.getFloat(element, tags[0], required);
 	coordenates[1] = this.reader.getFloat(element, tags[1], required);
@@ -194,7 +196,7 @@ MyGameGrpah.prototype.getXYZ= function(element, tags, required) {
  * @param required
  * @return element of type [r, g, b, a], null if an error occurred
  */
-MyGameGrpah.prototype.getRGBA= function(element, required) {
+MyGameGraph.prototype.getRGBA= function(element, required) {
  var rgba = [];
  	rgba[0] = this.reader.getFloat(element, 'r', required);
 	rgba[1] = this.reader.getFloat(element, 'g', required);
@@ -212,7 +214,7 @@ MyGameGrpah.prototype.getRGBA= function(element, required) {
  * @param element
  * @return false if the RGBA element contains errors, true otherwise
  */
-MyGameGrpah.prototype.checkRGBA= function(element) {
+MyGameGraph.prototype.checkRGBA= function(element) {
 	var n;
 	var error = false;
 	for(n=0; n<element.length; n++)
@@ -230,7 +232,7 @@ MyGameGrpah.prototype.checkRGBA= function(element) {
  * @param element
  * @return false if the element contains errors, true otherwise
  */
-MyGameGrpah.prototype.validElement= function(element) {
+MyGameGraph.prototype.validElement= function(element) {
 	if(element==null)
 		return false;
 
@@ -248,7 +250,7 @@ MyGameGrpah.prototype.validElement= function(element) {
  * @param element
  * @param syntax
  */
-MyGameGrpah.prototype.checkStructure= function(elementType, element, syntax) {
+MyGameGraph.prototype.checkStructure= function(elementType, element, syntax) {
 	var nC, nS;
 	for(nC=0, nS=0; nC < element.children.length && nS < syntax.length; nC++)
 		if(element.children[nC].nodeName =='TRANSLATION'
@@ -268,7 +270,7 @@ MyGameGrpah.prototype.checkStructure= function(elementType, element, syntax) {
  * Sets the parameters in Initials to the specified values.
  * @param settings
  */
-MyGameGrpah.prototype.setInitials= function(settings) {
+MyGameGraph.prototype.setInitials= function(settings) {
 	for(property in settings)
 		this.initials[property]=settings[property];
 }
@@ -278,7 +280,7 @@ MyGameGrpah.prototype.setInitials= function(settings) {
  * Callback to be executed on any read warning.
  * @param message
  */
- MyGameGrpah.prototype.onXMLWarning= function(message){
+ MyGameGraph.prototype.onXMLWarning= function(message){
  	message = message.replace(/#/g, '');
 	console.warn("LSX Loading Warning: " + message);
 };
@@ -288,7 +290,7 @@ MyGameGrpah.prototype.setInitials= function(settings) {
  * Callback to be executed on any read error.
  * @param message
  */
-MyGameGrpah.prototype.onXMLError=function (message){
+MyGameGraph.prototype.onXMLError=function (message){
 	console.error("LSX Loading Error: "+message);
 	this.loadedOk=false;
 };
@@ -303,7 +305,7 @@ MyGameGrpah.prototype.onXMLError=function (message){
  * @param rootElement
  * @return list of errors and warnings.
  */
-MyGameGrpah.prototype.parseInitials= function(rootElement) {
+MyGameGraph.prototype.parseInitials= function(rootElement) {
 	var warningMessages = [];
 	this.initials = [];
 
@@ -395,7 +397,7 @@ MyGameGrpah.prototype.parseInitials= function(rootElement) {
  * @param rootElement
  * @return list of errors and warnings.
  */
-MyGameGrpah.prototype.parseIllumination = function(rootElement){
+MyGameGraph.prototype.parseIllumination = function(rootElement){
 	var illuminationXML=rootElement.getElementsByTagName('ILLUMINATION');
 
 	var warnings =[];
@@ -445,7 +447,7 @@ MyGameGrpah.prototype.parseIllumination = function(rootElement){
  * @param rootElement
  * @return list of errors and warnings.
  */
- MyGameGrpah.prototype.parseLights = function(rootElement) {
+ MyGameGraph.prototype.parseLights = function(rootElement) {
  	var warningMessages = [];
 
  	var lightsBlock = rootElement.getElementsByTagName("LIGHTS");
@@ -480,7 +482,7 @@ MyGameGrpah.prototype.parseIllumination = function(rootElement){
  * Method used for parsing information about a element light of type { id, enable, position[], ambient[], diffuse[], specular[] }
  * @param element
  */
-MyGameGrpah.prototype.parseSingleLight= function(element, lightIndex){
+MyGameGraph.prototype.parseSingleLight= function(element, lightIndex){
  	var light = [];
  	var warningMessages = [];
 
@@ -563,7 +565,7 @@ MyGameGrpah.prototype.parseSingleLight= function(element, lightIndex){
  * @param rootElement
  * @return list of errors and warning
  */
-MyGameGrpah.prototype.parseTextures= function(rootElement) {
+MyGameGraph.prototype.parseTextures= function(rootElement) {
 	return this.parseGenericElement('TEXTURE', rootElement);
 }
 
@@ -573,7 +575,7 @@ MyGameGrpah.prototype.parseTextures= function(rootElement) {
  * @param rootElement
  * @return list of errors and warnings
  */
-MyGameGrpah.prototype.parseMaterials= function(rootElement) {
+MyGameGraph.prototype.parseMaterials= function(rootElement) {
 	return this.parseGenericElement('MATERIAL', rootElement);
 }
 
@@ -583,7 +585,7 @@ MyGameGrpah.prototype.parseMaterials= function(rootElement) {
  * @param rootElement
  * @return list of errors and warnings.
  */
-MyGameGrpah.prototype.parseAnimations= function(rootElement) {
+MyGameGraph.prototype.parseAnimations= function(rootElement) {
 	return this.parseGenericElement('ANIMATION', rootElement);
 };
 
@@ -594,7 +596,7 @@ MyGameGrpah.prototype.parseAnimations= function(rootElement) {
  * @param rootElement
  * @return list of errors and warning messages
  */
-MyGameGrpah.prototype.parseGenericElement= function(elementType, rootElement) {
+MyGameGraph.prototype.parseGenericElement= function(elementType, rootElement) {
 
 	var warningMessages = [];
 
@@ -644,7 +646,7 @@ MyGameGrpah.prototype.parseGenericElement= function(elementType, rootElement) {
  * @param element
  * @return element of type { file, ampli_factor[] } or null if an error occurs
  */
-MyGameGrpah.prototype.readTexture= function(element) {
+MyGameGraph.prototype.readTexture= function(element) {
 	var texture = [];
 
 	this.checkStructure('TEXTURE', element, ['file', 'amplif_factor']);
@@ -682,7 +684,7 @@ MyGameGrpah.prototype.readTexture= function(element) {
  * @param element
  * @return a structure of type material { shininess, specular[], diffuse[], ambient[], emission[] } or null if an error occurs.
  */
-MyGameGrpah.prototype.readMaterial= function(element) {
+MyGameGraph.prototype.readMaterial= function(element) {
 	var material = [];
 	var properties = ['shininess', 'specular', 'diffuse', 'ambient', 'emission'];
 	var n;
@@ -730,7 +732,7 @@ MyGameGrpah.prototype.readMaterial= function(element) {
  * @param element
  * @return element of type animation { type, args[] } or null if an error occurs.
  */
-MyGameGrpah.prototype.readAnimation = function(element) {
+MyGameGraph.prototype.readAnimation = function(element) {
 
 	var animation = [];
 
@@ -801,7 +803,7 @@ MyGameGrpah.prototype.readAnimation = function(element) {
  * @param rootElement
  * @return list of errors and warnings.
  */
-MyGameGrpah.prototype.parseLeaves= function(rootElement) {
+MyGameGraph.prototype.parseLeaves= function(rootElement) {
 
 	var warningMessages = [];
 
@@ -847,7 +849,7 @@ MyGameGrpah.prototype.parseLeaves= function(rootElement) {
  * @param element
  * @return element of type leaf { type, args[] } or null if an error occurs.
  */
-MyGameGrpah.prototype.readLeaf= function(element) {
+MyGameGraph.prototype.readLeaf= function(element) {
 
 	var leaf = [];
 
@@ -957,7 +959,7 @@ MyGameGrpah.prototype.readLeaf= function(element) {
  * @param rootElement
  * @return list of errors and warnings.
  */
-MyGameGrpah.prototype.parseNodes= function(rootElement) {
+MyGameGraph.prototype.parseNodes= function(rootElement) {
 
 	var warningMessages = [];
 
@@ -1014,7 +1016,7 @@ MyGameGrpah.prototype.parseNodes= function(rootElement) {
  * @param element
  * Returns a structure of type node { material, texture, transformations[], descendants[] }.
  */
-MyGameGrpah.prototype.readNode= function(element) {
+MyGameGraph.prototype.readNode= function(element) {
 	var node = [];
 
 	this.checkStructure('NODE', element, ['MATERIAL', 'TEXTURE', 'DESCENDANTS']);
@@ -1103,7 +1105,7 @@ MyGameGrpah.prototype.readNode= function(element) {
  * @param elementId
  * @return true upon success, false otherwise
  */
-MyGameGrpah.prototype.processGraph = function(elementId) {
+MyGameGraph.prototype.processGraph = function(elementId) {
 
 	var element = null;
 

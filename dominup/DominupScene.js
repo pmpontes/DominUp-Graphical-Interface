@@ -38,18 +38,27 @@ DominupScene.prototype.init = function (application) {
     this.enableTextures(true);
 
     // create matrix
-	  this.matrix = mat4.create();
+	this.matrix = mat4.create();
     mat4.identity(this.matrix);
 
-	  this.setUpdatePeriod(30);
-	  this.setPickEnabled(true);
+	this.setUpdatePeriod(30);
+	this.setPickEnabled(true);
 
-	  // Game settings
-	  this.initGame();
+	// Game settings
+	this.initGame();
+};
+
+DominupScene.prototype.initLights = function () {
+	this.lights[0].setPosition(2, 3, 3, 1);
+    this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
+    this.lights[0].update();
+    this[this.lights[0].id]=true;
 };
 
 DominupScene.prototype.newGame = function(){
-
+	this.initGamePieces();
+	this.initGameSurface();
+	this.initGamePlayers();
 }
 
 DominupScene.prototype.updateGameState = function(){
@@ -128,28 +137,31 @@ DominupScene.prototype.initGame = function () {
 	this.timePaused = 0;
 	this.previousTime;
 
-  // types of game
+  	// types of game
 	this.gameTypes = ['(select type)', 'Human-Human', 'Human-Computer', 'Computer-Computer'];
 	this.gameType = this.gameTypes[0];
 
-  // game levels
+  	// game levels
 	this.gameLevels = ['(select level)', 'Random', 'Attack', 'Defense'];
 	this.gameLevel = this.gameLevels[0];
 
-	this.initGameSurface();
 	this.initGameEnvironments();
-  this.initGameLooks();
+  	this.initGameLooks();
+
 	this.initGamePieces();
+	this.initGameSurface();
 	this.initGamePlayers();
 };
 
 /*
  * initGameEnvironment
- * Initiate the scene's lights by default.
+ * Create game environment with given name.
  */
 DominupScene.prototype.initGameEnvironment = function (environmentName, graph) {
   if(this.gameEnvironments.indexOf(environmentName)!=-1)
     this.environments[environmentName] = new MyEnvironment(this, graph);
+  if(this.gameEnvironments.indexOf(environmentName)==0)
+	this.environments[environmentName].activateEnvironment();
 };
 
 /*
@@ -169,10 +181,13 @@ DominupScene.prototype.initGameEnvironments = function () {
  */
 DominupScene.prototype.initGamePieces = function () {
 	this.pieces = [];
+	var piecesId = 500;
 
 	for(var n=0; n<8; n++)
-		for(var m=0; m<n; m++)
+		for(var m=0; m<=n; m++){
 			this.pieces[[n,m]] = new MyPiece(this, n, m);
+			this.pieces[[n,m]].setId(piecesId++);
+		}
 };
 
 /*
@@ -286,24 +301,56 @@ DominupScene.prototype.initGameLooks = function () {
 	}
 };
 
-DominupScene.prototype.showTable = function() {
-	this.pushMatrix();
-		this.materials[this.gameLook].setTexture(this.textures[this.gameLook]['gameSurface']);
-		this.materials[this.gameLook].apply();
-		this.gameSurface.display();
-	this.popMatrix();
+DominupScene.prototype.showDominoes = function() {
+
+
 };
 
-// TODO
+
+DominupScene.prototype.pieceSelected = function (id){
+	if(this.selectedPiece!=undefined){
+	// do anitation to old piece
+	}
+
+	this.selectedPiece=id;
+	this.gameState='PIECE_SELECTED';
+
+	console.log("pieceSelected");
+	// do animation to new piece
+};
+
+DominupScene.prototype.makeMove = function (){
+	console.log("piece and location chosen, make move");
+};
+
+DominupScene.prototype.pickHandler = function (id){
+	// if a piece was picked
+	if(id>=500){
+		if(this.gameState=='SELECT_PIECE' || this.selectedPiece != id)
+			this.pieceSelected(id);
+		else this.gameState='SELECT_LOCATION_X';
+	}else{	// if a position was picked
+		if(this.gameState=='SELECT_LOCATION_X')
+			this.coordX = this.gameSurface.getCoord(id);
+		else if(this.gameState=='SELECT_LOCATION_Y'){
+			this.coordY = this.gameSurface.getCoord(id);
+			this.makeMove();
+		}
+	}		
+};
+
+
 DominupScene.prototype.logPicking = function (){
 	if (this.pickMode == false) {
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
+
 				if (obj){
 					var customId = this.pickResults[i][1];
-					console.log("Picked object: " + obj + ", with pick id " + customId);
+					this.pickHandler(customId);
 				}
+
 			}
 			this.pickResults.splice(0,this.pickResults.length);
 		}
@@ -321,18 +368,25 @@ DominupScene.prototype.display = function () {
 
 	// Initialize Model-View
 	this.updateProjectionMatrix();
-  this.loadIdentity();
+  	this.loadIdentity();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
 	this.setDefaultAppearance();
 	this.updateLights();
 
+	this.logPicking();
+	this.clearPickRegistration();
+
+	this.pieces[[0,0]].setSelectable();
+	this.pieces[[0,0]].display();
+
   // display game environment when ready
-  if(this.gameEnvironment in this.environments)
-	   this.environments[this.gameEnvironment].display();
+  //if(this.gameEnvironment in this.environments)
+	   //this.environments[this.gameEnvironment].display();
 
 	if(this.state == 'Playing'){
+		this.gameSurface.display();
 
 		/*// draw pieces
 		for (i =0; i<this.objects.length; i++){
@@ -344,6 +398,5 @@ DominupScene.prototype.display = function () {
 			this.popMatrix();
 		}*/
 
-		this.showTable();
 	}
 };
