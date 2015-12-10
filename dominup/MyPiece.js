@@ -8,6 +8,10 @@ function MyPiece(scene, valueL, valueR) {
     this.valueL = valueL;
     this.valueR = valueR;
 
+    this.animation = null;
+    this.initialPosition = null;
+    this.currentMatrix = initialPosition;
+
     this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
 };
 
@@ -72,3 +76,18 @@ MyPiece.prototype.centerTop = function(value){
     this.scene.translate(-0.5, -0.5, 0, 0);
     this.rectangle.display();
 };
+
+MyPiece.prototype.setInitialPosition = function(side, x, z){
+  this.side = side;
+  var matrx = mat4.create();
+  mat4.identity(matrx);
+  if(this.side == 'player2')
+    mat4.rotateY(matrx, matrx, Math.PI);
+  var vectr = vec3.fromValues(x, z, 0.25);
+  mat4.translate(matrx, matrx, vectr);
+  this.initialPosition = matrx;
+}
+
+MyPiece.prototype.createAnimation = function(time, center, radius, angStart, angRot){
+  this.animation = new CircularAnimation(time, center, radius, angStart, angRot);
+}

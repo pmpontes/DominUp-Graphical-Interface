@@ -294,6 +294,21 @@ select_difficulty_no_defense(Player):-
 
 % performs a valid move, randomly ----------------------------Improved
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%First play
+random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
+	player(Player, Dominoes),
+  table(Table),
+	repeat,
+	length(Dominoes, MaxLength),
+	random(0, MaxLength, Piece),
+	nth0(Piece, Dominoes, Domino),
+	random(5, 6, AX), random(5, 6, AY),
+	random(5, 6, BX), random(5, 6, BY),
+	execute_play(Dominoes, Domino-[AX,AY]-[BX, BY], Table, NewTable),!,
+	delete(Dominoes, Domino, NewDominoes),
+	save_player(Player, NewDominoes).
+
+
 random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	player(Player, Dominoes),
 	list_vertical_plays(Dominoes, Table, PossiblePlays),
@@ -408,6 +423,17 @@ advanced_level(Player):-
 
 % make move, if the player is the computer
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%TODO check if these changes work (auto player and human player)
+% First play forces a certer position
+make_move(Player, Table, NewTable, Move):-
+	type(Player, computer),
+  table(Table), !,
+	clear_screen,
+	show_table(Table),
+	nl, write('| '), write(Player), write(' \'s turn:'), nl,
+	write('| Determining next play...'), nl,
+	random_move(Player, Table, NewTable, Move).
+
 
 % advanced levels
 make_move(Player, Table, NewTable, Move):-
@@ -436,6 +462,15 @@ make_move(Player, Table, NewTable, Move):-
 
 % make move, if the player is human
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% If it's the first play, force move to the center of the table
+make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
+			type(Player, human),
+      table(Table),
+      static_first_play(Domino-[AX,AY]-[BX, BY], Domino-[AfX,AfY]-[BfX, BfY])
+			execute_play(Dominoes, Domino-[AfX,AfY]-[BfX, BfY], Table, NewTable),!,
+			delete(Dominoes, Domino, NewDominoes),
+			save_player(Player, NewDominoes), !.
+
 make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 			type(Player, human),
 			execute_play(Dominoes, Domino-[AX,AY]-[BX, BY], Table, NewTable),!,
@@ -888,3 +923,29 @@ valid_coordinates([X, Y]):-
 set_table(NewTable):-
 	retractall(table(_)),
 	asserta(table(NewTable)).
+
+static_first_play(Domino-[Ax1, Ay1]-[Bx1, By1], Domino-[Ax2, Ay2]-[Bx2, By2]) :-
+  DiffX is Ax1 - Bx1,
+  DiffY is Ay1 - Bx1, !,
+  find_orientation_x(DiffX, Ax2, Bx2),
+  find_orientation_y(DiffY, Ay2, By2).
+
+find_orientation_x(DiffX, Ax2, Bx2) :-
+  DiffX < 0, !,
+  Ax2 = 5, Bx2 = 6.
+find_orientation_x(DiffX, Ax2, Bx2) :-
+  DiffX = 0, !,
+  Ax2 = 6, Bx2 = 6.
+find_orientation_x(DiffX, Ax2, Bx2) :-
+  DiffX > 0, !,
+  Ax2 = 6, Bx2 = 5.
+
+find_orientation_y(DiffY, Ay2, By2) :-
+  DiffY < 0, !,
+  Ay2 = 5, By2 = 6.
+find_orientation_y(DiffY, Ay2, By2) :-
+  DiffY = 0, !,
+  Ay2 = 6, By2 = 6.
+find_orientation_y(DiffY, Ay2, By2) :-
+  DiffY > 0, !,
+  Ay2 = 6, By2 = 5.
