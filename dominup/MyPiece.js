@@ -62,7 +62,7 @@ MyPiece.prototype.makeHalfPiece = function (value){
     this.scene.pushMatrix();
         this.scene.translate(0, -0.25, 0, 0);
         this.scene.rotate(Math.PI, 1, 0, 0);
-        this.centerTop();
+        this.centerBottom();
     this.scene.popMatrix();
 };
 
@@ -85,6 +85,14 @@ MyPiece.prototype.centerTop = function(value){
         this.material.setTexture(this.scene.textures[this.scene.gameLook][0]);
         this.material.apply();
     }
+    this.scene.rotate(-Math.PI/2, 1, 0, 0);
+    this.scene.translate(-0.5, -0.5, 0, 0);
+    this.rectangle.display();
+    this.material.setTexture(this.scene.textures[this.scene.gameLook][0]);
+    this.material.apply();
+};
+
+MyPiece.prototype.centerBottom = function(value){
     this.scene.rotate(-Math.PI/2, 1, 0, 0);
     this.scene.translate(-0.5, -0.5, 0, 0);
     this.rectangle.display();
