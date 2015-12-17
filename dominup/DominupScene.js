@@ -215,11 +215,11 @@ DominupScene.prototype.initGamePlayers = function () {
 var t = [];
 for(id in this.pieces)
 t.push(id);
-var t1 = t.slice(16);
+var t1 = t.slice(0, 16);
 var t2 = t.slice(16, 32);
 
-  this.players[0].setPieces(t);
-  this.players[0].setPieces(t);
+  this.players[0].setPieces(t1);
+  this.players[1].setPieces(t2);
 
   //this.players[0].setPieces([[0,2], [0,1]]);
 };
@@ -230,6 +230,8 @@ var t2 = t.slice(16, 32);
  */
 DominupScene.prototype.initCameras = function () {
     this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+
+    // TODO add cameras?
 };
 
 /*
@@ -393,7 +395,7 @@ DominupScene.prototype.display = function () {
 
   this.gameSurface.display();
   this.players[0].showDominoes();
-
+  this.players[1].showDominoes();
   // display game environment when ready
   //if(this.gameEnvironment in this.environments)
 	   //this.environments[this.gameEnvironment].display();

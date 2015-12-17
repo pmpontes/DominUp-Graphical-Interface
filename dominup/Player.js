@@ -7,6 +7,7 @@ function Player(scene, id, level){
 	this.human = (level == undefined);
 	this.level = level;
 	this.playerId = id;
+	this.pieces = [];
 };
 
 Player.prototype = Object.create(CGFobject.prototype);
@@ -28,14 +29,16 @@ Player.prototype.setPieces = function (pieces) {
 
 		var matrx = mat4.create();
 		mat4.identity(matrx);
-		mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 9 -column));
-		mat4.rotateY(matrx, matrx, -Math.PI/2);
 
-		if(this.playerId=='playerId')
-			mat4.rotateY(matrx, matrx, Math.PI);
+		if(this.playerId=='player1'){
+			mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 9 -column));
+			mat4.rotateY(matrx, matrx, -Math.PI/2);
+		}else if(this.playerId=='player2'){
+			mat4.translate(matrx, matrx, vec3.fromValues(-line, 0.5, 9 -column));
+			mat4.rotateY(matrx, matrx, Math.PI/2);
+		}
 
 		this.scene.pieces[this.pieces[i]].initialPosition = matrx;
-
 		column+=2 + 2/3.0;
 	}
 };
