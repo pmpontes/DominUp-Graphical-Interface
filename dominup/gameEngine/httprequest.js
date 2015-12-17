@@ -10,8 +10,8 @@ function getPrologRequest(requestString, onSuccess, onError, port)
 				request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
 				request.send();
 			}
-		
-			
+
+
 			//Handle the Reply
 			function handleReply(data){
 				// parse????
