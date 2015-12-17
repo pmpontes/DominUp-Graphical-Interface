@@ -275,7 +275,7 @@ DominupScene.prototype.initGameLooks = function () {
 		this.textures[look] = [];
 
 		for(var n = 0; n<8; n++)
-			 this.textures[look][n] = new CGFtexture(this, 'textures/' + look + n + '.png');
+			 this.textures[look][n] = new CGFtexture(this, 'textures/' + look + '_' + n + '.png');
 
     this.textures[look]['gameSurface'] = new CGFtexture(this, 'textures/' + look + 'gameSurface.jpg');
 

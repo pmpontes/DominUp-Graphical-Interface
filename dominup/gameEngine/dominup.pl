@@ -60,6 +60,11 @@ resume_game(2):-
         set_auto_player(P2T, APD),
         play(Name1, Table).
 
+set_table_from_data(Table,XMax,YMax,Name1,Name2,P1D,P2D,P1T,P2T) :- set_table_size(XMax, YMax),
+      save_player(Name1, P1D), save_player(Name2, P2D),
+      save_player_type(Name1, P1T), save_player_type(Name2, P2T),
+      set_auto_player(P2T, APD),
+      play(Name1, Table).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %		  	  Game preparation  	   	%
