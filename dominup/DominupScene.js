@@ -25,17 +25,17 @@ DominupScene.prototype.setMyInterface = function(newInterface) {
  * @param application
  */
 DominupScene.prototype.init = function (application) {
-    CGFscene.prototype.init.call(this, application);
+  CGFscene.prototype.init.call(this, application);
 
-    this.initCameras();
-    this.initLights();
+  this.initCameras();
+  this.initLights();
 
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    this.gl.clearDepth(100.0);
-    this.gl.enable(this.gl.DEPTH_TEST);
-	  this.gl.enable(this.gl.CULL_FACE);
-    this.gl.depthFunc(this.gl.LEQUAL);
-    this.enableTextures(true);
+  this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  this.gl.clearDepth(100.0);
+  this.gl.enable(this.gl.DEPTH_TEST);
+	this.gl.enable(this.gl.CULL_FACE);
+  this.gl.depthFunc(this.gl.LEQUAL);
+  this.enableTextures(true);
 
     // create matrix
 	this.matrix = mat4.create();
@@ -111,6 +111,10 @@ DominupScene.prototype.update = function(currTime) {
     this.environments[this.gameEnvironment].update(currTime);
 
 	if(!this.pauseGame){
+    if(this.responseTime>=this.timeout*1000){
+      // end game
+    }else this.responseTime += currTime-this.timePaused;
+
     for(pieceId in this.pieces)
         this.pieces[pieceId].update(currTime-this.timePaused);
 
@@ -129,6 +133,7 @@ DominupScene.prototype.saveGame = function (){
  * Initiate the game.
  */
 DominupScene.prototype.initGame = function () {
+  this.timeout = 60;
 	this.state = 'SELECT_GAME_TYPE';
 	this.moves = [];
   this.players = [];
@@ -182,7 +187,7 @@ DominupScene.prototype.initGameEnvironments = function () {
  */
 DominupScene.prototype.initGamePieces = function () {
 	this.pieces = [];
-	var piecesId = 500;
+	var piecesId = 500;  // ID range for domino pieces
 
   	for(var n=0; n<8; n++)
 		for(var m=n; m<8; m++){
@@ -229,8 +234,8 @@ var t2 = t.slice(18, 36);
  * Initiate the scene's default camera.
  */
 DominupScene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
-
+    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
+    this.cameraAnimation = null;
     // TODO add cameras?
 };
 
@@ -319,14 +324,24 @@ DominupScene.prototype.initGameLooks = function () {
 
 DominupScene.prototype.pieceSelected = function (id){
 	if(this.selectedPiece!=undefined){
-	// do anitation to old piece
+	   // do anitation to old piece
+     for(piece in this.pieces)
+      if(this.pieces[piece].getId()==this.selectedPiece){
+        this.pieces[piece].unselected();
+        break;
+      }
 	}
 
 	this.selectedPiece=id;
 	this.gameState='PIECE_SELECTED';
 
-	console.log("pieceSelected " + id);
 	// do animation to new piece
+  for(piece in this.pieces)
+   if(this.pieces[piece].getId()==id){
+     this.pieces[piece].selected();
+     console.log("pieceSelected " + piece);
+     break;
+   }
 };
 
 DominupScene.prototype.makeMove = function (){

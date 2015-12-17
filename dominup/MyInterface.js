@@ -1,7 +1,7 @@
 /*
  * MyInterface
  * @constructor
- */ 
+ */
 function MyInterface() {
 	CGFinterface.call(this);
 };
@@ -23,8 +23,8 @@ MyInterface.prototype.init = function(application) {
 MyInterface.prototype.initInterface = function() {
 	this.mainMenu = new dat.GUI();
 
-	this.startGameMenu = this.mainMenu.addFolder("Start new game");	
-	this.newGameMenu = this.startGameMenu.addFolder("New game");	
+	this.startGameMenu = this.mainMenu.addFolder("Start new game");
+	this.newGameMenu = this.startGameMenu.addFolder("New game");
 	this.newGameMenu.add(this.scene, 'gameType', this.scene.gameTypes);
 	this.startGameMenu.add(this, 'resumeSavedGame');
 
@@ -34,10 +34,11 @@ MyInterface.prototype.initInterface = function() {
 
 
 MyInterface.prototype.addSettings = function(){
-	this.gameSettings = this.mainMenu.addFolder("Settings");	
-	this.gameEnvironment = this.gameSettings.addFolder("Environment");	
+	this.gameSettings = this.mainMenu.addFolder("Settings");
+	this.gameSettings.add(this.scene, 'timeout', 10, 120);
+	this.gameEnvironment = this.gameSettings.addFolder("Environment");
 	this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
-	this.gameLookFolder = this.gameSettings.addFolder("Appearance");	
+	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
 }
 
@@ -45,7 +46,7 @@ MyInterface.prototype.resumeSavedGame = function(){
 	removeGui(this.newGameMenu, this);
 };
 
-MyInterface.prototype.initGame = function(){	
+MyInterface.prototype.initGame = function(){
 	this.mainMenu.remove(this.gameSettings);
 
 	this.gameOptionsMenu = this.mainMenu.addFolder("Options");
@@ -56,6 +57,6 @@ MyInterface.prototype.initGame = function(){
 }
 
 MyInterface.prototype.showGameLevels = function(Player){
-	this.gameLevel = this.newGameMenu.addFolder('Level for ' + Player);	
+	this.gameLevel = this.newGameMenu.addFolder('Level for ' + Player);
 	this.gameLevel.add(this.scene, 'gameLevel', this.scene.gameLevels);
 }
