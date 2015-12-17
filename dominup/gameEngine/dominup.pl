@@ -307,8 +307,9 @@ random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	length(Dominoes, MaxLength),
 	random(0, MaxLength, Piece),
 	nth0(Piece, Dominoes, Domino),
-	random(5, 6, AX), random(5, 6, AY),
-	random(5, 6, BX), random(5, 6, BY),
+	random(4, 6, Ax1), random(4, 6, Ay1),
+	random(4, 6, Bx1), random(4, 6, By1),
+  static_first_play(Domino-[Ax1, Ay1]-[Bx1, By1], Domino-[AX, AY]-[BX, BY]),
 	execute_play(Dominoes, Domino-[AX,AY]-[BX, BY], Table, NewTable),!,
 	delete(Dominoes, Domino, NewDominoes),
 	save_player(Player, NewDominoes).
@@ -316,6 +317,7 @@ random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 
 random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	player(Player, Dominoes),
+  \+ table(Table),
 	list_vertical_plays(Dominoes, Table, PossiblePlays),
 	length(PossiblePlays, NPlays), NPlays \= 0 , !, repeat,
 	random(0, NPlays, Play),
@@ -326,6 +328,7 @@ random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 
 random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	player(Player, Dominoes),
+  \+ table(Table),
 	repeat,
 	length(Dominoes, MaxLength),
 	random(0, MaxLength, Piece),
@@ -478,6 +481,7 @@ make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 
 make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 			type(Player, human),
+      \+ table(Table),
 			execute_play(Dominoes, Domino-[AX,AY]-[BX, BY], Table, NewTable),!,
 			delete(Dominoes, Domino, NewDominoes),
 			save_player(Player, NewDominoes), !.
@@ -931,26 +935,26 @@ set_table(NewTable):-
 
 static_first_play(Domino-[Ax1, Ay1]-[Bx1, By1], Domino-[Ax2, Ay2]-[Bx2, By2]) :-
   DiffX is Ax1 - Bx1,
-  DiffY is Ay1 - Bx1, !,
+  DiffY is Ay1 - By1, !,
   find_orientation_x(DiffX, Ax2, Bx2),
   find_orientation_y(DiffY, Ay2, By2).
 
 find_orientation_x(DiffX, Ax2, Bx2) :-
   DiffX < 0, !,
-  Ax2 = 5, Bx2 = 6.
+  Ax2 = 4, Bx2 = 5.
 find_orientation_x(DiffX, Ax2, Bx2) :-
   DiffX = 0, !,
-  Ax2 = 6, Bx2 = 6.
+  Ax2 = 4, Bx2 = 4.
 find_orientation_x(DiffX, Ax2, Bx2) :-
   DiffX > 0, !,
-  Ax2 = 6, Bx2 = 5.
+  Ax2 = 5, Bx2 = 4.
 
 find_orientation_y(DiffY, Ay2, By2) :-
   DiffY < 0, !,
-  Ay2 = 5, By2 = 6.
+  Ay2 = 4, By2 = 5.
 find_orientation_y(DiffY, Ay2, By2) :-
   DiffY = 0, !,
-  Ay2 = 6, By2 = 6.
+  Ay2 = 4, By2 = 4.
 find_orientation_y(DiffY, Ay2, By2) :-
   DiffY > 0, !,
-  Ay2 = 6, By2 = 5.
+  Ay2 = 5, By2 = 4.
