@@ -13,19 +13,22 @@ function GameSurface(scene, sizeX, sizeY) {
 	this.suface = new Plane(scene, sizeX, sizeY);
 
 	this.placedPieces = [];
-	
+
 	this.table = [];
 	for(var n=0; n< this.sizeY; n++){
-		var line = [];
+		this.table[n] = [];
 		for(var m=0; m<this.sizeX; m++)
-			line.push([8,0]);
-		this.table.push(line);
+			this.table[n][m] = [8];
 	}
 
 	this.positions = [];
+	this.positionID = [];
+	var hitBoxId = 200;
 	for(var n=0; n< this.sizeY; n++)
-		for(var m=0; m<this.sizeX; m++)
+		for(var m=0; m<this.sizeX; m++){
 			this.positions[[m, n]] = new Patch(scene, 1, 1, 1, [[-0.5, 0, 0.5], [-0.5, 0, -0.5], [0.5, 0, 0.5], [0.5, 0,-0.5]]);
+			this.positionID[hitBoxId++] = [m,n];
+		}
 };
 
 GameSurface.prototype = Object.create(CGFobject.prototype);
@@ -37,7 +40,7 @@ GameSurface.prototype.placePiece = function (position, piece) {
 	this.table[position.bY][position.bX].push(piece.valueR);
 };
 
-GameSurface.prototype.unplacePiece = function (position, piece) {     	
+GameSurface.prototype.unplacePiece = function (position, piece) {
 	for(var i=0; i<this.placedPieces.length; i++)
 		if(this.placedPieces[i].coords == position && this.placedPieces[i].domino == piece)
 			this.placedPieces.splice(i,1);
@@ -45,6 +48,10 @@ GameSurface.prototype.unplacePiece = function (position, piece) {
 	this.table[position.aY][position.aX].pop();
 	this.table[position.bY][position.bX].pop();
 };
+
+GameSurface.prototype.getPosition = function (id) {
+	return this.positionID[id];
+}
 
 GameSurface.prototype.getTable = function () {
 		var plainTable = [];
@@ -66,7 +73,7 @@ GameSurface.prototype.constructor=GameSurface;
 GameSurface.prototype.display = function () {
 
 	this.scene.pushMatrix();
-	
+
 		this.scene.pushMatrix();
 			this.scene.materials[this.scene.gameLook].setTexture(this.scene.textures[this.scene.gameLook]['gameSurface']);
 			this.scene.materials[this.scene.gameLook].apply();
@@ -79,7 +86,6 @@ GameSurface.prototype.display = function () {
 		if(this.scene.pickMode){
 		 	var hitBoxId = 200;
 
-			// display hit box
 			for(var n=0; n< this.sizeY; n++)
 				for(var m=0; m<this.sizeX; m++){
 					this.scene.pushMatrix();
@@ -117,7 +123,7 @@ function drawPiece(piece){
 		this.scene.translate(piece.coords.aX, piece.height, piece.coords.aY, 1);
 		this.scene.translate(0.5, 0, 0.5, 1);
 		this.scene.rotate(rotAngle, 0, 1, 0);
-		this.suface.display();
- 	this.scene.popMatrix();	
+		piece.domino.display();
+ 	this.scene.popMatrix();
 
 }

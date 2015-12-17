@@ -11,7 +11,7 @@ function MyPiece(scene, valueL, valueR) {
 
     this.animation = null;
     this.initialPosition = null;
-    this.currentMatrix = initialPosition;
+    //this.currentMatrix = initialPosition;
 
     this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
 };
