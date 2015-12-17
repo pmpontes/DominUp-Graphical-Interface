@@ -215,8 +215,8 @@ DominupScene.prototype.initGamePlayers = function () {
 var t = [];
 for(id in this.pieces)
 t.push(id);
-var t1 = t.slice(0, 16);
-var t2 = t.slice(16, 32);
+var t1 = t.slice(0, 18);
+var t2 = t.slice(18, 36);
 
   this.players[0].setPieces(t1);
   this.players[1].setPieces(t2);
