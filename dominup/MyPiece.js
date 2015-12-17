@@ -10,7 +10,8 @@ function MyPiece(scene, valueL, valueR) {
     this.id = -1;
 
     this.animation = null;
-    this.initialPosition = null;
+    this.initialPosition = mat4.create();
+		mat4.identity(this.initialPosition);
     //this.currentMatrix = initialPosition;
 
     this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
@@ -29,6 +30,8 @@ MyPiece.prototype.setSelectable = function() {
 };
 
 MyPiece.prototype.display = function() {
+  this.scene.pushMatrix();
+  this.scene.multMatrix(this.initialPosition);
     this.scene.pushMatrix();
         this.scene.translate(-0.5, 0, 0, 0);
         this.scene.rotate(Math.PI, 0, 1, 0);
@@ -38,6 +41,7 @@ MyPiece.prototype.display = function() {
         this.scene.translate(0.5, 0, 0, 0);
         this.makeHalfPiece(this.valueR);
     this.scene.popMatrix();
+  this.scene.popMatrix();
 };
 
 MyPiece.prototype.makeHalfPiece = function (value){
@@ -107,7 +111,12 @@ MyPiece.prototype.setInitialPosition = function(side, x, z){
   var vectr = vec3.fromValues(x, z, 0.25);
   mat4.translate(matrx, matrx, vectr);
   this.initialPosition = matrx;
-}
+};
+
+//TODO update animations
+MyPiece.prototype.update = function(curTime){
+
+};
 
 MyPiece.prototype.createAnimation = function(time, center, radius, angStart, angRot){
   this.animation = new CircularAnimation(time, center, radius, angStart, angRot);

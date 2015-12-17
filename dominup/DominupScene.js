@@ -39,7 +39,7 @@ DominupScene.prototype.init = function (application) {
 
     // create matrix
 	this.matrix = mat4.create();
-    mat4.identity(this.matrix);
+  mat4.identity(this.matrix);
 
 	this.setUpdatePeriod(30);
 	this.setPickEnabled(true);
@@ -50,13 +50,14 @@ DominupScene.prototype.init = function (application) {
 
 DominupScene.prototype.initLights = function () {
 	this.lights[0].setPosition(2, 3, 3, 1);
-    this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
-    this.lights[0].update();
-    this[this.lights[0].id]=true;
+  this.lights[0].setDiffuse(1.0,1.0,1.0,1.0);
+  this.lights[0].update();
+  this[this.lights[0].id]=true;
 };
 
 DominupScene.prototype.newGame = function(){
   this.players = [];
+  this.animations = [];
 	this.initGamePieces();
 	this.initGameSurface();
 	this.initGamePlayers();
@@ -103,18 +104,16 @@ DominupScene.prototype.updateGameState = function(){
 };
 
 DominupScene.prototype.update = function(currTime) {
-/*
-  if(this.graph.loadedOk){
-    if(!this.pause){
-      for(id in this.animations)
-        this.animations[id].update(currTime-this.timePaused);
-    }else this.timePaused += (currTime - this.previousTime);
-  }
+	//this.clock.update(currTime);
 
-  this.previousTime = currTime;*/
+  // update game environment
+  if(this.gameEnvironment in this.environments)
+    this.environments[this.gameEnvironment].update(currTime);
 
 	if(!this.pauseGame){
-	//	this.clock.update(currTime);
+    for(pieceId in this.pieces)
+        this.pieces[pieceId].update(currTime-this.timePaused);
+
 		this.updateGameState();
 	}else this.timePaused += (currTime - this.previousTime);
 
@@ -185,8 +184,8 @@ DominupScene.prototype.initGamePieces = function () {
 	this.pieces = [];
 	var piecesId = 500;
 
-	for(var n=0; n<8; n++)
-		for(var m=0; m<=n; m++){
+  	for(var n=0; n<8; n++)
+		for(var m=n; m<8; m++){
 			this.pieces[[n,m]] = new MyPiece(this, n, m);
 			this.pieces[[n,m]].setId(piecesId++);
 		}
@@ -210,9 +209,19 @@ DominupScene.prototype.initGamePlayers = function () {
 	// send play info, initiate players in PROLOG
 	// get players
   // temporarly
-  this.players[0] = new Player(this);
-  this.players[0].setPieces(this.pieces);
-  //this.players[1].setPieces([[0,2], [0,1]]);
+  this.players[0] = new Player(this, 'player1');
+  this.players[1] = new Player(this, 'player2');
+///////////////////////////////////////temporarly
+var t = [];
+for(id in this.pieces)
+t.push(id);
+var t1 = t.slice(16);
+var t2 = t.slice(16, 32);
+
+  this.players[0].setPieces(t);
+  this.players[0].setPieces(t);
+
+  //this.players[0].setPieces([[0,2], [0,1]]);
 };
 
 /*
@@ -383,6 +392,7 @@ DominupScene.prototype.display = function () {
 	//this.pieces[[0,0]].display();
 
   this.gameSurface.display();
+  this.players[0].showDominoes();
 
   // display game environment when ready
   //if(this.gameEnvironment in this.environments)

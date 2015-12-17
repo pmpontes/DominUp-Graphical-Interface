@@ -2,10 +2,11 @@
  * Player
  * @constructor
  */
-function Player(scene, level){
+function Player(scene, id, level){
 	this.scene = scene;
 	this.human = (level == undefined);
 	this.level = level;
+	this.playerId = id;
 };
 
 Player.prototype = Object.create(CGFobject.prototype);
@@ -13,21 +14,29 @@ Player.prototype = Object.create(CGFobject.prototype);
 Player.prototype.constructor=Player;
 
 Player.prototype.setPieces = function (pieces) {
-	this.pieces = pieces;
+	this.pieces = pieces.slice();
 
 	var line = 0;
+	var column = 0;
 
-	// TODO calculate initial position for each piece
+	// calculate initial position for each piece
 	for(var i = 0; i<this.pieces.length; i++){
-		if(line % 4 == 0)
-			line++;
+		if(i % 4 == 0){
+			line+=2;
+			column = 0;
+		}
 
 		var matrx = mat4.create();
 		mat4.identity(matrx);
-		mat4.translate(matrx, matrx, vec3.fromValues(6, 0, line + 6));
-		mat4.rotateZ(matrx, matrx, -Math.PI);
-		mat4.rotateY(matrx, matrx, -Math.PI);
-		this.pieces[i].initialPosition = matrx;
+		mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 9 -column));
+		mat4.rotateY(matrx, matrx, -Math.PI/2);
+
+		if(this.playerId=='playerId')
+			mat4.rotateY(matrx, matrx, Math.PI);
+
+		this.scene.pieces[this.pieces[i]].initialPosition = matrx;
+
+		column+=2 + 2/3.0;
 	}
 };
 
@@ -44,11 +53,11 @@ Player.prototype.makeMove = function (move) {
 	// TODO if !human, generate play
 };
 
-Player.prototype.showDominoes = function (table, move) {
-	for(var i=0; i < this.pieces; i++){
+Player.prototype.showDominoes = function (){
+	for(var i=0; i<this.pieces.length; i++){
 		this.scene.pushMatrix();
-			this.scene.registerForPick(this.pieces[i].getId(), this.pieces[i]);
-			this.pieces[i].display();
+			this.scene.registerForPick(this.scene.pieces[this.pieces[i]].getId(), this.pieces[i]);
+			this.scene.pieces[this.pieces[i]].display();
 		this.scene.popMatrix();
 	}
 };
