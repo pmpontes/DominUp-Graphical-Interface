@@ -83,7 +83,7 @@ GameSurface.prototype.display = function () {
 	 	this.scene.popMatrix();
 
 		// draw position's hitboxes
-		if(this.scene.pickMode){
+		if(this.scene.pickMode && (this.scene.gameState=='SELECT_LOCATION_A' || this.scene.gameState=='SELECT_LOCATION_B')){
 		 	var hitBoxId = 200;
 
 			for(var n=0; n< this.sizeY; n++)

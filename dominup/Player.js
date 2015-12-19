@@ -49,20 +49,21 @@ Player.prototype.getPieces = function () {
 	return this.pieces;
 };
 
-Player.prototype.makeMove = function (move) {
+Player.prototype.makeMove = function () {
 	if(this.human)
-		if(move==undefined)
-			return null;
+		return false;
 
-	// TODO check if valid paly
-	// TODO if !human, generate play
+	// TODO get valid play from PROLOG
+	return true;
 };
 
 Player.prototype.showDominoes = function (){
 	for(var i=0; i<this.pieces.length; i++){
-		this.scene.pushMatrix();
-			this.scene.registerForPick(this.scene.pieces[this.pieces[i]].getId(), this.scene.pieces[this.pieces[i]]);
-			this.scene.pieces[this.pieces[i]].display();
-		this.scene.popMatrix();
+		if(this.scene.pickMode){
+			if(this.scene.turn == this.playerId){
+				this.scene.pieces[this.pieces[i]].setSelectable();
+				this.scene.pieces[this.pieces[i]].display();
+			}
+		}else this.scene.pieces[this.pieces[i]].display();
 	}
 };

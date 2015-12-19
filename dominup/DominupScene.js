@@ -56,6 +56,7 @@ DominupScene.prototype.initLights = function () {
 };
 
 DominupScene.prototype.newGame = function(){
+  this.turn = 'player1';
   this.players = [];
   this.animations = [];
 	this.initGamePieces();
@@ -112,7 +113,7 @@ DominupScene.prototype.update = function(currTime) {
 
 	if(!this.pauseGame){
     if(this.responseTime>=this.timeout*1000){
-      // end game
+      // loose turn
     }else this.responseTime += currTime-this.timePaused;
 
     for(pieceId in this.pieces)
@@ -154,6 +155,8 @@ DominupScene.prototype.initGame = function () {
 	this.initGameEnvironments();
   this.initGameLooks();
 
+  //////// temporarly
+  this.turn = 'player1';
 	this.initGamePieces();
 	this.initGameSurface();
 	this.initGamePlayers();
@@ -214,8 +217,8 @@ DominupScene.prototype.initGamePlayers = function () {
 	// send play info, initiate players in PROLOG
 	// get players
   // temporarly
-  this.players[0] = new Player(this, 'player1');
-  this.players[1] = new Player(this, 'player2');
+  this.players['player1'] = new Player(this, 'player1');
+  this.players['player2'] = new Player(this, 'player2');
 ///////////////////////////////////////temporarly
 var t = [];
 for(id in this.pieces)
@@ -223,8 +226,8 @@ t.push(id);
 var t1 = t.slice(0, 18);
 var t2 = t.slice(18, 36);
 
-  this.players[0].setPieces(t1);
-  this.players[1].setPieces(t2);
+  this.players['player1'].setPieces(t1);
+  this.players['player2'].setPieces(t2);
 
   //this.players[0].setPieces([[0,2], [0,1]]);
 };
@@ -323,21 +326,22 @@ DominupScene.prototype.initGameLooks = function () {
 
 
 DominupScene.prototype.pieceSelected = function (id){
-	if(this.selectedPiece!=undefined){
+	if(this.selectedPieceId!=undefined){
 	   // do anitation to old piece
      for(piece in this.pieces)
-      if(this.pieces[piece].getId()==this.selectedPiece){
+      if(this.pieces[piece].getId()==this.selectedPieceId){
         this.pieces[piece].unselected();
         break;
       }
 	}
 
-	this.selectedPiece=id;
-	this.gameState='PIECE_SELECTED';
+	this.selectedPieceId=id;
+  this.gameState='SELECT_LOCATION_A';
 
 	// do animation to new piece
   for(piece in this.pieces)
    if(this.pieces[piece].getId()==id){
+     this.selectedPiece=this.pieces[piece].getValues();
      this.pieces[piece].selected();
      console.log("pieceSelected " + piece);
      break;
@@ -345,23 +349,61 @@ DominupScene.prototype.pieceSelected = function (id){
 };
 
 DominupScene.prototype.makeMove = function (){
-	console.log("piece and location chosen, make move");
+	   console.log("piece and location chosen, make move");
+
+  	// TODO check if valid play, update orientation
+
+    // set piece animation
+
+    // check if game over
+
+    // determine next player
+    this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
+    this.selectedPieceId = undefined;
+
+    // TODO if !human, generate play
+    if(!this.players[this.turn].human){
+      this.players[this.turn].makeMove();
+      this.makeMove();
+    }else this.gameState = 'SELECT_PIECE';
 };
+
+function checkPosition(posA, posB){
+  if((Math.abs(posA[0]-posB[0])==1 && posA[1]==posB[1])
+    || (posA[0]==posB[0] && Math.abs(posA[1]-posB[1])==1))
+      return true;
+  else return false;
+}
 
 DominupScene.prototype.pickHandler = function (id){
 	// if a piece was picked
 	if(id>=500){
-		if(this.gameState=='SELECT_PIECE' || this.selectedPiece != id)
-			this.pieceSelected(id);
-		else this.gameState='SELECT_LOCATION_X';
+    console.log("piecetouched " + id);
+    if(this.selectedPieceId==id){
+      // unselect piece
+      this.gameState='SELECT_PIECE';
+      for(piece in this.pieces)
+       if(this.pieces[piece].getId()==this.selectedPieceId){
+         this.pieces[piece].unselected();
+         break;
+       }
+      this.selectedPieceId = undefined;
+    }else	this.pieceSelected(id);
+
 	}else{
     console.log('position selected' + this.gameSurface.getPosition(id));
-    	// if a position was picked
-		if(this.gameState=='SELECT_LOCATION_X')
-			this.coordX = this.gameSurface.getCoord(id);
-		else if(this.gameState=='SELECT_LOCATION_Y'){
-			this.coordY = this.gameSurface.getCoord(id);
-			this.makeMove();
+
+  	// if a position was picked
+		if(this.gameState=='SELECT_LOCATION_A'){
+			this.posA = this.gameSurface.getPosition(id);
+      this.gameState='SELECT_LOCATION_B';
+    }else if(this.gameState=='SELECT_LOCATION_B'){
+			this.posB = this.gameSurface.getPosition(id);
+
+      // check if valid combination
+      if(!checkPosition(this.posA, this.posB))
+        this.posA = this.gameSurface.getPosition(id);
+      else this.makeMove();
 		}
 	}
 };
@@ -395,7 +437,7 @@ DominupScene.prototype.display = function () {
 
 	// Initialize Model-View
 	this.updateProjectionMatrix();
-  	this.loadIdentity();
+  this.loadIdentity();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
@@ -405,12 +447,10 @@ DominupScene.prototype.display = function () {
 	this.logPicking();
 	this.clearPickRegistration();
 
-	//this.pieces[[0,0]].setSelectable();
-	//this.pieces[[0,0]].display();
-
+  this.players['player1'].showDominoes();
+  this.players['player2'].showDominoes();
   this.gameSurface.display();
-  this.players[0].showDominoes();
-  this.players[1].showDominoes();
+
   // display game environment when ready
   //if(this.gameEnvironment in this.environments)
 	   //this.environments[this.gameEnvironment].display();
