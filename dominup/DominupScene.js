@@ -547,8 +547,8 @@ DominupScene.prototype.display = function () {
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
-  //if(this.cameraAnimation!=undefined)
-    //this.multMatrix(this.cameraAnimation.getCurrentTransformation());
+  if(this.cameraAnimation!=undefined)
+    this.multMatrix(this.cameraAnimation.getCurrentTransformation());
 
 	//this.setDefaultAppearance();
 	this.updateLights();
