@@ -25,12 +25,30 @@ MyPiece.prototype.getId = function() {
     return this.id;
 };
 
+MyPiece.prototype.selected = function() {
+    this.animation = new LinearAnimation(4, [[0,0,0], [0,0.5,0]]);
+    this.animation.activate();
+};
+
+MyPiece.prototype.unselected = function() {
+    this.animation = new LinearAnimation(4, [[0,0.5, 0], [0,0,0]]);
+    this.animation.activate();
+};
+
 MyPiece.prototype.setSelectable = function() {
-    this.scene.registerForPick(this.id, this.rectangle);
+    this.scene.registerForPick(this.id, this);
+};
+
+MyPiece.prototype.getValues = function() {
+    return [this.valueL, this.valueR];
 };
 
 MyPiece.prototype.display = function() {
   this.scene.pushMatrix();
+
+  if(this.animation!=undefined)
+    this.scene.multMatrix(this.animation.getCurrentTransformation());
+
   this.scene.multMatrix(this.initialPosition);
     this.scene.pushMatrix();
         this.scene.translate(-0.5, 0, 0, 0);
@@ -103,19 +121,19 @@ MyPiece.prototype.centerBottom = function(value){
 };
 
 MyPiece.prototype.setInitialPosition = function(side, x, z){
-  this.side = side;
-  var matrx = mat4.create();
-  mat4.identity(matrx);
-  if(this.side == 'player2')
-    mat4.rotateY(matrx, matrx, Math.PI);
-  var vectr = vec3.fromValues(x, z, 0.25);
-  mat4.translate(matrx, matrx, vectr);
-  this.initialPosition = matrx;
+    this.side = side;
+    var matrx = mat4.create();
+    mat4.identity(matrx);
+    if(this.side == 'player2')
+      mat4.rotateY(matrx, matrx, Math.PI);
+    var vectr = vec3.fromValues(x, z, 0.25);
+    mat4.translate(matrx, matrx, vectr);
+    this.initialPosition = matrx;
 };
 
-//TODO update animations
 MyPiece.prototype.update = function(curTime){
-
+  if(this.animation!=undefined)
+    this.animation.update();
 };
 
 MyPiece.prototype.createAnimation = function(time, center, radius, angStart, angRot){

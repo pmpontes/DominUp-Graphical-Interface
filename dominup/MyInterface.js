@@ -1,7 +1,7 @@
 /*
  * MyInterface
  * @constructor
- */ 
+ */
 function MyInterface() {
 	CGFinterface.call(this);
 };
@@ -20,42 +20,62 @@ MyInterface.prototype.init = function(application) {
 	return true;
 };
 
-MyInterface.prototype.initInterface = function() {
+MyInterface.prototype.createMainMenu = function() {
 	this.mainMenu = new dat.GUI();
 
-	this.startGameMenu = this.mainMenu.addFolder("Start new game");	
-	this.newGameMenu = this.startGameMenu.addFolder("New game");	
-	this.newGameMenu.add(this.scene, 'gameType', this.scene.gameTypes);
-	this.startGameMenu.add(this, 'resumeSavedGame');
+	// new game menu
+	this.startGameMenu = this.mainMenu.addFolder("New game");
+	this.startGameMenu.add(this, 'newGame');
+	this.startGameMenu.add(this.scene, 'resumeSavedGame');
 
 	// add game settings
-	this.addSettings();
-};
-
-
-MyInterface.prototype.addSettings = function(){
-	this.gameSettings = this.mainMenu.addFolder("Settings");	
-	this.gameEnvironment = this.gameSettings.addFolder("Environment");	
+	this.gameSettings = this.mainMenu.addFolder("Settings");
+	this.gameSettings.add(this.scene, 'timeout', 0, 180).step(5);
+	this.gameEnvironment = this.gameSettings.addFolder("Environment");
 	this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
-	this.gameLookFolder = this.gameSettings.addFolder("Appearance");	
+	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
-}
-
-MyInterface.prototype.resumeSavedGame = function(){
-	removeGui(this.newGameMenu, this);
 };
 
-MyInterface.prototype.initGame = function(){	
-	this.mainMenu.remove(this.gameSettings);
+MyInterface.prototype.newGame = function() {
+	if(this.gameMenu!=undefined){
+		this.scene.state='SELECT_GAME_TYPE';
+		this.gameMenu.destroy();
+	}
 
-	this.gameOptionsMenu = this.mainMenu.addFolder("Options");
-	this.gameOptionsMenu.add(this.scene, 'pauseGame');
-	this.gameOptionsMenu.add(this.scene, 'saveGame');
+	this.scene.gameType = this.scene.gameTypes[0];
 
-	addSettings();
-}
+	this.newGameMenu = new dat.GUI();
+	this.newGameFolder = this.newGameMenu.addFolder("Start new game");
+	this.newGameFolder.add(this.scene, 'gameType', this.scene.gameTypes);
+
+	this.newGameFolder.open();
+	this.startGameMenu.close();
+};
+
+MyInterface.prototype.createGameMenu = function() {
+	this.gameMenu = new dat.GUI();
+
+	// play menu
+	this.gameOptions = this.gameMenu.addFolder("Game menu");
+	this.gameOptions.add(this.scene, 'pauseGame');
+	this.gameOptions.add(this.scene, 'undoLastMove');
+	this.gameOptions.add(this.scene, 'cameraPosition', this.scene.cameraPositions);
+	this.gameOptions.add(this.scene, 'reviewGame');
+	this.gameOptions.add(this.scene, 'saveGame');
+};
+
+MyInterface.prototype.destroyGameMenu = function() {
+	this.gameMenu.destroy();
+};
+
+MyInterface.prototype.destroyNewGameMenu = function() {
+	this.newGameMenu.destroy();
+};
 
 MyInterface.prototype.showGameLevels = function(Player){
-	this.gameLevel = this.newGameMenu.addFolder('Level for ' + Player);	
+	this.scene.gameLevel = this.scene.gameLevels[0];
+	this.gameLevel = this.newGameMenu.addFolder('Level for ' + Player);
 	this.gameLevel.add(this.scene, 'gameLevel', this.scene.gameLevels);
-}
+	this.gameLevel.open();
+};

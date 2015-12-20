@@ -17,7 +17,7 @@ function LinearAnimation(time, points){
 
 
 	for(var i = 0; i < (points.length - 1); i++){
-		this.distanceForEach[i] = Math.sqrt(Math.pow(points[i][0] - points[i+1][0], 2) 
+		this.distanceForEach[i] = Math.sqrt(Math.pow(points[i][0] - points[i+1][0], 2)
 											+ Math.pow(points[i][1] - points[i+1][1], 2)
 											 + Math.pow(points[i][2] - points[i+1][2], 2));
 		this.totalDistance += this.distanceForEach[i];
@@ -34,8 +34,8 @@ function LinearAnimation(time, points){
 	}
 
 	for(var i = 0; i < (points.length - 1); i++){
-		this.incrementPerTimeUnit[i] = [(points[i+1][0] - points[i][0])/this.timeForEach[i], 
-										(points[i+1][1] - points[i][1])/this.timeForEach[i], 
+		this.incrementPerTimeUnit[i] = [(points[i+1][0] - points[i][0])/this.timeForEach[i],
+										(points[i+1][1] - points[i][1])/this.timeForEach[i],
 										(points[i+1][2] - points[i][2])/this.timeForEach[i]];
 	}
 };
@@ -78,9 +78,9 @@ LinearAnimation.prototype.getCurrentTransformation = function(){
 					this.currentSegment = i;
 
 				// Create vector with translation values for animation segment
-				var vectr = vec3.fromValues(this.incrementPerTimeUnit[i][0]*timeApplied, 
-											this.incrementPerTimeUnit[i][1]*timeApplied, 
-											this.incrementPerTimeUnit[i][2]*timeApplied); 
+				var vectr = vec3.fromValues(this.incrementPerTimeUnit[i][0]*timeApplied,
+											this.incrementPerTimeUnit[i][1]*timeApplied,
+											this.incrementPerTimeUnit[i][2]*timeApplied);
 
 				mat4.translate(matrx, matrx, vectr);			// Apply the previously calculated vector to the transformation matrix
 			}
@@ -125,7 +125,7 @@ LinearAnimation.prototype.getCurrentOrientation = function(){
 
 	if((zCoord < 0) || (zCoord == 0 && xCoord < 0))
 		rotationAngle += Math.PI;
-	
+
 	mat4.rotateY(orientationMat, orientationMat, rotationAngle);
 	if(this.previousOrientation == null)
 		this.previousOrientation = rotationAngle;

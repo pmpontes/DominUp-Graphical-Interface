@@ -33,6 +33,7 @@ function GameSurface(scene, sizeX, sizeY) {
 
 GameSurface.prototype = Object.create(CGFobject.prototype);
 
+// position format aX,aY, bX, bY, domino [L,R]
 GameSurface.prototype.placePiece = function (position, piece) {
 	this.placedPieces.push({ height: (this.table[position.aY][position.aX].length -1), coords: position, domino: piece });
 
@@ -74,16 +75,18 @@ GameSurface.prototype.display = function () {
 
 	this.scene.pushMatrix();
 
-		this.scene.pushMatrix();
-			this.scene.materials[this.scene.gameLook].setTexture(this.scene.textures[this.scene.gameLook]['gameSurface']);
-			this.scene.materials[this.scene.gameLook].apply();
-			this.scene.scale(this.sizeX, 1, this.sizeY);
-			this.scene.translate(0.5, 0, 0.5, 1);
-			this.suface.display();
-	 	this.scene.popMatrix();
+		if(!this.scene.pickMode){
+			this.scene.pushMatrix();
+				this.scene.materials[this.scene.gameLook].setTexture(this.scene.textures[this.scene.gameLook]['gameSurface']);
+				this.scene.materials[this.scene.gameLook].apply();
+				this.scene.scale(this.sizeX, 1, this.sizeY);
+				this.scene.translate(0.5, 0, 0.5, 1);
+				this.suface.display();
+		 	this.scene.popMatrix();
+		}
 
 		// draw position's hitboxes
-		if(this.scene.pickMode){
+		if(this.scene.pickMode && (this.scene.gameState=='SELECT_LOCATION_A' || this.scene.gameState=='SELECT_LOCATION_B')){
 		 	var hitBoxId = 200;
 
 			for(var n=0; n< this.sizeY; n++)
@@ -98,11 +101,11 @@ GameSurface.prototype.display = function () {
 		}
 
 	// show pieces
-	for(var i=0; i<this.placedPieces.length; i++)
-		drawPiece(this.placedPieces[i]);
+	if(!this.scene.pickMode)
+		for(var i=0; i<this.placedPieces.length; i++)
+			drawPiece(this.placedPieces[i]);
 
 	this.scene.popMatrix();
-
 };
 
 function drawPiece(piece){
@@ -123,7 +126,7 @@ function drawPiece(piece){
 		this.scene.translate(piece.coords.aX, piece.height, piece.coords.aY, 1);
 		this.scene.translate(0.5, 0, 0.5, 1);
 		this.scene.rotate(rotAngle, 0, 1, 0);
-		piece.domino.display();
+		this.scene.pieces[piece.domino].display();
  	this.scene.popMatrix();
 
-}
+};

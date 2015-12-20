@@ -14,6 +14,10 @@ Player.prototype = Object.create(CGFobject.prototype);
 
 Player.prototype.constructor=Player;
 
+Player.prototype.addPiece = function (piece) {
+	this.pieces.push(piece);
+};
+
 Player.prototype.setPieces = function (pieces) {
 	this.pieces = pieces.slice();
 
@@ -31,7 +35,9 @@ Player.prototype.setPieces = function (pieces) {
 		mat4.identity(matrx);
 
 		if(this.playerId=='player1'){
-			mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 9 -column));
+			if(i>15)
+				mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 3 + 2/3 -column));
+			else mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 9 -column));
 			mat4.rotateY(matrx, matrx, -Math.PI/2);
 		}else if(this.playerId=='player2'){
 			mat4.translate(matrx, matrx, vec3.fromValues(-line, 0.5, 9 -column));
@@ -47,20 +53,21 @@ Player.prototype.getPieces = function () {
 	return this.pieces;
 };
 
-Player.prototype.makeMove = function (move) {
+Player.prototype.makeMove = function () {
 	if(this.human)
-		if(move==undefined)
-			return null;
+		return false;
 
-	// TODO check if valid paly
-	// TODO if !human, generate play
+	// TODO get valid play from PROLOG
+	return true;
 };
 
 Player.prototype.showDominoes = function (){
 	for(var i=0; i<this.pieces.length; i++){
-		this.scene.pushMatrix();
-			this.scene.registerForPick(this.scene.pieces[this.pieces[i]].getId(), this.pieces[i]);
-			this.scene.pieces[this.pieces[i]].display();
-		this.scene.popMatrix();
+		if(this.scene.pickMode){
+			if(this.scene.turn == this.playerId){
+				this.scene.pieces[this.pieces[i]].setSelectable();
+				this.scene.pieces[this.pieces[i]].display();
+			}
+		}else this.scene.pieces[this.pieces[i]].display();
 	}
 };
