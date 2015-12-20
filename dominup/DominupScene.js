@@ -16,7 +16,7 @@ DominupScene.prototype.constructor = DominupScene;
  */
 DominupScene.prototype.setMyInterface = function(newInterface) {
 	this.myInterface = newInterface;
-	this.myInterface.initInterface();
+	this.myInterface.createMainMenu();
 }
 
 /*
@@ -55,51 +55,73 @@ DominupScene.prototype.initLights = function () {
   this[this.lights[0].id]=true;
 };
 
+DominupScene.prototype.resumeSavedGame = function(){
+  /////////////////////TODO change
+
+  console.log('resumeSavedGame');
+};
+
+DominupScene.prototype.saveGame = function (){
+
+};
+
 DominupScene.prototype.newGame = function(){
   this.turn = 'player1';
-  this.players = [];
-  this.animations = [];
 	this.initGamePieces();
 	this.initGameSurface();
 	this.initGamePlayers();
-}
+};
+
+DominupScene.prototype.endGame = function(winner){
+  // show winner
+  console.log(winner);
+  this.myInterface.destroyGameMenu();
+};
+
+DominupScene.prototype.startGame = function(){
+  this.myInterface.createGameMenu();
+  this.myInterface.destroyNewGameMenu();
+  this.state='START_GAME';
+};
 
 DominupScene.prototype.updateGameState = function(){
+  //console.log(this.state);
 	switch(this.state){
 		case 'SELECT_GAME_TYPE':
 			if(this.gameType == this.gameTypes[1]){
-				this.state = 'START_GAME';
-				this.players.push(new Player(this), new Player(this));
-			}else if(this.gameType == this.gameTypes[1] || this.gameType == this.gameTypes[2]){
+        this.players['player1'] = new Player(this, 'player1');
+        this.players['player2'] = new Player(this, 'player2');
+        this.startGame();
+			}else if(this.gameType == this.gameTypes[2] || this.gameType == this.gameTypes[3]){
 				this.state = 'SELECT_GAME_LEVEL_PL1';
 				this.myInterface.showGameLevels('player1');
 			}
 			break;
 		case 'SELECT_GAME_LEVEL_PL1':
-			if(this.gameLevel != this.gameLevel[0]){
+			if(this.gameLevel != this.gameLevels[0]){
 				if(this.gameType == this.gameTypes[2]){
-					this.state='START_GAME';
-					this.myInterface.hideGameLevels('player1');
-					this.players.push(new Player(this), new Player(this, this.level));
-				}
-				else{
-					this.players.push(new Player(this.level));
+          this.players['player1'] = new Player(this, 'player1');
+          this.players['player2'] = new Player(this, 'player2', this.level);
+          this.startGame();
+				}else{
+					this.players['player1'] = new Player(this, 'player1', this.level);
 					this.state='SELECT_GAME_LEVEL_PL2';
-					this.gameLevel = this.gameLevels[0];
-					this.myInterface.hideGameLevels('player1');
 					this.myInterface.showGameLevels('player2');
 				}
 			}
 			break;
 		case 'SELECT_GAME_LEVEL_PL2':
-			if(this.gameLevel != this.gameLevel[0]){
-				this.myInterface.hideGameLevels('player2');
-				this.players.push(new Player(this, this.level));
-				this.state='START_GAME';
+			if(this.gameLevel != this.gameLevels[0]){
+        this.players['player2'] = new Player(this, 'player2', this.level);
+				this.startGame();
 			}
 			break;
-		case 'START_GAME':
-			break;
+    case 'START_GAME':
+      this.newGame();
+      break;
+    case 'PLAY':
+      this.updateCameraPosition();
+      break;
 		default: break;
 	}
 };
@@ -111,8 +133,11 @@ DominupScene.prototype.update = function(currTime) {
   if(this.gameEnvironment in this.environments)
     this.environments[this.gameEnvironment].update(currTime);
 
+  if(this.cameraAnimation!=undefined && this.cameraAnimation.isActive())
+    this.cameraAnimation.update(currTime);
+
 	if(!this.pauseGame){
-    if(this.responseTime>=this.timeout*1000){
+    if(this.timeout!=0 && this.responseTime>=this.timeout*1000){
       // loose turn
     }else this.responseTime += currTime-this.timePaused;
 
@@ -125,9 +150,6 @@ DominupScene.prototype.update = function(currTime) {
 	this.previousTime = currTime;
 }
 
-DominupScene.prototype.saveGame = function (){
-
-};
 
 /*
  * initGame
@@ -138,7 +160,6 @@ DominupScene.prototype.initGame = function () {
 	this.state = 'SELECT_GAME_TYPE';
 	this.moves = [];
   this.players = [];
-	//this.clock = new MyClock(this);
 
 	this.pauseGame=false;
 	this.timePaused = 0;
@@ -154,12 +175,6 @@ DominupScene.prototype.initGame = function () {
 
 	this.initGameEnvironments();
   this.initGameLooks();
-
-  //////// temporarly
-  this.turn = 'player1';
-	this.initGamePieces();
-	this.initGameSurface();
-	this.initGamePlayers();
 };
 
 /*
@@ -170,7 +185,7 @@ DominupScene.prototype.initGameEnvironment = function (environmentName, graph) {
   if(this.gameEnvironments.indexOf(environmentName)!=-1)
     this.environments[environmentName] = new MyEnvironment(this, graph);
   if(this.gameEnvironments.indexOf(environmentName)==0)
-	this.environments[environmentName].activateEnvironment();
+	 this.environments[environmentName].activateEnvironment();
 };
 
 /*
@@ -192,7 +207,7 @@ DominupScene.prototype.initGamePieces = function () {
 	this.pieces = [];
 	var piecesId = 500;  // ID range for domino pieces
 
-  	for(var n=0; n<8; n++)
+  for(var n=0; n<8; n++)
 		for(var m=n; m<8; m++){
 			this.pieces[[n,m]] = new MyPiece(this, n, m);
 			this.pieces[[n,m]].setId(piecesId++);
@@ -206,7 +221,7 @@ DominupScene.prototype.initGamePieces = function () {
 DominupScene.prototype.initGameSurface = function () {
 	this.gameSurfaceSizeX = 10;
 	this.gameSurfaceSizeY = 10;
-	this.gameSurface = new GameSurface(this, this.gameSurfaceSizeX, this.gameSurfaceSizeY); // TODO check this
+	this.gameSurface = new GameSurface(this, this.gameSurfaceSizeX, this.gameSurfaceSizeY);
 };
 
 /*
@@ -215,21 +230,45 @@ DominupScene.prototype.initGameSurface = function () {
  */
 DominupScene.prototype.initGamePlayers = function () {
 	// send play info, initiate players in PROLOG
-	// get players
-  // temporarly
+// players are set, communicate with PROLOG
+
+  this.state = 'PLAY';
+///////////////////////////////////////temporarly
   this.players['player1'] = new Player(this, 'player1');
   this.players['player2'] = new Player(this, 'player2');
-///////////////////////////////////////temporarly
-var t = [];
-for(id in this.pieces)
-t.push(id);
-var t1 = t.slice(0, 18);
-var t2 = t.slice(18, 36);
+  var t = [];
+  for(id in this.pieces)
+    t.push(id);
 
+  var t1 = t.slice(0, 18);
+  var t2 = t.slice(18, 36);
   this.players['player1'].setPieces(t1);
   this.players['player2'].setPieces(t2);
+};
 
-  //this.players[0].setPieces([[0,2], [0,1]]);
+
+DominupScene.prototype.updateCameraPosition = function () {
+  if(this.cameraPosition!=this.curCameraPosition){
+    console.log('cameraPositionChanged to ' + this.cameraPosition);
+    console.log('cameraPositionChanged to ' + this.curCameraPosition);
+    switch (this.cameraPosition) {
+      case 'start game':
+      case 'player1 view':
+      case 'player2 view':
+      case '360 turn':
+        this.cameraAnimation = new CircularAnimation(4, [0,0,0], 30,
+                  this.cameraPositionsAngle[this.curCameraPosition],
+                  this.cameraPositionsAngle[this.cameraPosition]);
+        break;
+      case 'board view':
+        // TODO rotation ???
+        this.cameraAnimation = new CircularAnimation(4, [0,0,0], 30, 0, Math.PI);
+        break;
+    }
+
+    this.cameraAnimation.activate();
+    this.curCameraPosition = this.cameraPosition;
+  }
 };
 
 /*
@@ -237,9 +276,19 @@ var t2 = t.slice(18, 36);
  * Initiate the scene's default camera.
  */
 DominupScene.prototype.initCameras = function () {
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
-    this.cameraAnimation = null;
-    // TODO add cameras?
+  this.cameraPositions = ['start game', 'player1 view', 'player2 view', 'board view', '360 turn'];
+  this.curCameraPosition = this.cameraPositions[0];
+  this.cameraPosition = this.cameraPositions[0];
+
+  this.cameraPositionsAngle = [];
+  this.cameraPositionsAngle['start game'] = Math.PI / 4;
+  this.cameraPositionsAngle['player1 view'] = Math.PI / 2;
+  this.cameraPositionsAngle['player2 view'] = Math.PI;
+  this.cameraPositionsAngle['board view'] = Math.PI;
+  this.cameraPositionsAngle['360 turn'] = 2*Math.PI;
+
+  this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
+  this.cameraAnimation = undefined;
 };
 
 /*
@@ -348,6 +397,35 @@ DominupScene.prototype.pieceSelected = function (id){
    }
 };
 
+DominupScene.prototype.isGameOver = function (){
+  for(playerId in this.players)
+    if(this.players[playerId].length==0)
+      return playerId;
+
+  return null;
+};
+
+DominupScene.prototype.undoLastMove = function (){
+  var lastPlay = this.moves.pop();
+
+  // do animation to piece
+
+  // return piece to player
+
+  this.players[lastPlay['player']].addPiece(this.pieces[lastPlay['piece']].getValues());
+
+  // change PROLOG
+
+};
+
+DominupScene.prototype.reviewGame = function (){
+  this.state = 'REVIEW_GAME';
+
+  this.fullGame = this.moves.slice();
+
+  console.log('review');
+};
+
 DominupScene.prototype.makeMove = function (){
 	   console.log("piece and location chosen, make move");
 
@@ -355,9 +433,17 @@ DominupScene.prototype.makeMove = function (){
 
     // set piece animation
 
-    // check if game over
+    this.moves.push({player: this.turn, piece: this.selectedPieceId});
 
-    // determine next player
+    // check if game over
+    var winner;
+    if((winner = this.isGameOver())!=null) {
+      console.log('gameOver');
+      this.endGame(winner);
+      return null;
+    }
+
+    // TODO determine next player from PROLOG
     this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
     this.selectedPieceId = undefined;
 
@@ -376,6 +462,9 @@ function checkPosition(posA, posB){
 }
 
 DominupScene.prototype.pickHandler = function (id){
+  if(this.pauseGame)
+    return;
+
 	// if a piece was picked
 	if(id>=500){
     console.log("piecetouched " + id);
@@ -414,12 +503,10 @@ DominupScene.prototype.logPicking = function (){
 		if (this.pickResults != null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
-
 				if (obj){
 					var customId = this.pickResults[i][1];
 					this.pickHandler(customId);
 				}
-
 			}
 			this.pickResults.splice(0,this.pickResults.length);
 		}
@@ -441,32 +528,27 @@ DominupScene.prototype.display = function () {
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
+  if(this.cameraAnimation!=undefined)
+    this.multMatrix(this.cameraAnimation.getCurrentTransformation());
+
 	this.setDefaultAppearance();
 	this.updateLights();
 
 	this.logPicking();
 	this.clearPickRegistration();
 
-  this.players['player1'].showDominoes();
-  this.players['player2'].showDominoes();
-  this.gameSurface.display();
-
   // display game environment when ready
-  //if(this.gameEnvironment in this.environments)
+  //if(this.pickMode && (this.gameEnvironment in this.environments))
 	   //this.environments[this.gameEnvironment].display();
 
-	if(this.state == 'Playing'){
-		this.gameSurface.display();
-
-		/*// draw pieces
-		for (i =0; i<this.objects.length; i++){
-			this.pushMatrix();
-
-			this.registerForPick(i+1, this.objects[i]);
-
-			this.objects[i].display();
-			this.popMatrix();
-		}*/
-
+	if(this.state == 'PLAY'){
+    this.pushMatrix();
+    //this.statusBoard.display();
+      // center board
+      this.translate(-5,0,-5,1);
+      this.players['player1'].showDominoes();
+      this.players['player2'].showDominoes();
+      this.gameSurface.display();
+    this.popMatrix();
 	}
 };

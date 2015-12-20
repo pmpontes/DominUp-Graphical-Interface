@@ -14,6 +14,10 @@ Player.prototype = Object.create(CGFobject.prototype);
 
 Player.prototype.constructor=Player;
 
+Player.prototype.addPiece = function (piece) {
+	this.pieces.push(piece);
+};
+
 Player.prototype.setPieces = function (pieces) {
 	this.pieces = pieces.slice();
 
