@@ -7,7 +7,9 @@
 function Plane(scene, parts) {
 	CGFobject.call(this, scene);
 
-	this.plane = new Patch(scene, 1, parts, parts, [[-0.5, 0, 0.5], [-0.5, 0, -0.5], [0.5, 0, 0.5], [0.5, 0,-0.5]]);
+	this.parts = (parts==undefined) ? 1 : parts;
+
+	this.plane = new Patch(scene, 1, this.parts, this.parts, [[-0.5, 0, 0.5], [-0.5, 0, -0.5], [0.5, 0, 0.5], [0.5, 0,-0.5]]);
 };
 
 Plane.prototype = Object.create(CGFobject.prototype);

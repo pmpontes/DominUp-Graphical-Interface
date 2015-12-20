@@ -78,6 +78,14 @@ DominupScene.prototype.endGame = function(winner){
   this.myInterface.destroyGameMenu();
 };
 
+DominupScene.prototype.quitReview = function(){
+  this.myInterface.destroyReviewMenu();
+  if(!this.isGameOver()){
+    this.state='PLAY';
+    this.myInterface.createGameMenu();
+  }
+};
+
 DominupScene.prototype.startGame = function(){
   this.myInterface.createGameMenu();
   this.myInterface.destroyNewGameMenu();
@@ -157,6 +165,7 @@ DominupScene.prototype.update = function(currTime) {
  */
 DominupScene.prototype.initGame = function () {
   this.timeout = 60;
+  this.statusBoard = new MyStatusBoard(this, 5,5);
 	this.state = 'SELECT_GAME_TYPE';
 	this.moves = [];
   this.players = [];
@@ -261,7 +270,7 @@ DominupScene.prototype.updateCameraPosition = function () {
                   this.cameraPositionsAngle[this.cameraPosition]);
         break;
       case 'board view':
-        // TODO rotation ???
+        // TODO change rotation ???
         this.cameraAnimation = new CircularAnimation(4, [0,0,0], 30, 0, Math.PI);
         break;
     }
@@ -281,14 +290,15 @@ DominupScene.prototype.initCameras = function () {
   this.cameraPosition = this.cameraPositions[0];
 
   this.cameraPositionsAngle = [];
-  this.cameraPositionsAngle['start game'] = Math.PI / 4;
-  this.cameraPositionsAngle['player1 view'] = Math.PI / 2;
+  this.cameraPositionsAngle['start game'] = 7*Math.PI/4;
+  this.cameraPositionsAngle['player1 view'] = Math.PI/4; //Math.PI / 2;
   this.cameraPositionsAngle['player2 view'] = Math.PI;
   this.cameraPositionsAngle['board view'] = Math.PI;
   this.cameraPositionsAngle['360 turn'] = 2*Math.PI;
 
   this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
   this.cameraAnimation = undefined;
+  //this.cameraMatrix =
 };
 
 /*
@@ -419,6 +429,9 @@ DominupScene.prototype.undoLastMove = function (){
 };
 
 DominupScene.prototype.reviewGame = function (){
+  this.pauseReview = false;
+  this.myInterface.destroyGameMenu();
+  this.myInterface.createReviewMenu();
   this.state = 'REVIEW_GAME';
 
   this.fullGame = this.moves.slice();
@@ -518,20 +531,26 @@ DominupScene.prototype.logPicking = function (){
  * Display the game scene.
  */
 DominupScene.prototype.display = function () {
-	// Clear image and depth buffer everytime we update the scene
+  // Clear image and depth buffer every time we update the scene
   this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
   this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+  this.gl.clearColor(0.1, 0.1, 0.1, 1.0);
+  this.gl.enable(this.gl.DEPTH_TEST);
 
 	// Initialize Model-View
 	this.updateProjectionMatrix();
   this.loadIdentity();
 
+  /*this.pushMatrix();
+    this.statusBoard.display();
+  this.popMatrix();*/
+
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
-  if(this.cameraAnimation!=undefined)
-    this.multMatrix(this.cameraAnimation.getCurrentTransformation());
+  //if(this.cameraAnimation!=undefined)
+    //this.multMatrix(this.cameraAnimation.getCurrentTransformation());
 
-	this.setDefaultAppearance();
+	//this.setDefaultAppearance();
 	this.updateLights();
 
 	this.logPicking();
@@ -541,11 +560,15 @@ DominupScene.prototype.display = function () {
   //if(this.pickMode && (this.gameEnvironment in this.environments))
 	   //this.environments[this.gameEnvironment].display();
 
+    this.pushMatrix();
+      this.translate(0,5,0);
+      this.statusBoard.display();
+    this.popMatrix();
+
 	if(this.state == 'PLAY'){
     this.pushMatrix();
-    //this.statusBoard.display();
-      // center board
-      this.translate(-5,0,-5,1);
+      //TODO check center board
+      this.translate(-5,0,-5);
       this.players['player1'].showDominoes();
       this.players['player2'].showDominoes();
       this.gameSurface.display();

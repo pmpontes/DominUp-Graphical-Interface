@@ -50,6 +50,7 @@ MyPiece.prototype.display = function() {
     this.scene.multMatrix(this.animation.getCurrentTransformation());
 
   this.scene.multMatrix(this.initialPosition);
+
     this.scene.pushMatrix();
         this.scene.translate(-0.5, 0, 0, 0);
         this.scene.rotate(Math.PI, 0, 1, 0);
@@ -59,6 +60,7 @@ MyPiece.prototype.display = function() {
         this.scene.translate(0.5, 0, 0, 0);
         this.makeHalfPiece(this.valueR);
     this.scene.popMatrix();
+    
   this.scene.popMatrix();
 };
 

@@ -65,8 +65,22 @@ MyInterface.prototype.createGameMenu = function() {
 	this.gameOptions.add(this.scene, 'saveGame');
 };
 
+MyInterface.prototype.createReviewMenu = function() {
+	this.reviewMenu = new dat.GUI();
+	// play menu
+	this.reviewOptions = this.reviewMenu.addFolder("Review menu");
+	this.reviewOptions.add(this.scene, 'pauseReview');
+	//this.reviewOptions.add(this.scene, 'reviewSpeed', 0.5, 4).step(.5);
+	this.reviewOptions.add(this.scene, 'quitReview');
+	this.reviewOptions.open();
+}
+
 MyInterface.prototype.destroyGameMenu = function() {
 	this.gameMenu.destroy();
+};
+
+MyInterface.prototype.destroyReviewMenu = function() {
+	this.reviewMenu.destroy();
 };
 
 MyInterface.prototype.destroyNewGameMenu = function() {
