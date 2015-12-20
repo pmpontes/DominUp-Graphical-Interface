@@ -62,6 +62,7 @@ Player.prototype.makeMove = function () {
 };
 
 Player.prototype.showDominoes = function (){
+	this.scene.pushMatrix();
 	for(var i=0; i<this.pieces.length; i++){
 		if(this.scene.pickMode){
 			if(this.scene.turn == this.playerId){
@@ -70,4 +71,5 @@ Player.prototype.showDominoes = function (){
 			}
 		}else this.scene.pieces[this.pieces[i]].display();
 	}
+	this.scene.popMatrix();
 };
