@@ -67,6 +67,7 @@ DominupScene.prototype.saveGame = function (){
 
 DominupScene.prototype.newGame = function(){
   this.turn = 'player1';
+  this.responseTime = 0;
 	this.initGamePieces();
 	this.initGameSurface();
 	this.initGamePlayers();
@@ -84,12 +85,14 @@ DominupScene.prototype.quitReview = function(){
     this.state='PLAY';
     this.myInterface.createGameMenu();
   }
+  this.pauseGame = false;
 };
 
 DominupScene.prototype.startGame = function(){
   this.myInterface.createGameMenu();
   this.myInterface.destroyNewGameMenu();
   this.state='START_GAME';
+  this.responseTime = 0;
 };
 
 DominupScene.prototype.updateGameState = function(){
@@ -135,19 +138,22 @@ DominupScene.prototype.updateGameState = function(){
 };
 
 DominupScene.prototype.update = function(currTime) {
-	//this.clock.update(currTime);
-
   // update game environment
   if(this.gameEnvironment in this.environments)
     this.environments[this.gameEnvironment].update(currTime);
 
   if(this.cameraAnimation!=undefined && this.cameraAnimation.isActive())
-    this.cameraAnimation.update(currTime);
+    this.cameraAnimation.update(currTime-this.timePaused);
 
 	if(!this.pauseGame){
     if(this.timeout!=0 && this.responseTime>=this.timeout*1000){
-      // loose turn
-    }else this.responseTime += currTime-this.timePaused;
+      this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
+      this.responseTime = 0;
+      this.selectedPieceId = undefined;
+      this.selectedPiece = undefined;
+      // TODO tell prolog??
+    }else if(this.previousTime!=undefined)
+      this.responseTime += currTime-this.previousTime;
 
     for(pieceId in this.pieces)
         this.pieces[pieceId].update(currTime-this.timePaused);
@@ -164,7 +170,7 @@ DominupScene.prototype.update = function(currTime) {
  * Initiate the game.
  */
 DominupScene.prototype.initGame = function () {
-  this.timeout = 60;
+  this.timeout = 60;  // default timeout
   this.statusBoard = new MyStatusBoard(this, 5,5);
 	this.state = 'SELECT_GAME_TYPE';
 	this.moves = [];
@@ -424,11 +430,13 @@ DominupScene.prototype.undoLastMove = function (){
 
   this.players[lastPlay['player']].addPiece(this.pieces[lastPlay['piece']].getValues());
 
-  // change PROLOG
+  // change PROLOG status
 
+  this.responseTime = 0;
 };
 
 DominupScene.prototype.reviewGame = function (){
+  this.pauseGame = true;
   this.pauseReview = false;
   this.myInterface.destroyGameMenu();
   this.myInterface.createReviewMenu();
@@ -458,7 +466,9 @@ DominupScene.prototype.makeMove = function (){
 
     // TODO determine next player from PROLOG
     this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
+    this.responseTime = 0;
     this.selectedPieceId = undefined;
+    this.selectedPiece = undefined;
 
     // TODO if !human, generate play
     if(!this.players[this.turn].human){
@@ -540,17 +550,19 @@ DominupScene.prototype.display = function () {
 	// Initialize Model-View
 	this.updateProjectionMatrix();
   this.loadIdentity();
-
-  /*this.pushMatrix();
+  
+  this.pushMatrix();
+    this.translate(-3.65,1.2,-10);
+    this.scale(0.2,0.2,0.2);
     this.statusBoard.display();
-  this.popMatrix();*/
+  this.popMatrix();
 
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
-  if(this.cameraAnimation!=undefined)
-    this.multMatrix(this.cameraAnimation.getCurrentTransformation());
+    if(this.cameraAnimation!=undefined)
+      this.multMatrix(this.cameraAnimation.getCurrentTransformation());
 
-	//this.setDefaultAppearance();
+	this.setDefaultAppearance();
 	this.updateLights();
 
 	this.logPicking();
@@ -560,14 +572,8 @@ DominupScene.prototype.display = function () {
   //if(this.pickMode && (this.gameEnvironment in this.environments))
 	   //this.environments[this.gameEnvironment].display();
 
-    this.pushMatrix();
-      this.translate(0,5,0);
-      this.statusBoard.display();
-    this.popMatrix();
-
 	if(this.state == 'PLAY'){
     this.pushMatrix();
-      //TODO check center board
       this.translate(-5,0,-5);
       this.players['player1'].showDominoes();
       this.players['player2'].showDominoes();

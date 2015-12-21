@@ -40,10 +40,16 @@ MyInterface.prototype.createMainMenu = function() {
 MyInterface.prototype.newGame = function() {
 	if(this.gameMenu!=undefined){
 		this.scene.state='SELECT_GAME_TYPE';
-		this.gameMenu.destroy();
+		this.destroyGameMenu();
+	}
+
+	if(this.newGameMenu!=undefined){
+		this.scene.state='SELECT_GAME_TYPE';
+		this.newGameMenu.destroy();
 	}
 
 	this.scene.gameType = this.scene.gameTypes[0];
+	this.scene.gameLevel = this.scene.gameLevels[0];
 
 	this.newGameMenu = new dat.GUI();
 	this.newGameFolder = this.newGameMenu.addFolder("Start new game");
@@ -54,6 +60,9 @@ MyInterface.prototype.newGame = function() {
 };
 
 MyInterface.prototype.createGameMenu = function() {
+	if(this.gameMenu!=undefined)
+		this.destroyGameMenu();
+
 	this.gameMenu = new dat.GUI();
 
 	// play menu
@@ -76,15 +85,24 @@ MyInterface.prototype.createReviewMenu = function() {
 }
 
 MyInterface.prototype.destroyGameMenu = function() {
-	this.gameMenu.destroy();
+	if(this.gameMenu!=undefined){
+		this.gameMenu.destroy();
+		this.gameMenu=undefined;
+	}
 };
 
 MyInterface.prototype.destroyReviewMenu = function() {
-	this.reviewMenu.destroy();
+	if(this.reviewMenu!=undefined){
+		this.reviewMenu.destroy();
+		this.reviewMenu=undefined;
+	}
 };
 
 MyInterface.prototype.destroyNewGameMenu = function() {
-	this.newGameMenu.destroy();
+	if(this.newGameMenu!=undefined){
+		this.newGameMenu.destroy();
+		this.newGameMenu=undefined;
+	}
 };
 
 MyInterface.prototype.showGameLevels = function(Player){

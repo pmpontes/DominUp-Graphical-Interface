@@ -76,6 +76,7 @@ GameSurface.prototype.display = function () {
 	this.scene.pushMatrix();
 
 		if(!this.scene.pickMode){
+			// show game surface
 			this.scene.pushMatrix();
 				this.scene.materials[this.scene.gameLook].setTexture(this.scene.textures[this.scene.gameLook]['gameSurface']);
 				this.scene.materials[this.scene.gameLook].apply();
