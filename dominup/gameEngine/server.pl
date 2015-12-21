@@ -1,6 +1,7 @@
 :-use_module(library(sockets)).
 :-use_module(library(lists)).
 :-use_module(library(codesio)).
+%:-include('dominup.pl').
 :- consult(dominup).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -109,9 +110,9 @@ print_header_line(_).
 %parse_input(FunctionCall(Args), Result) :- FunctionCall(Args, Result).
 
 %start game
-parse_input(playerPlayer, Table):- player_player(Table), set_table(Table).
-parse_input(playerComputer, Table):- player_computer(Table), set_table(Table).
-parse_input(computerComputer, Table):- computer_computer(Table), set_table(Table).
+parse_input(playerPlayer, [Table,D1,D2]):- player_player(Table), set_table(Table), player(player1, D1), player(player2, D2).
+parse_input(playerComputer, [Table,D1,D2]):- player_computer(Table), set_table(Table).
+parse_input(computerComputer, [Table,D1,D2]):- computer_computer(Table), set_table(Table).
 parse_input(getTable, Table):- table(Table).
 parse_input(set_difficulty(Player, Difficulty), ok):- set_difficulty(Player, Difficulty).
 

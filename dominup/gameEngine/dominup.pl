@@ -474,7 +474,7 @@ make_move(Player, Table, NewTable, Move):-
 make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 			type(Player, human),
       table(Table),
-      static_first_play(Domino-[AX,AY]-[BX, BY], Domino-[AfX,AfY]-[BfX, BfY])
+      static_first_play(Domino-[AX,AY]-[BX, BY], Domino-[AfX,AfY]-[BfX, BfY]),
 			execute_play(Dominoes, Domino-[AfX,AfY]-[BfX, BfY], Table, NewTable),!,
 			delete(Dominoes, Domino, NewDominoes),
 			save_player(Player, NewDominoes), !.

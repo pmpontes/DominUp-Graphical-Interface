@@ -4,6 +4,7 @@
  */
 function DominupScene() {
     CGFscene.call(this);
+    this.server = new PrologServer(this);
 }
 
 DominupScene.prototype = Object.create(CGFscene.prototype);
@@ -245,14 +246,9 @@ DominupScene.prototype.initGamePlayers = function () {
 ///////////////////////////////////////temporarly
   this.players['player1'] = new Player(this, 'player1');
   this.players['player2'] = new Player(this, 'player2');
-  var t = [];
-  for(id in this.pieces)
-    t.push(id);
 
-  var t1 = t.slice(0, 18);
-  var t2 = t.slice(18, 36);
-  this.players['player1'].setPieces(t1);
-  this.players['player2'].setPieces(t2);
+  // testing
+  this.server.getPrologRequest("playerPlayer");
 };
 
 
@@ -443,6 +439,11 @@ DominupScene.prototype.makeMove = function (){
 	   console.log("piece and location chosen, make move");
 
   	// TODO check if valid play, update orientation
+    // make play in Prolog
+    if(this.players[this.turn].human){
+      var requestString = "makeMove(" + this.players[this.turn].id + ",[" + ")";
+      console.log(requestString);
+    }
 
     // set piece animation
 
