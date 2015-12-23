@@ -11,7 +11,7 @@ DominupScene.prototype.constructor = DominupScene;
 
 /*
  * setMyInterface
- * Sets the scene's interface.
+ * Sets the scene's interface and creates a menu.
  * @param newInterface
  */
 DominupScene.prototype.setMyInterface = function(newInterface) {
@@ -67,6 +67,7 @@ DominupScene.prototype.saveGame = function (){
 
 DominupScene.prototype.newGame = function(){
   this.turn = 'player1';
+  this.moves = [];
   this.responseTime = 0;
 	this.initGamePieces();
 	this.initGameSurface();
@@ -93,10 +94,16 @@ DominupScene.prototype.startGame = function(){
   this.myInterface.destroyNewGameMenu();
   this.state='START_GAME';
   this.responseTime = 0;
+  this.cameraAnimation = new CircularAnimation(2, [0,0,0], 0, 0,-Math.PI/4);
+  this.cameraAnimation.activate();
+  mat4.identity(this.cameraMatrix);
 };
 
+/*
+ * updateGameState.
+ * Update the game's state, related to piece and position selection.
+ */
 DominupScene.prototype.updateGameState = function(){
-  //console.log(this.state);
 	switch(this.state){
 		case 'SELECT_GAME_TYPE':
 			if(this.gameType == this.gameTypes[1]){
@@ -137,21 +144,23 @@ DominupScene.prototype.updateGameState = function(){
 	}
 };
 
+/*
+ * update.
+ * Update the game's state and environment.
+ * @param currTime.
+ */
 DominupScene.prototype.update = function(currTime) {
   // update game environment
   if(this.gameEnvironment in this.environments)
     this.environments[this.gameEnvironment].update(currTime);
 
   if(this.cameraAnimation!=undefined && this.cameraAnimation.isActive())
-    this.cameraAnimation.update(currTime-this.timePaused);
+      this.cameraAnimation.update(currTime-this.timePaused);
 
 	if(!this.pauseGame){
     if(this.timeout!=0 && this.responseTime>=this.timeout*1000){
       this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
-      this.responseTime = 0;
-      this.selectedPieceId = undefined;
-      this.selectedPiece = undefined;
-      // TODO tell prolog??
+      this.prepareTurn();
     }else if(this.previousTime!=undefined)
       this.responseTime += currTime-this.previousTime;
 
@@ -162,11 +171,10 @@ DominupScene.prototype.update = function(currTime) {
 	}else this.timePaused += (currTime - this.previousTime);
 
 	this.previousTime = currTime;
-}
-
+};
 
 /*
- * initGame
+ * initGame.
  * Initiate the game.
  */
 DominupScene.prototype.initGame = function () {
@@ -193,8 +201,10 @@ DominupScene.prototype.initGame = function () {
 };
 
 /*
- * initGameEnvironment
+ * initGameEnvironment.
  * Create game environment with given name.
+ * @param environmentName the name of the environment to create.
+ * @param graph the environment's configuration.
  */
 DominupScene.prototype.initGameEnvironment = function (environmentName, graph) {
   if(this.gameEnvironments.indexOf(environmentName)!=-1)
@@ -204,7 +214,7 @@ DominupScene.prototype.initGameEnvironment = function (environmentName, graph) {
 };
 
 /*
- * initGameEnvironments
+ * initGameEnvironments.
  * Initiate the scene's environments.
  */
 DominupScene.prototype.initGameEnvironments = function () {
@@ -215,7 +225,7 @@ DominupScene.prototype.initGameEnvironments = function () {
 };
 
 /*
- * initGamePieces
+ * initGamePieces.
  * Initiate the game's pieces.
  */
 DominupScene.prototype.initGamePieces = function () {
@@ -230,22 +240,20 @@ DominupScene.prototype.initGamePieces = function () {
 };
 
 /*
- * initGameSurface
- * Initiate the scene's lights by default.
+ * initGameSurface.
+ * Initiate the game's playing surface.
  */
 DominupScene.prototype.initGameSurface = function () {
-	this.gameSurfaceSizeX = 10;
-	this.gameSurfaceSizeY = 10;
-	this.gameSurface = new GameSurface(this, this.gameSurfaceSizeX, this.gameSurfaceSizeY);
+	this.gameSurface = new GameSurface(this, 10, 10);
 };
 
 /*
- * initGamePlayers
- * Initiate the scene's lights by default.
+ * initGamePlayers.
+ * Initiate the game's players.
  */
 DominupScene.prototype.initGamePlayers = function () {
 	// send play info, initiate players in PROLOG
-// players are set, communicate with PROLOG
+  // players are set, communicate with PROLOG
 
   this.state = 'PLAY';
 ///////////////////////////////////////temporarly
@@ -261,23 +269,44 @@ DominupScene.prototype.initGamePlayers = function () {
   this.players['player2'].setPieces(t2);
 };
 
+/*
+ * updateCameraPosition.
+ * Update the camera's position.
+ */
+DominupScene.prototype.updateCameraPosition = function (newPosition) {
+  if(newPosition=='360 view'){
+    if(this.cameraAnimation!=undefined)
+      mat4.mul(this.cameraMatrix, this.cameraMatrix, this.cameraAnimation.getCurrentTransformation());
 
-DominupScene.prototype.updateCameraPosition = function () {
+    this.cameraAnimation = new CircularAnimation(8, [0,0,0], 0, 0, -2*Math.PI);
+    this.cameraAnimation.activate();
+    return;
+  }else if(newPosition!=undefined)
+    this.cameraPosition = newPosition;
+
+  if(this.curCameraPosition=='leaving board view' && this.cameraAnimation.isActive())
+    return;
+
   if(this.cameraPosition!=this.curCameraPosition){
     console.log('cameraPositionChanged to ' + this.cameraPosition);
-    console.log('cameraPositionChanged to ' + this.curCameraPosition);
+    console.log('from ' + this.curCameraPosition);
+
+    if(this.cameraAnimation!=undefined)
+      mat4.mul(this.cameraMatrix, this.cameraMatrix, this.cameraAnimation.getCurrentTransformation());
+
     switch (this.cameraPosition) {
-      case 'start game':
       case 'player1 view':
       case 'player2 view':
-      case '360 turn':
-        this.cameraAnimation = new CircularAnimation(4, [0,0,0], 30,
-                  this.cameraPositionsAngle[this.curCameraPosition],
-                  this.cameraPositionsAngle[this.cameraPosition]);
+        if(this.curCameraPosition=='board view'){
+          this.curCameraPosition=='leaving board view';
+          this.cameraAnimation = new CircularAnimation(2, [0,0,0], 0, 0, -Math.PI/4);
+          this.cameraAnimation.activate();
+          return;
+        }else this.cameraAnimation = new CircularAnimation(2, [0,0,0], 0, 0, -Math.PI);
         break;
       case 'board view':
-        // TODO change rotation ???
-        this.cameraAnimation = new CircularAnimation(4, [0,0,0], 30, 0, Math.PI);
+      // TODO rotation???
+        this.cameraAnimation = new CircularAnimation(2, [0,0,0], 0, 0, Math.PI/4);
         break;
     }
 
@@ -288,23 +317,18 @@ DominupScene.prototype.updateCameraPosition = function () {
 
 /*
  * initCameras
- * Initiate the scene's default camera.
+ * Initiate the game's camera.
  */
 DominupScene.prototype.initCameras = function () {
-  this.cameraPositions = ['start game', 'player1 view', 'player2 view', 'board view', '360 turn'];
+  this.cameraPositions = ['player1 view', 'player2 view', 'board view'];
   this.curCameraPosition = this.cameraPositions[0];
   this.cameraPosition = this.cameraPositions[0];
 
-  this.cameraPositionsAngle = [];
-  this.cameraPositionsAngle['start game'] = 7*Math.PI/4;
-  this.cameraPositionsAngle['player1 view'] = Math.PI/4; //Math.PI / 2;
-  this.cameraPositionsAngle['player2 view'] = Math.PI;
-  this.cameraPositionsAngle['board view'] = Math.PI;
-  this.cameraPositionsAngle['360 turn'] = 2*Math.PI;
+  this.cameraMatrix = mat4.create();
+  mat4.identity(this.cameraMatrix);
 
   this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(30, 30, 30), vec3.fromValues(0, 0, 0));
   this.cameraAnimation = undefined;
-  //this.cameraMatrix =
 };
 
 /*
@@ -389,7 +413,11 @@ DominupScene.prototype.initGameLooks = function () {
 	}
 };
 
-
+/*
+ * pieceSelected.
+ * Handle piece selection.
+ * @param id the piece's id.
+ */
 DominupScene.prototype.pieceSelected = function (id){
 	if(this.selectedPieceId!=undefined){
 	   // do anitation to old piece
@@ -413,28 +441,63 @@ DominupScene.prototype.pieceSelected = function (id){
    }
 };
 
+/*
+ * isGameOver.
+ * Check if the game is over.
+ * @return the player who won, false otherwise.
+ */
 DominupScene.prototype.isGameOver = function (){
   for(playerId in this.players)
-    if(this.players[playerId].length==0)
+    if(this.players[playerId].pieces.length==0)
       return playerId;
 
-  return null;
+  return false;
 };
 
+/*
+ * undoLastMove.
+ * Undo the last move, updating game state.
+ */
 DominupScene.prototype.undoLastMove = function (){
+  if(this.moves.length==0)
+    return;
+
   var lastPlay = this.moves.pop();
 
   // do animation to piece
 
-  // return piece to player
 
+  // remove piece from game surface and return piece to player
+  this.gameSurface.unplacePiece(this.pieces[lastPlay['piece']].getValues());
   this.players[lastPlay['player']].addPiece(this.pieces[lastPlay['piece']].getValues());
 
-  // change PROLOG status
+  // change turn
+  if(this.moves.length==0)
+    this.turn='player1';
+  else this.turn = this.moves[this.moves.length-1]['player'];
+  this.prepareTurn();
 
-  this.responseTime = 0;
+  // TODO change PROLOG status
 };
 
+/*
+ * prepareTurn.
+ * Prepare new move, handling the camera animation.
+ */
+DominupScene.prototype.prepareTurn = function (){
+  // update camera view
+  if(this.curCameraPosition!=this.turn + ' view')
+    this.updateCameraPosition(this.turn + ' view');
+
+  this.responseTime = 0;
+  this.selectedPieceId = undefined;
+  this.selectedPiece = undefined;
+};
+
+/*
+ * reviewGame.
+ * Pauses the game and initiates a review.
+ */
 DominupScene.prototype.reviewGame = function (){
   this.pauseGame = true;
   this.pauseReview = false;
@@ -447,36 +510,50 @@ DominupScene.prototype.reviewGame = function (){
   console.log('review');
 };
 
+/*
+ * makeMove.
+ * Moves the piece selected to the position chosen.
+ */
 DominupScene.prototype.makeMove = function (){
 	   console.log("piece and location chosen, make move");
 
   	// TODO check if valid play, update orientation
 
-    // set piece animation
+    // TODO set piece animation, calculating final position
 
-    this.moves.push({player: this.turn, piece: this.selectedPieceId});
+    // save move, update set of player's dominoes
+    this.moves.push({player: this.turn, piece: this.selectedPiece});
+    var position = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
+    this.gameSurface.placePiece(position, this.pieces[this.selectedPiece].getValues());
+    this.players[this.turn].removePiece(this.pieces[this.selectedPiece].getValues());
 
     // check if game over
     var winner;
-    if((winner = this.isGameOver())!=null) {
+    if((winner = this.isGameOver())!=false) {
       console.log('gameOver');
       this.endGame(winner);
-      return null;
+      return;
     }
 
     // TODO determine next player from PROLOG
     this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
-    this.responseTime = 0;
-    this.selectedPieceId = undefined;
-    this.selectedPiece = undefined;
 
-    // TODO if !human, generate play
+    this.prepareTurn();
+
+    // if !human, generate play
     if(!this.players[this.turn].human){
       this.players[this.turn].makeMove();
       this.makeMove();
     }else this.gameState = 'SELECT_PIECE';
 };
 
+/*
+ * checkPosition.
+ * Check if the given positions are adjacent.
+ * @param posA.
+ * @param posB.
+ * @return true if the positions are adjacent, false otherwise.
+ */
 function checkPosition(posA, posB){
   if((Math.abs(posA[0]-posB[0])==1 && posA[1]==posB[1])
     || (posA[0]==posB[0] && Math.abs(posA[1]-posB[1])==1))
@@ -484,7 +561,12 @@ function checkPosition(posA, posB){
   else return false;
 }
 
-DominupScene.prototype.pickHandler = function (id){
+/*
+ * pickManager.
+ * Manage action after object with the given id is picked.
+ * @param id the id of the object picked.
+ */
+DominupScene.prototype.pickManager = function (id){
   if(this.pauseGame)
     return;
 
@@ -520,7 +602,10 @@ DominupScene.prototype.pickHandler = function (id){
 	}
 };
 
-
+/*
+ * logPicking.
+ * Handle picking.
+ */
 DominupScene.prototype.logPicking = function (){
 	if (this.pickMode == false) {
 		if (this.pickResults != null && this.pickResults.length > 0) {
@@ -528,7 +613,7 @@ DominupScene.prototype.logPicking = function (){
 				var obj = this.pickResults[i][0];
 				if (obj){
 					var customId = this.pickResults[i][1];
-					this.pickHandler(customId);
+					this.pickManager(customId);
 				}
 			}
 			this.pickResults.splice(0,this.pickResults.length);
@@ -537,7 +622,7 @@ DominupScene.prototype.logPicking = function (){
 }
 
 /*
- * display
+ * display.
  * Display the game scene.
  */
 DominupScene.prototype.display = function () {
@@ -550,7 +635,7 @@ DominupScene.prototype.display = function () {
 	// Initialize Model-View
 	this.updateProjectionMatrix();
   this.loadIdentity();
-  
+
   this.pushMatrix();
     this.translate(-3.65,1.2,-10);
     this.scale(0.2,0.2,0.2);
@@ -561,6 +646,7 @@ DominupScene.prototype.display = function () {
 	this.applyViewMatrix();
     if(this.cameraAnimation!=undefined)
       this.multMatrix(this.cameraAnimation.getCurrentTransformation());
+  this.multMatrix(this.cameraMatrix);
 
 	this.setDefaultAppearance();
 	this.updateLights();

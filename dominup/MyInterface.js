@@ -1,9 +1,11 @@
+var interface = null;
 /*
  * MyInterface
  * @constructor
  */
 function MyInterface() {
 	CGFinterface.call(this);
+	interface = this;
 };
 
 MyInterface.prototype = Object.create(CGFinterface.prototype);
@@ -29,12 +31,20 @@ MyInterface.prototype.createMainMenu = function() {
 	this.startGameMenu.add(this.scene, 'resumeSavedGame');
 
 	// add game settings
+	this.staticCamera = true;
 	this.gameSettings = this.mainMenu.addFolder("Settings");
 	this.gameSettings.add(this.scene, 'timeout', 0, 180).step(5);
+	var toggleCamera = this.gameSettings.add(this, 'staticCamera');
 	this.gameEnvironment = this.gameSettings.addFolder("Environment");
 	this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
 	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
+
+	toggleCamera.onFinishChange(function(staticCamera) {
+		if(staticCamera)
+			interface.setActiveCamera(interface.scene.camera);
+		else interface.setActiveCamera(null);
+	});
 };
 
 MyInterface.prototype.newGame = function() {
@@ -69,9 +79,15 @@ MyInterface.prototype.createGameMenu = function() {
 	this.gameOptions = this.gameMenu.addFolder("Game menu");
 	this.gameOptions.add(this.scene, 'pauseGame');
 	this.gameOptions.add(this.scene, 'undoLastMove');
-	this.gameOptions.add(this.scene, 'cameraPosition', this.scene.cameraPositions);
+	this.cameraFolder = this.gameOptions.addFolder("Camera");
+	this.cameraFolder.add(this.scene, 'cameraPosition', this.scene.cameraPositions);
+	this.cameraFolder.add(this, 'make360turn');
 	this.gameOptions.add(this.scene, 'reviewGame');
 	this.gameOptions.add(this.scene, 'saveGame');
+};
+
+MyInterface.prototype.make360turn = function() {
+	this.scene.updateCameraPosition('360 view');
 };
 
 MyInterface.prototype.createReviewMenu = function() {
@@ -82,7 +98,7 @@ MyInterface.prototype.createReviewMenu = function() {
 	//this.reviewOptions.add(this.scene, 'reviewSpeed', 0.5, 4).step(.5);
 	this.reviewOptions.add(this.scene, 'quitReview');
 	this.reviewOptions.open();
-}
+};
 
 MyInterface.prototype.destroyGameMenu = function() {
 	if(this.gameMenu!=undefined){

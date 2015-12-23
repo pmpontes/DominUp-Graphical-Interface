@@ -18,6 +18,14 @@ Player.prototype.addPiece = function (piece) {
 	this.pieces.push(piece);
 };
 
+Player.prototype.removePiece = function (piece) {
+	for(var i=0; i<this.pieces.length; i++)
+		if(this.pieces[i]==piece){
+			this.pieces.splice(i,1);
+			break;
+		}
+};
+
 Player.prototype.setPieces = function (pieces) {
 	this.pieces = pieces.slice();
 
