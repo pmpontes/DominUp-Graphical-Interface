@@ -110,9 +110,9 @@ print_header_line(_).
 %parse_input(FunctionCall(Args), Result) :- FunctionCall(Args, Result).
 
 %start game
-parse_input(playerPlayer, [Table,D1,D2]):- player_player(Table), set_table(Table), player(player1, D1), player(player2, D2).
-parse_input(playerComputer, [Table,D1,D2]):- player_computer(Table), set_table(Table).
-parse_input(computerComputer, [Table,D1,D2]):- computer_computer(Table), set_table(Table).
+parse_input(playerPlayer, [0, Table,D1,D2]):- player_player(Table), set_table(Table), player(player1, D1), player(player2, D2).
+parse_input(playerComputer(Level), [0, Table,D1,D2]):- player_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_auto_player(player2, Level).
+parse_input(computerComputer(Level1,Level2), [0, Table,D1,D2]):- computer_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_auto_player(player1, Level1), set_auto_player(player2, Level2).
 parse_input(getTable, Table):- table(Table).
 parse_input(set_difficulty(Player, Difficulty), ok):- set_difficulty(Player, Difficulty).
 
@@ -121,8 +121,8 @@ parse_input(getPlayerDominoes(Player), Dominoes):- player(Player, Dominoes).
 parse_input(getNextPlayer(CurPlayer), NextPlayer):- get_next_player(CurPlayer, NextPlayer).
 
 %make moves
-parse_input(makeMove(Player), Move):- make_move(Player, Table, NewTable, Move), set_table(NewTable).
-parse_input(makeMove(Player, Move), ok):- make_move(Player, Move, Table, NewTable), set_table(NewTable).
+parse_input(makeMove(Player), [1, [Domino,[AX,AY],[BX, BY]],D1,D2]):- make_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]), set_table(NewTable).
+parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AX,AY],[BX, BY]],D1,D2]):- make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable), set_table(NewTable).
 parse_input(listExpansionPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_expansion_plays(Dominoes, Table, Moves).
 parse_input(listVerticalPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_vertical_plays(Dominoes, Table, Moves).
 

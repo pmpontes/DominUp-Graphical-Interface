@@ -71,6 +71,9 @@ DominupScene.prototype.newGame = function(){
 	this.initGamePieces();
 	this.initGameSurface();
 	this.initGamePlayers();
+  if(!this.players['player1'].human){
+    this.server.getPrologRequest("makeMove(player1)");
+  }
 };
 
 DominupScene.prototype.endGame = function(winner){
@@ -243,12 +246,19 @@ DominupScene.prototype.initGamePlayers = function () {
 // players are set, communicate with PROLOG
 
   this.state = 'PLAY';
-///////////////////////////////////////temporarly
-  this.players['player1'] = new Player(this, 'player1');
-  this.players['player2'] = new Player(this, 'player2');
 
-  // testing
-  this.server.getPrologRequest("playerPlayer");
+
+  switch(this.gameType){
+    case 'Human-Human':
+      this.server.getPrologRequest("playerPlayer");
+      break;
+    case 'Human-Computer':
+      this.server.getPrologRequest("playerComputer(" + this.players['player2'].intLevel + ")");
+      break;
+    case 'Computer-Computer':
+      this.server.getPrologRequest("computerComputer(" + this.players['player1'].intLevel + "," + this.players['player2'].intLevel + ")");
+      break;
+    }
 };
 
 
@@ -443,6 +453,9 @@ DominupScene.prototype.makeMove = function (){
     if(this.players[this.turn].human){
       var requestString = "makeMove(" + this.players[this.turn].id + ",[" + ")";
       console.log(requestString);
+    } else {
+      var requestString = "makeMove(" + this.players[this.turn].id + ")";
+      this.server.getPrologRequest(requestString);
     }
 
     // set piece animation
