@@ -14,10 +14,19 @@ function MyStatusBoard(scene, position, sizeX, sizeY) {
     this.appearance.setSpecular(0.0, 0.0, 0.0, 1);
     this.appearance.setShininess(120);
 
+    this.board = new CGFappearance(this.scene);
+    this.board.setAmbient(0.3, 0.3, 0.3, 1);
+    this.board.setDiffuse(0.7, 0.7, 0.7, 1);
+    this.board.setSpecular(0.0, 0.0, 0.0, 1);
+    this.board.setShininess(120);
+
     // font texture: 16 x 16 characters
     // http://jens.ayton.se/oolite/files/font-tests/rgba/oolite-font.png
     this.fontTexture = new CGFtexture(this.scene, "textures/oolite-font.png");
     this.appearance.setTexture(this.fontTexture);
+
+    this.boardTexture = new CGFtexture(this.scene, "textures/background.png");
+    this.board.setTexture(this.boardTexture);
 
     // plane where texture character will be rendered
     this.plane= new Board(this.scene);
@@ -75,20 +84,27 @@ MyStatusBoard.prototype.showString = function (text, small) {
     this.scene.pushMatrix();
 
     if(small)
-        this.scene.scale(0.8,0.8,0.8,1);
+        this.scene.scale(small,small,small);
 
     for(var i=0; i<text.length; i++){
 
       this.scene.activeShader.setUniformsValues({'charCoords': this.getLocation(text[i])});
       this.plane.display();
 
-      this.scene.translate(.8,0,0);
+      this.scene.translate(0.8,0,0);
     }
 
     this.scene.popMatrix();
 };
 
 MyStatusBoard.prototype.display = function () {
+  if(!this.scene.pickMode && (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW')){
+    this.scene.pushMatrix();
+      this.scene.scale(7,7,1);
+      this.board.apply();
+      this.plane.display();
+    this.scene.popMatrix();
+
     // activate shader for rendering text characters
     this.scene.setActiveShaderSimple(this.textShader);
 
@@ -96,13 +112,26 @@ MyStatusBoard.prototype.display = function () {
     this.appearance.apply();
 
     this.scene.pushMatrix();
+        this.scene.translate(-2.5,2.5,0);
 
         if(this.scene.state == 'PLAY'){
+            // show game result
             this.showString(this.text);
             this.scene.translate(0,-1,0);
-            this.showString(this.scene.turn);
+            this.showString(this.scene.players['player1'].pieces.length + '-' + this.scene.players['player2'].pieces.length);
 
+            // show player
+            this.scene.translate(0,-1.5,0);
+            this.showString(this.scene.turn, .8);
+            this.scene.translate(0,-0.8,0);
+            this.showString(this.scene.players[this.scene.turn].pieces.length + ' pieces left', .5);
 
+            // show time left to make move
+            if(this.scene.timeout!=0){
+              var responseTime = Math.round(this.scene.timeout - this.scene.responseTime/1000);
+              this.scene.translate(0,-1,0);
+              this.showString(Math.floor(responseTime/60) + ':' + responseTime%60);
+            }
 
         }else if(this.scene.state == 'REVIEW'){
 
@@ -111,4 +140,5 @@ MyStatusBoard.prototype.display = function () {
     this.scene.popMatrix();
 
     this.scene.setActiveShaderSimple(this.scene.defaultShader);
+  }
 };

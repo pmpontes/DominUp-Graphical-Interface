@@ -37,17 +37,23 @@ GameSurface.prototype = Object.create(CGFobject.prototype);
 GameSurface.prototype.placePiece = function (position, piece) {
 	this.placedPieces.push({ height: (this.table[position.aY][position.aX].length -1), coords: position, domino: piece });
 
-	this.table[position.aY][position.aX].push(piece.valueL);
-	this.table[position.bY][position.bX].push(piece.valueR);
+	this.table[position.aY][position.aX].push(piece[0]);
+	this.table[position.bY][position.bX].push(piece[1]);
+
+console.log(piece[0]);
+console.log(piece[1]);
+	console.log(this.placedPieces);
 };
 
-GameSurface.prototype.unplacePiece = function (position, piece) {
+GameSurface.prototype.unplacePiece = function (piece) {
 	for(var i=0; i<this.placedPieces.length; i++)
-		if(this.placedPieces[i].coords == position && this.placedPieces[i].domino == piece)
+		if(this.placedPieces[i].domino == piece){
+			var position = this.placedPieces[i].coords;
+			this.table[position.aY][position.aX].pop();
+			this.table[position.bY][position.bX].pop();
 			this.placedPieces.splice(i,1);
-
-	this.table[position.aY][position.aX].pop();
-	this.table[position.bY][position.bX].pop();
+		}
+		console.log(this.placedPieces);
 };
 
 GameSurface.prototype.getPosition = function (id) {
@@ -76,6 +82,7 @@ GameSurface.prototype.display = function () {
 	this.scene.pushMatrix();
 
 		if(!this.scene.pickMode){
+			// show game surface
 			this.scene.pushMatrix();
 				this.scene.materials[this.scene.gameLook].setTexture(this.scene.textures[this.scene.gameLook]['gameSurface']);
 				this.scene.materials[this.scene.gameLook].apply();
@@ -103,12 +110,12 @@ GameSurface.prototype.display = function () {
 	// show pieces
 	if(!this.scene.pickMode)
 		for(var i=0; i<this.placedPieces.length; i++)
-			drawPiece(this.placedPieces[i]);
+			this.drawPiece(this.placedPieces[i]);
 
 	this.scene.popMatrix();
 };
 
-function drawPiece(piece){
+GameSurface.prototype.drawPiece = function(piece){
 
 	this.scene.pushMatrix();
 		var rotAngle = 0;
@@ -128,5 +135,4 @@ function drawPiece(piece){
 		this.scene.rotate(rotAngle, 0, 1, 0);
 		this.scene.pieces[piece.domino].display();
  	this.scene.popMatrix();
-
 };
