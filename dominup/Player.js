@@ -11,7 +11,7 @@ function Player(scene, id, level){
 		case "Attack":
 			this.intLevel = 1;
 			break;
-		case "Deffense":
+		case "Defense":
 			this.intLevel = 2;
 			break;
 	}

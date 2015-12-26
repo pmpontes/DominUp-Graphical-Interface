@@ -111,8 +111,8 @@ print_header_line(_).
 
 %start game
 parse_input(playerPlayer, [0, Table,D1,D2]):- player_player(Table), set_table(Table), player(player1, D1), player(player2, D2).
-parse_input(playerComputer(Level), [0, Table,D1,D2]):- player_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_auto_player(player2, Level).
-parse_input(computerComputer(Level1,Level2), [0, Table,D1,D2]):- computer_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_auto_player(player1, Level1), set_auto_player(player2, Level2).
+parse_input(playerComputer(Level), [0, Table,D1,D2]):- player_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_difficulty(player2, Level).
+parse_input(computerComputer(Level1,Level2), [0, Table,D1,D2]):- computer_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_difficulty(player1, Level1), set_difficulty(player2, Level2).
 parse_input(getTable, Table):- table(Table).
 parse_input(set_difficulty(Player, Difficulty), ok):- set_difficulty(Player, Difficulty).
 

@@ -18,7 +18,7 @@ PrologServer.prototype.getPrologRequest = function(requestString, onSuccess, onE
 
 //Handle the Reply
 PrologServer.prototype.handleReply = function(data){
-	if(data.target.response != null && data.target.response != "ok"){
+	if(data.target.response != null && data.target.response != "ok" && data.target.response != "Syntax Error" && data.target.response != "Bad Request"){
     var argumentsArray = JSON.parse(data.target.response);
     switch(argumentsArray[0]){
       case 0:
@@ -28,7 +28,7 @@ PrologServer.prototype.handleReply = function(data){
         server.parseMove(argumentsArray);
         break;
     }
-  }
+  } else {console.log(data.target.response);}
 	return data.target.response;
 };
 

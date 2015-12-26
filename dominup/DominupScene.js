@@ -123,10 +123,10 @@ DominupScene.prototype.updateGameState = function(){
 			if(this.gameLevel != this.gameLevels[0]){
 				if(this.gameType == this.gameTypes[2]){
           this.players['player1'] = new Player(this, 'player1');
-          this.players['player2'] = new Player(this, 'player2', this.level);
+          this.players['player2'] = new Player(this, 'player2', this.gameLevel);
           this.startGame();
 				}else{
-					this.players['player1'] = new Player(this, 'player1', this.level);
+					this.players['player1'] = new Player(this, 'player1', this.gameLevel);
 					this.state='SELECT_GAME_LEVEL_PL2';
 					this.myInterface.showGameLevels('player2');
 				}
@@ -134,7 +134,7 @@ DominupScene.prototype.updateGameState = function(){
 			break;
 		case 'SELECT_GAME_LEVEL_PL2':
 			if(this.gameLevel != this.gameLevels[0]){
-        this.players['player2'] = new Player(this, 'player2', this.level);
+        this.players['player2'] = new Player(this, 'player2', this.gameLevel);
 				this.startGame();
 			}
 			break;
