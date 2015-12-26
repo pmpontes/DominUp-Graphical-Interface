@@ -20,6 +20,17 @@ table([ [ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0]
   		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
   		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ] ]).
 
+startingTable([ [ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ],
+  		[ [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0], [ 8, 0] ] ]).
+
 :- dynamic letters/1.
 letters(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'x', 'z']).
 
@@ -155,7 +166,7 @@ get_next_player(CurPlayer, NextPlayer):-
 
 player_player(Table):-
 	set_num_players(2),
-	table(Table),
+	startingTable(Table),
 	set_table_size(9,9),
 	dominoes(Dom),
 	prepare_game(Dom),!,
@@ -169,7 +180,7 @@ player_player(Table):-
 
 player_computer(Table):-
 	set_num_players(2),
-	table(Table),
+	startingTable(Table),
 	set_table_size(9,9),
 	dominoes(Dom),
 	prepare_game(Dom),!,
@@ -182,7 +193,7 @@ player_computer(Table):-
 
 computer_computer(Table):-
 	set_num_players(2),
-	table(Table),
+	startingTable(Table),
 	set_table_size(9,9),
 	dominoes(Dom),
 	prepare_game(Dom),!,
@@ -204,7 +215,7 @@ play(Player, Table):-
 
 % if it is the fisrt play, make single move
 make_moves(Player, Table, NewTable):-
-	table(Table),
+	startingTable(Table),
 	make_move(Player, Table, NewTable1),
 	check_for_resize(NewTable1, NewTable), !.
 
@@ -247,7 +258,7 @@ four_player_mode(Table) :-
 	select_role(player3), !,
 	select_role(player4).
 
-select_role(Player):-	repeat, clear_screen,
+select_role(Player):-	repeat,
 			write('---------------------------------'), nl,
 			write('|           Select Role            |'), nl,
 			write('---------------------------------'), nl,
@@ -302,7 +313,7 @@ select_difficulty_no_defense(Player):-
 %First play
 random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	player(Player, Dominoes),
-  table(Table),
+  startingTable(Table),
 	repeat,
 	length(Dominoes, MaxLength),
 	random(0, MaxLength, Piece),
@@ -317,7 +328,7 @@ random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 
 random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	player(Player, Dominoes),
-  \+ table(Table),
+  \+ startingTable(Table),
 	list_vertical_plays(Dominoes, Table, PossiblePlays),
 	length(PossiblePlays, NPlays), NPlays \= 0 , !, repeat,
 	random(0, NPlays, Play),
@@ -328,7 +339,7 @@ random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 
 random_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]):-
 	player(Player, Dominoes),
-  \+ table(Table),
+  \+ startingTable(Table),
 	repeat,
 	length(Dominoes, MaxLength),
 	random(0, MaxLength, Piece),
@@ -435,9 +446,7 @@ advanced_level(Player):-
 % First play forces a certer position
 make_move(Player, Table, NewTable, Move):-
 	type(Player, computer),
-  table(Table), !,
-	clear_screen,
-	show_table(Table),
+  startingTable(Table), !,
 	nl, write('| '), write(Player), write(' \'s turn:'), nl,
 	write('| Determining next play...'), nl,
 	random_move(Player, Table, NewTable, Move).
@@ -447,8 +456,6 @@ make_move(Player, Table, NewTable, Move):-
 make_move(Player, Table, NewTable, Move):-
 	type(Player, computer),
 	advanced_level(Player), !,
-	clear_screen,
-	show_table(Table),
 	nl, write('| '), write(Player), write(' \'s turn:'), nl,
 	write('| Determining next play...'), nl,
 	auto_move(Player, Table, NewTable, Move).
@@ -458,8 +465,6 @@ make_move(Player, Table, NewTable, Move):-
 make_move(Player, Table, NewTable, Move):-
 	type(Player, computer),
 	difficulty(Player, 0),
-	clear_screen,
-	show_table(Table),
 	nl, write('| '), write(Player), write(' \'s turn:'), nl,
 	write('| Determining next play...'), nl,
 	random_move(Player, Table, NewTable, Move).
@@ -473,7 +478,8 @@ make_move(Player, Table, NewTable, Move):-
 % If it's the first play, force move to the center of the table
 make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 			type(Player, human),
-      table(Table),
+      player(Player, Dominoes),
+      startingTable(Table),
       static_first_play(Domino-[AX,AY]-[BX, BY], Domino-[AfX,AfY]-[BfX, BfY]),
 			execute_play(Dominoes, Domino-[AfX,AfY]-[BfX, BfY], Table, NewTable),!,
 			delete(Dominoes, Domino, NewDominoes),
@@ -481,7 +487,8 @@ make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 
 make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 			type(Player, human),
-      \+ table(Table),
+      player(Player, Dominoes),
+      \+ startingTable(Table),
 			execute_play(Dominoes, Domino-[AX,AY]-[BX, BY], Table, NewTable),!,
 			delete(Dominoes, Domino, NewDominoes),
 			save_player(Player, NewDominoes), !.
@@ -561,7 +568,7 @@ vertical_play([A, B]-[AX, AY]-[BX, BY], Table):-
 % any placement is valid if it is the first move
 valid_play(_, _-[AX, AY]-[BX, BY], Table):-
 	check_coordinates([AX, AY], [BX, BY], Table),
-	table(Table), !.
+	startingTable(Table), !.
 
 % vertical play is valid if the coordinates check
 valid_play(_, [A, B]-[AX, AY]-[BX, BY], Table):-

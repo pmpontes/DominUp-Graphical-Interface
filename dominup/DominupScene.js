@@ -96,6 +96,7 @@ DominupScene.prototype.quitReview = function(){
 DominupScene.prototype.startGame = function(){
   this.myInterface.createGameMenu();
   this.myInterface.destroyNewGameMenu();
+  this.commState = "NONE_IN_PROGRESS";
   this.state='START_GAME';
   this.responseTime = 0;
   this.cameraAnimation = new CircularAnimation(2, [0,0,0], 0, 0,-Math.PI/4);
@@ -526,10 +527,12 @@ DominupScene.prototype.makeMove = function (){
   	// TODO check if valid play, update orientation
     // make play in Prolog
     if(this.players[this.turn].human){
-      var requestString = "makeMove(" + this.players[this.turn].id + ",[" + ")";
-      console.log(requestString);
+      var requestString = "makeMove(" + this.players[this.turn].playerId + ",[" + this.selectedPiece + "]-["
+                                      + this.posA[0] + "," + this.posA[1] + "]-["
+                                      + this.posB[0] + "," + this.posB[1] + "])";
+      this.server.getPrologRequest(requestString);
     } else {
-      var requestString = "makeMove(" + this.players[this.turn].id + ")";
+      var requestString = "makeMove(" + this.players[this.turn].playerId + ")";
       this.server.getPrologRequest(requestString);
     }
 
@@ -538,28 +541,34 @@ DominupScene.prototype.makeMove = function (){
     // save move, update set of player's dominoes
     this.moves.push({player: this.turn, piece: this.selectedPiece});
     var position = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
-    this.gameSurface.placePiece(position, this.pieces[this.selectedPiece].getValues());
-    this.players[this.turn].removePiece(this.pieces[this.selectedPiece].getValues());
-
-    // check if game over
-    var winner;
-    if((winner = this.isGameOver())!=false) {
-      console.log('gameOver');
-      this.endGame(winner);
-      return;
-    }
-
-    // TODO determine next player from PROLOG
-    this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
-
-    this.prepareTurn();
-
-    // if !human, generate play
-    if(!this.players[this.turn].human){
-      this.players[this.turn].makeMove();
-      this.makeMove();
-    }else this.gameState = 'SELECT_PIECE';
+    //this.gameSurface.placePiece(position, this.pieces[this.selectedPiece].getValues());
+    //this.players[this.turn].removePiece(this.pieces[this.selectedPiece].getValues());
 };
+
+/*
+ * proceedWithMove.
+ * Processes a play AFTER communicating with the prolog server
+ */
+DominupScene.prototype.proceedWithMove = function (){
+  // check if game over
+  var winner;
+  if((winner = this.isGameOver())!=false) {
+    console.log('gameOver');
+    this.endGame(winner);
+    return;
+  }
+
+  // TODO determine next player from PROLOG
+  this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
+
+  this.prepareTurn();
+
+  // if !human, generate play
+  if(!this.players[this.turn].human){
+    this.players[this.turn].makeMove();
+    this.makeMove();
+  }else this.gameState = 'SELECT_PIECE';
+}
 
 /*
  * checkPosition.

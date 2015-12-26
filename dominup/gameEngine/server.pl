@@ -121,8 +121,9 @@ parse_input(getPlayerDominoes(Player), Dominoes):- player(Player, Dominoes).
 parse_input(getNextPlayer(CurPlayer), NextPlayer):- get_next_player(CurPlayer, NextPlayer).
 
 %make moves
-parse_input(makeMove(Player), [1, [Domino,[AX,AY],[BX, BY]],D1,D2]):- make_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]), set_table(NewTable).
-parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AX,AY],[BX, BY]],D1,D2]):- make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable), set_table(NewTable).
+parse_input(makeMove(Player), [1, [Domino,[AX,AY],[BX, BY]],D1,D2]):- table(Table), make_move(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY]), set_table(NewTable), player(player1, D1), player(player2, D2).
+parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AX,AY],[BX, BY]],D1,D2]):- table(Table), make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable), set_table(NewTable),
+																																																player(player1, D1), player(player2, D2).
 parse_input(listExpansionPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_expansion_plays(Dominoes, Table, Moves).
 parse_input(listVerticalPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_vertical_plays(Dominoes, Table, Moves).
 

@@ -5,12 +5,13 @@ function PrologServer(scene){
 }
 
 PrologServer.prototype.getPrologRequest = function(requestString, onSuccess, onError, port){
+  this.scene.commState = "IN_PROGRESS";
   var requestPort = port || 8081
   var request = new XMLHttpRequest();
   request.open('GET', 'http://localhost:'+requestPort+'/'+requestString, true);
 
   request.onload = this.handleReply || function(data){console.log("Request successful. Reply: " + data.target.response);};
-  request.onerror = onError || function(){console.log("Error waiting for response");alert("Check if prolog server is up!");};
+  request.onerror = onError || function(){console.log("Error waiting for response");};
 
   request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
   request.send();
@@ -28,7 +29,10 @@ PrologServer.prototype.handleReply = function(data){
         server.parseMove(argumentsArray);
         break;
     }
-  } else {console.log(data.target.response);}
+  } else {
+    console.log(data.target.response);
+  }
+  server.scene.commState = "NONE_IN_PROGRESS";
 	return data.target.response;
 };
 
@@ -47,13 +51,13 @@ PrologServer.prototype.parseMove = function(argArray){
   var dominoes1 = argArray[2];
   var dominoes2 = argArray[3];
 
-  var next = (server.scene.turn == 'player1') ? 'player2' : 'player1';
-
   var position = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
   var domino = [move[0][0], move[0][1]];
 
   server.scene.gameSurface.placePiece(position, domino);
 
-  server.scene.players[server.scene.turn].setPieces(dominoes1);
-  server.scene.players[next].setPieces(dominoes2);
+  server.scene.players['player1'].setPieces(dominoes1);
+  server.scene.players['player2'].setPieces(dominoes2);
+
+  server.scene.proceedWithMove();
 };
