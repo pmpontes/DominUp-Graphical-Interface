@@ -74,7 +74,7 @@ DominupScene.prototype.newGame = function(){
 	this.initGameSurface();
 	this.initGamePlayers();
   if(!this.players['player1'].human){
-    this.server.getPrologRequest("makeMove(player1)");
+    this.makeMove();
   }
 };
 
@@ -540,7 +540,7 @@ DominupScene.prototype.makeMove = function (){
 
     // save move, update set of player's dominoes
     this.moves.push({player: this.turn, piece: this.selectedPiece});
-    var position = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
+    //var position = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
     //this.gameSurface.placePiece(position, this.pieces[this.selectedPiece].getValues());
     //this.players[this.turn].removePiece(this.pieces[this.selectedPiece].getValues());
 };
