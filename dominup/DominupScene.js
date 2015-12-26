@@ -37,9 +37,9 @@ DominupScene.prototype.init = function (application) {
   this.gl.depthFunc(this.gl.LEQUAL);
   this.enableTextures(true);
 
-    // create matrix
-	this.matrix = mat4.create();
-  mat4.identity(this.matrix);
+  this.pieceShader = new CGFshader(this.gl, "shaders/piecesShader.vert", "shaders/piecesShader.frag");
+	this.pieceShader.setUniformsValues({normScale: 1.0});
+	this.pieceShader.setUniformsValues({uSampler2: 1});
 
 	this.setUpdatePeriod(30);
 	this.setPickEnabled(true);

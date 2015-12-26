@@ -44,6 +44,10 @@ MyPiece.prototype.getValues = function() {
 };
 
 MyPiece.prototype.display = function() {
+  // TODO apply this only to top of piece
+  //this.scene.setActiveShader(this.scene.pieceShader);
+  //this.scene.setActiveShader(this.scene.defaultShader);
+
   this.scene.pushMatrix();
 
   if(this.animation!=undefined)
@@ -60,7 +64,7 @@ MyPiece.prototype.display = function() {
         this.scene.translate(0.5, 0, 0, 0);
         this.makeHalfPiece(this.valueR);
     this.scene.popMatrix();
-    
+
   this.scene.popMatrix();
 };
 
