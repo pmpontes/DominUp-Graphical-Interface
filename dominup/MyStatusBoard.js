@@ -53,6 +53,9 @@ MyStatusBoard.prototype.getLocation = function (letter) {
    if(letter=='-'){
         line=2;
         column=13;
+    }else if(letter=='.'){
+          line=2;
+          column=14;
     }else if(letter==':'){
         line=3;
         column=10;
@@ -122,11 +125,15 @@ MyStatusBoard.prototype.showGameState = function () {
         this.showString(Math.floor(responseTime/60) + ':0' + responseTime%60);
       else this.showString(Math.floor(responseTime/60) + ':' + responseTime%60);
     }
+    this.scene.translate(0,-1,0);
+    if(this.scene.players[this.scene.turn].human)
+      this.showString('Make a move...', .5);
+    else this.showString('Preparing a move...', .5);
   }
 };
 
 MyStatusBoard.prototype.display = function () {
-  if(!this.scene.pickMode && (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW_GAME')) {
+  if(!this.scene.pickMode && (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW_GAME' || this.scene.state == 'REVIEW_OVER')) {
     this.scene.pushMatrix();
       this.scene.scale(7,7,1);
       this.board.apply();
@@ -161,8 +168,15 @@ MyStatusBoard.prototype.display = function () {
           this.showString(this.scene.reviewTurn, .8);
           this.scene.translate(0,-0.8,0);
           this.showString(this.scene.reviewPlayers[this.scene.reviewTurn].pieces.length + ' pieces left', .5);
-        }
 
+          this.scene.translate(0,-1.5,0);
+          this.showString('Game review', .5);
+        }else if(this.scene.state == 'REVIEW_OVER'){
+          // show game result
+          this.showString(this.text);
+          this.scene.translate(0,-1.5,0);
+          this.showString('Review over...', .5);
+        }
     this.scene.popMatrix();
 
     this.scene.setActiveShaderSimple(this.scene.defaultShader);

@@ -71,9 +71,6 @@ MyEnvironment.prototype.setInitials = function () {
 
   // add scale
 	mat4.scale(this.matrix, this.matrix, this.graph.initials['scale']);
-
-	//this.scene.camera.near = this.graph.initials.frustumNear;
-	//this.scene.camera.far = this.graph.initials.frustumFar;
 };
 
 /*
@@ -280,7 +277,7 @@ MyEnvironment.prototype.initShaders = function () {
  */
 MyEnvironment.prototype.display = function () {
   this.scene.pushMatrix();
-    //this.scene.multMatrix(this.matrix);
+    this.scene.multMatrix(this.matrix);
 
    	if (this.graph.loadedOk){
    		this.scene.updateLights();
