@@ -57,10 +57,10 @@ PrologServer.prototype.parseMove = function(argArray){
   server.scene.gameSurface.placePiece(position, domino);
 
   // TODO set piece animation, calculating final position
-  server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
+  //server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
 
   server.scene.players['player1'].pieces = dominoes1.slice();
   server.scene.players['player2'].pieces = dominoes2.slice();
 
-  server.scene.proceedWithMove();
+  server.scene.proceedWithMove(argArray);
 };

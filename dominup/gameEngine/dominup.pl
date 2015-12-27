@@ -444,6 +444,17 @@ advanced_level(Player):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %TODO check if these changes work (auto player and human player)
 % First play forces a certer position
+move_computer(Player, Table, NewTable, Move, NextPlayerInt) :-
+                try_vertical_play(Player, Table),
+                make_move(Player, Table, NewTable, Move),
+                player_int(Player, NextPlayerInt).
+
+move_computer(Player, Table, NewTable, Move, NextPlayerInt) :-
+                \+ try_vertical_play(Player, Table),
+                make_move(Player, Table, NewTable, Move),
+                next_player(Player, NextPlayer, 2),
+                player_int(NextPlayer, NextPlayerInt).
+
 make_move(Player, Table, NewTable, Move):-
 	type(Player, computer),
   startingTable(Table), !,
@@ -472,6 +483,17 @@ make_move(Player, Table, NewTable, Move):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %			  	Human Player 			%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+move_human(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable, NextPlayerInt) :-
+                try_vertical_play(Player, Table),
+                make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable),
+                player_int(Player, NextPlayerInt).
+
+move_human(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable, NextPlayerInt) :-
+                \+ try_vertical_play(Player, Table),
+                make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable),
+                next_player(Player, NextPlayer, 2),
+                player_int(NextPlayer, NextPlayerInt).
 
 % make move, if the player is human
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -886,6 +908,10 @@ next_player(player1, player2, 4).
 next_player(player2, player3, 4).
 next_player(player3, player4, 4).
 next_player(player4, player1, 4).
+
+% determine player integer
+player_int(player1, 1).
+player_int(player2, 2).
 
 get_auto_player(APD):-
 	type(player2, computer),
