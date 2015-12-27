@@ -35,7 +35,7 @@ MyInterface.prototype.createMainMenu = function() {
 	this.gameSettings.add(this.scene, 'timeout', 0, 180).step(5);
 	var toggleCamera = this.gameSettings.add(this, 'staticCamera');
 	this.gameEnvironment = this.gameSettings.addFolder("Environment");
-	this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
+	var toggleEnviromnent = this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
 	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
 
@@ -43,6 +43,11 @@ MyInterface.prototype.createMainMenu = function() {
 		if(staticCamera)
 			interface.setActiveCamera(interface.scene.camera);
 		else interface.setActiveCamera(null);
+	});
+
+	toggleEnviromnent.onFinishChange(function() {
+		if(interface.scene)
+			interface.scene.environments[interface.scene.gameEnvironment].activateEnvironment();
 	});
 };
 

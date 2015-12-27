@@ -6,6 +6,7 @@
 function MyEnvironment(scene, gameGraph) {
  	this.scene = scene;
   this.graph = gameGraph;
+  this.loop = true;
 
   // create matrix
   this.matrix = mat4.create();
@@ -69,6 +70,7 @@ MyEnvironment.prototype.setInitials = function () {
 		}
 	}
 
+  console.log(this.graph.initials['scale']);
   // add scale
 	mat4.scale(this.matrix, this.matrix, this.graph.initials['scale']);
 };
@@ -97,9 +99,6 @@ MyEnvironment.prototype.createLights = function(){
 
 	for(var i = 0; i < this.graph.lights.length && i<8; i++){
 		this.scene.lights[i].name = this.graph.lights[i]['id'];
-
-		// debug
-		this.scene.lights[i].setVisible(true);
 
 		this[this.scene.lights[i].name] = this.graph.lights[i]['enable'];
 
@@ -321,7 +320,7 @@ MyEnvironment.prototype.display = function () {
  	this.leaves[elementId].display();
 
  	if(this.graph.leaves[elementId]['type']=='terrain')
- 		this.scene.setActiveShader(this.defaultShader);
+ 		this.scene.setActiveShader(this.scene.defaultShader);
 
  	this.materialsUsed.push(material);
  	this.texturesUsed.push(texture);

@@ -127,8 +127,8 @@ MyStatusBoard.prototype.showGameState = function () {
     }
     this.scene.translate(0,-1,0);
     if(this.scene.players[this.scene.turn].human)
-      this.showString('Make a move...', .5);
-    else this.showString('Preparing a move...', .5);
+      this.showString('Make a move...', .4);
+    else this.showString('Making a move...', .4);
   }
 };
 
