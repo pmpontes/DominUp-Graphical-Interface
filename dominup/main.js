@@ -32,10 +32,9 @@ main=function(){
 
     // create and load graph, and associate it to scene.
   	// loading errors are printed on console
-  	var defaultEnvironment = new MyGameGraph('default', myScene);
     var spaceEnvironment = new MyGameGraph('space', myScene);
-    //var spaceEnvironment = new MyGameGraph('space', myScene);
-    //var desertEnvironment = new MyGameGraph('desert', myScene);
+  	var roadEnvironment = new MyGameGraph('road', myScene);
+    var airfieldEnvironment = new MyGameGraph('airfield', myScene);
 
 	  // start
     app.run();

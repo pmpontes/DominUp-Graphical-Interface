@@ -301,7 +301,7 @@ DominupScene.prototype.initGameEnvironment = function (environmentName, graph) {
  */
 DominupScene.prototype.initGameEnvironments = function () {
   // game environments options
-	this.gameEnvironments = ['default', 'space', 'desert'];
+	this.gameEnvironments = ['space', 'road', 'airfield'];
 	this.gameEnvironment = this.gameEnvironments[0];
 	this.environments = [];
 };

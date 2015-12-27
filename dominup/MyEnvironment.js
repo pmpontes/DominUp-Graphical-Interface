@@ -70,7 +70,6 @@ MyEnvironment.prototype.setInitials = function () {
 		}
 	}
 
-  console.log(this.graph.initials['scale']);
   // add scale
 	mat4.scale(this.matrix, this.matrix, this.graph.initials['scale']);
 };
@@ -145,6 +144,9 @@ MyEnvironment.prototype.initGeometry = function () {
  		case 'sphere':
  			this.leaves[id] = new MySphere(this.scene, this.graph.leaves[id]['args']);
  			break;
+    case 'sphereReversed':
+      this.leaves[id] = new MySphereReversed(this.scene, this.graph.leaves[id]['args']);
+      break;
  		case 'triangle':
  			this.leaves[id] = new MyTriangle(this.scene, this.graph.leaves[id]['args']);
  			break;

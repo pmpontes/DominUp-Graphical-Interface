@@ -46,7 +46,7 @@ MyInterface.prototype.createMainMenu = function() {
 	});
 
 	toggleEnviromnent.onFinishChange(function() {
-		if(interface.scene)
+		if(interface.scene && interface.scene.environments[interface.scene.gameEnvironment]!=undefined)
 			interface.scene.environments[interface.scene.gameEnvironment].activateEnvironment();
 	});
 };
