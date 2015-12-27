@@ -598,10 +598,6 @@ DominupScene.prototype.makeMove = function (){
       var requestString = "makeMove(" + this.players[this.turn].playerId + ")";
       this.server.getPrologRequest(requestString);
     }
-
-    // save move
-    var positionSelected = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
-    this.moves.push({player: this.turn, piece: this.selectedPiece, position: positionSelected});
 };
 
 
@@ -610,6 +606,10 @@ DominupScene.prototype.makeMove = function (){
  * Processes a play AFTER communicating with the prolog server
  */
 DominupScene.prototype.proceedWithMove = function (){
+  // save move
+  var positionSelected = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
+  this.moves.push({player: this.turn, piece: this.selectedPiece, position: positionSelected});
+  
   // check if game over
   var winner;
   if((winner = this.isGameOver())!=false) {
