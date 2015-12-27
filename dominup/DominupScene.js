@@ -589,7 +589,7 @@ DominupScene.prototype.makeMove = function (){
  * proceedWithMove.
  * Processes a play AFTER communicating with the prolog server
  */
-DominupScene.prototype.proceedWithMove = function (){
+DominupScene.prototype.proceedWithMove = function (prologAnswer){
   // check if game over
   var winner;
   if((winner = this.isGameOver())!=false) {
@@ -599,7 +599,9 @@ DominupScene.prototype.proceedWithMove = function (){
   }
 
   // TODO determine next player from PROLOG
-  this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
+  var nextTurn = (prologAnswer[4] == 1) ? 'player1' : 'player2';
+  if(this.turn != nextTurn)
+    this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
 
   this.prepareTurn();
 
