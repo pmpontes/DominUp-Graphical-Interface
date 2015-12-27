@@ -3,6 +3,19 @@
  * @constructor
  */
 function Player(scene, id, level){
+	this.intLevel = 0;
+	switch(level){
+		case "Random":
+			this.intLevel = 0;
+			break;
+		case "Attack":
+			this.intLevel = 1;
+			break;
+		case "Defense":
+			this.intLevel = 2;
+			break;
+	}
+
 	this.scene = scene;
 	this.human = (level == undefined);
 	this.level = level;
