@@ -28,7 +28,6 @@ MyInterface.prototype.createMainMenu = function() {
 	// new game menu
 	this.startGameMenu = this.mainMenu.addFolder("New game");
 	this.startGameMenu.add(this, 'newGame');
-	this.startGameMenu.add(this.scene, 'resumeSavedGame');
 
 	// add game settings
 	this.staticCamera = true;
@@ -83,7 +82,6 @@ MyInterface.prototype.createGameMenu = function() {
 	this.cameraFolder.add(this.scene, 'cameraPosition', this.scene.cameraPositions);
 	this.cameraFolder.add(this, 'make360turn');
 	this.gameOptions.add(this.scene, 'reviewGame');
-	this.gameOptions.add(this.scene, 'saveGame');
 };
 
 MyInterface.prototype.make360turn = function() {

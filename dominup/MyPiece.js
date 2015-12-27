@@ -12,9 +12,14 @@ function MyPiece(scene, valueL, valueR) {
     this.animation = null;
     this.initialPosition = mat4.create();
 		mat4.identity(this.initialPosition);
-    //this.currentMatrix = initialPosition;
+    this.currentMatrix = this.initialPosition;
 
     this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
+};
+
+MyPiece.prototype.setInitialPosition = function(newPosition) {
+  this.initialPosition = newPosition;
+  this.currentMatrix = this.initialPosition;
 };
 
 MyPiece.prototype.setId = function(newId) {
@@ -44,6 +49,12 @@ MyPiece.prototype.getValues = function() {
 };
 
 MyPiece.prototype.display = function() {
+  // TODO apply this only to top of piece
+  //this.scene.setActiveShader(this.scene.pieceShader);
+  //this.scene.textures[this.scene.gameLook][value].bind(0);
+  //this.scene.textures[this.scene.gameLook][0].bind(1);
+  //this.scene.setActiveShader(this.scene.defaultShader);
+
   this.scene.pushMatrix();
 
   if(this.animation!=undefined)
@@ -60,7 +71,7 @@ MyPiece.prototype.display = function() {
         this.scene.translate(0.5, 0, 0, 0);
         this.makeHalfPiece(this.valueR);
     this.scene.popMatrix();
-    
+
   this.scene.popMatrix();
 };
 
@@ -122,22 +133,17 @@ MyPiece.prototype.centerBottom = function(value){
     this.rectangle.display();
 };
 
-MyPiece.prototype.setInitialPosition = function(side, x, z){
-    this.side = side;
-    var matrx = mat4.create();
-    mat4.identity(matrx);
-    if(this.side == 'player2')
-      mat4.rotateY(matrx, matrx, Math.PI);
-    var vectr = vec3.fromValues(x, z, 0.25);
-    mat4.translate(matrx, matrx, vectr);
-    this.initialPosition = matrx;
-};
-
 MyPiece.prototype.update = function(curTime){
   if(this.animation!=undefined)
     this.animation.update();
 };
 
-MyPiece.prototype.createAnimation = function(time, center, radius, angStart, angRot){
-  this.animation = new CircularAnimation(time, center, radius, angStart, angRot);
+MyPiece.prototype.createAnimation = function(time, finalPosition){
+  // finalPosition is of type {coords:[x,y,z], rotation}
+  // TODO
+//  this.animation = new CircularAnimation(time, center, radius, angStart, angRot);
+
+  this.currentMatrix = mat4.create();
+  //mat4.loadIdentity(this.currentMatrix);
+  //mat4.translate(this.currentMatrix);
 }

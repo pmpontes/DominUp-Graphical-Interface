@@ -97,8 +97,36 @@ MyStatusBoard.prototype.showString = function (text, small) {
     this.scene.popMatrix();
 };
 
+MyStatusBoard.prototype.showGameState = function () {
+  // show game result
+  this.showString(this.text);
+  this.scene.translate(0,-1,0);
+  this.showString(this.scene.players['player1'].pieces.length + '-' + this.scene.players['player2'].pieces.length);
+
+  this.scene.translate(0,-1.5,0);
+
+  // show player
+  if(this.scene.pauseGame) {
+    this.showString('Game paused', .6);
+  }else{
+    this.showString(this.scene.turn, .8);
+    this.scene.translate(0,-0.8,0);
+    this.showString(this.scene.players[this.scene.turn].pieces.length + ' pieces left', .5);
+
+    // show time left to make move
+    if(this.scene.timeout!=0){
+      var responseTime = Math.round(this.scene.timeout - this.scene.responseTime/1000);
+      this.scene.translate(0,-1,0);
+
+      if(responseTime%60 < 10)
+        this.showString(Math.floor(responseTime/60) + ':0' + responseTime%60);
+      else this.showString(Math.floor(responseTime/60) + ':' + responseTime%60);
+    }
+  }
+};
+
 MyStatusBoard.prototype.display = function () {
-  if(!this.scene.pickMode && (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW')){
+  if(!this.scene.pickMode && (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW_GAME')) {
     this.scene.pushMatrix();
       this.scene.scale(7,7,1);
       this.board.apply();
@@ -114,27 +142,25 @@ MyStatusBoard.prototype.display = function () {
     this.scene.pushMatrix();
         this.scene.translate(-2.5,2.5,0);
 
-        if(this.scene.state == 'PLAY'){
+        if(this.scene.state == 'PLAY') {
+          var winner = null;
+          if((winner=this.scene.isGameOver())) {
             // show game result
             this.showString(this.text);
-            this.scene.translate(0,-1,0);
-            this.showString(this.scene.players['player1'].pieces.length + '-' + this.scene.players['player2'].pieces.length);
-
-            // show player
             this.scene.translate(0,-1.5,0);
-            this.showString(this.scene.turn, .8);
-            this.scene.translate(0,-0.8,0);
-            this.showString(this.scene.players[this.scene.turn].pieces.length + ' pieces left', .5);
+            this.showString(winner + ' won', .8);
+          }else this.showGameState();
+        }else if(this.scene.state == 'REVIEW_GAME'){
+          // show game result
+          this.showString(this.text);
+          this.scene.translate(0,-1,0);
+          this.showString(this.scene.reviewPlayers['player1'].pieces.length + '-' + this.scene.reviewPlayers['player2'].pieces.length);
 
-            // show time left to make move
-            if(this.scene.timeout!=0){
-              var responseTime = Math.round(this.scene.timeout - this.scene.responseTime/1000);
-              this.scene.translate(0,-1,0);
-              this.showString(Math.floor(responseTime/60) + ':' + responseTime%60);
-            }
-
-        }else if(this.scene.state == 'REVIEW'){
-
+          // show player
+          this.scene.translate(0,-1.5,0);
+          this.showString(this.scene.reviewTurn, .8);
+          this.scene.translate(0,-0.8,0);
+          this.showString(this.scene.reviewPlayers[this.scene.reviewTurn].pieces.length + ' pieces left', .5);
         }
 
     this.scene.popMatrix();

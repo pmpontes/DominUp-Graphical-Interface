@@ -39,14 +39,21 @@ Player.prototype.removePiece = function (piece) {
 		}
 };
 
+Player.prototype.clone = function () {
+	var newPlayer = new Player(this.scene, this.playerId, this.level);
+	newPlayer.setPieces(this.initialPieceSet);
+	return newPlayer;
+};
+
 Player.prototype.setPieces = function (pieces) {
 	this.pieces = pieces.slice();
+	this.initialPieceSet = pieces.slice();
 
 	var line = 0;
 	var column = 0;
 
 	// calculate initial position for each piece
-	for(var i = 0; i<this.pieces.length; i++){
+	for(var i = 0; i<this.pieces.length; i++) {
 		if(i % 4 == 0){
 			line+=2;
 			column = 0;
@@ -57,7 +64,7 @@ Player.prototype.setPieces = function (pieces) {
 
 		if(this.playerId=='player1'){
 			if(i>15)
-				mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 3 + 2/3 -column));
+				mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 3 + 2/3.0 -column));
 			else mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 9 -column));
 			mat4.rotateY(matrx, matrx, -Math.PI/2);
 		}else if(this.playerId=='player2'){
@@ -65,7 +72,7 @@ Player.prototype.setPieces = function (pieces) {
 			mat4.rotateY(matrx, matrx, Math.PI/2);
 		}
 
-		this.scene.pieces[this.pieces[i]].initialPosition = matrx;
+		this.scene.pieces[this.pieces[i]].setInitialPosition(matrx);
 		column+=2 + 2/3.0;
 	}
 };
@@ -86,7 +93,7 @@ Player.prototype.showDominoes = function (){
 	this.scene.pushMatrix();
 	for(var i=0; i<this.pieces.length; i++){
 		if(this.scene.pickMode){
-			if(this.scene.turn == this.playerId){
+			if(this.scene.turn == this.playerId && this.scene.state!='REVIEW_GAME'){
 				this.scene.pieces[this.pieces[i]].setSelectable();
 				this.scene.pieces[this.pieces[i]].display();
 			}

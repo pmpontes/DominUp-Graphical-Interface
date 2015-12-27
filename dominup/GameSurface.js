@@ -35,14 +35,32 @@ GameSurface.prototype = Object.create(CGFobject.prototype);
 
 // position format aX,aY, bX, bY, domino [L,R]
 GameSurface.prototype.placePiece = function (position, piece) {
-	this.placedPieces.push({ height: (this.table[position.aY][position.aX].length -1), coords: position, domino: piece });
+	// calculate piece's position
+	var piecePosition = { rotation:0, coords: [] };
+
+	piecePosition.coords[0] = (position.aX + position.bX)/2.0;
+	piecePosition.coords[1] = (this.table[position.aY][position.aX].length -1);
+	piecePosition.coords[2] = (position.aY + position.bY)/2.0;
+
+	// if horizontal
+  if(position.aY==position.bY) {
+    if(position.aX>position.bX)
+      piecePosition.rotation = Math.PI;
+  }else{	// if vertical
+    if(position.aY<position.bY)
+      piecePosition.rotation = Math.PI/2;
+    else piecePosition.rotation = Math.PI/2;
+  }
+
+	// place piece on table
+	this.placedPieces.push({coords: position, domino: piece });
 
 	this.table[position.aY][position.aX].push(piece[0]);
 	this.table[position.bY][position.bX].push(piece[1]);
 
-console.log(piece[0]);
-console.log(piece[1]);
 	console.log(this.placedPieces);
+	console.log(piecePosition);
+	return piecePosition;
 };
 
 GameSurface.prototype.unplacePiece = function (piece) {
@@ -110,29 +128,7 @@ GameSurface.prototype.display = function () {
 	// show pieces
 	if(!this.scene.pickMode)
 		for(var i=0; i<this.placedPieces.length; i++)
-			this.drawPiece(this.placedPieces[i]);
+			this.scene.pieces[this.placedPieces[i].domino].display();
 
 	this.scene.popMatrix();
-};
-
-GameSurface.prototype.drawPiece = function(piece){
-
-	this.scene.pushMatrix();
-		var rotAngle = 0;
-
-		// if horizontal
-		if(piece.coords.aY==piece.coords.bY){
-			if(piece.coords.aX>piece.coords.bX)
-				rotAngle=Math.PI;
-		}else{	// if vertical
-			if(piece.coords.aY<piece.coords.bY)
-				rotAngle = Math.PI/2;
-			else rotAngle = Math.PI/2;
-		}
-
-		this.scene.translate(piece.coords.aX, piece.height, piece.coords.aY, 1);
-		this.scene.translate(0.5, 0, 0.5, 1);
-		this.scene.rotate(rotAngle, 0, 1, 0);
-		this.scene.pieces[piece.domino].display();
- 	this.scene.popMatrix();
 };
