@@ -770,7 +770,7 @@ DominupScene.prototype.display = function () {
 
   // display game environment when ready
   if(!this.pickMode && (this.gameEnvironment in this.environments))
-	   this.environments[this.gameEnvironment].display();
+	  this.environments[this.gameEnvironment].display();
 
 	if(this.state == 'PLAY'){
     this.pushMatrix();

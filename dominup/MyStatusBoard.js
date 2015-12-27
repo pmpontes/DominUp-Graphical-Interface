@@ -151,11 +151,11 @@ MyStatusBoard.prototype.display = function () {
 
         if(this.scene.state == 'PLAY') {
           var winner = null;
-          if((winner=this.scene.isGameOver())) {
+          if((winner=this.scene.isGameOver()) && this.scene.players['player1'].initialPieceSet!=undefined) {
             // show game result
             this.showString(this.text);
             this.scene.translate(0,-1.5,0);
-            this.showString(winner + ' won', .8);
+            this.showString(winner + ' won', .6);
           }else this.showGameState();
         }else if(this.scene.state == 'REVIEW_GAME'){
           // show game result
