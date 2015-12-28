@@ -2,7 +2,7 @@
  * Created by Gil on 19/11/2015.
  */
 
-function MyPiece(scene, valueL, valueR) {
+function MyPiece(scene, valueR, valueL) {
     CGFobject.call(this,scene);
 
     this.valueL = valueL;
@@ -15,6 +15,10 @@ function MyPiece(scene, valueL, valueR) {
     this.currentMatrix = this.initialPosition;
 
     this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
+};
+
+MyPiece.prototype.setReferenceCoordinates = function(vectr){
+  this.referenceCoordinates = vectr;
 };
 
 MyPiece.prototype.setInitialPosition = function(newPosition) {
@@ -31,12 +35,12 @@ MyPiece.prototype.getId = function() {
 };
 
 MyPiece.prototype.selected = function() {
-    this.animation = new LinearAnimation(4, [[0,0,0], [0,0.5,0]]);
+    this.animation = new LinearAnimation(0.2, [[0,0,0], [0,0.5,0]]);
     this.animation.activate();
 };
 
 MyPiece.prototype.unselected = function() {
-    this.animation = new LinearAnimation(4, [[0,0.5, 0], [0,0,0]]);
+    this.animation = new LinearAnimation(0.2, [[0,0.5, 0], [0,0,0]]);
     this.animation.activate();
 };
 
@@ -45,7 +49,7 @@ MyPiece.prototype.setSelectable = function() {
 };
 
 MyPiece.prototype.getValues = function() {
-    return [this.valueL, this.valueR];
+    return [this.valueR, this.valueL];
 };
 
 MyPiece.prototype.display = function() {
@@ -53,10 +57,27 @@ MyPiece.prototype.display = function() {
 
   this.scene.pushMatrix();
 
-  if(this.animation!=undefined)
-    this.scene.multMatrix(this.animation.getCurrentTransformation());
+  if(this.animation!=undefined){
+    if(this.animation.type == "LINEAR")
+      this.scene.multMatrix(this.animation.getCurrentTransformation());
+    if(this.animation.type == "PIECE"){
+      //this.currentMatrix = mat4.clone(this.initialPosition);
+      //mat4.multiply(this.currentMatrix, this.currentMatrix, this.animation.getCurrentTransformation());
+      //this.scene.multMatrix(this.currentMatrix);
+      //this.scene.multMatrix(this.animation.getCurrentTransformation());
+    }
+  }
 
   this.scene.multMatrix(this.initialPosition);
+
+  if(this.animation!=undefined){
+    if(this.animation.type == "PIECE"){
+      //this.currentMatrix = mat4.clone(this.initialPosition);
+      //mat4.multiply(this.currentMatrix, this.currentMatrix, this.animation.getCurrentTransformation());
+      //this.scene.multMatrix(this.currentMatrix);
+      this.scene.multMatrix(this.animation.getCurrentTransformation());
+    }
+  }
 
     this.scene.pushMatrix();
         this.scene.translate(-0.5, 0, 0, 0);
@@ -140,17 +161,17 @@ MyPiece.prototype.centerBottom = function(){
     this.rectangle.display();
 };
 
-MyPiece.prototype.update = function(curTime){
+MyPiece.prototype.update = function(currTime){
   if(this.animation!=undefined)
-    this.animation.update();
+    this.animation.update(currTime);
 };
 
 MyPiece.prototype.createAnimation = function(time, finalPosition){
   // finalPosition is of type {coords:[x,y,z], rotation}
   // TODO
 //  this.animation = new CircularAnimation(time, center, radius, angStart, angRot);
+  this.animation = new PieceAnimation(time, finalPosition, this.scene, this);
+  console.log("animation created");
 
-  this.currentMatrix = mat4.create();
-  //mat4.loadIdentity(this.currentMatrix);
   //mat4.translate(this.currentMatrix);
 }

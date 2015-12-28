@@ -1,11 +1,11 @@
 <SCENE>
 	<INITIALS>
-        <frustum near=".1" far="500"/>                
-        <translation x="-43" y="-.01" z="-23" />         
-        <rotation axis="x" angle="0" />                
-        <rotation axis="y" angle="0" />                
+        <frustum near=".1" far="500"/>
+        <translation x="-43" y="-.01" z="-23" />
+        <rotation axis="x" angle="0" />
+        <rotation axis="y" angle="0" />
         <rotation axis="z" angle="0" />
-        <scale sx="3.0" sy="3.0" sz="3.0" />             
+        <scale sx="3.0" sy="3.0" sz="3.0" />
         <reference length="1" />
     </INITIALS>
 
@@ -15,25 +15,25 @@
 	</ILLUMINATION>
 
 	<LIGHTS>
-	    <LIGHT id="dayLight">                           
-	        <enable value="1" />                       
-	        <position x="15" y="25" z="7" w="1" />       
+	    <LIGHT id="dayLight">
+	        <enable value="1" />
+	        <position x="15" y="25" z="7" w="1" />
 	        <ambient r="0.9" g="0.9" b="0.9" a="1" />
 	        <diffuse r="0.9" g="0.9" b="0.9" a="1" />
 	        <specular r="0.9" g="0.9" b="0.9" a="1" />
 	    </LIGHT>
 
-        <LIGHT id="streetLitght1">                     
-            <enable value="1" />                        
-            <position x="25" y="11.6" z="10" w="1" />  
+        <LIGHT id="streetLitght1">
+            <enable value="1" />
+            <position x="25" y="11.6" z="10" w="1" />
             <ambient r="0.5" g="0.5" b="0.5" a="0.5" />
             <diffuse r="0.5" g="0.5" b="0.5" a="0.5" />
             <specular r="0.3" g="0.3" b="0.3" a="0.5" />
         </LIGHT>
 
-        <LIGHT id="streetLitght2">                     
-            <enable value="1" />                        
-            <position x="15" y="11.6" z="5" w="1" />       
+        <LIGHT id="streetLitght2">
+            <enable value="1" />
+            <position x="15" y="11.6" z="5" w="1" />
             <ambient r="0.5" g="0.5" b="0.5" a="0.5" />
             <diffuse r="0.5" g="0.5" b="0.5" a="0.5" />
             <specular r="0.3" g="0.3" b="0.3" a="0.5" />
@@ -42,7 +42,7 @@
 
 	<TEXTURES>
 	    <TEXTURE id="road">
-        	<file path="textures/road.png" />         
+        	<file path="textures/road.png" />
 	        <amplif_factor s="0.5" t="1" />
 	    </TEXTURE>
 
@@ -87,27 +87,27 @@
 
         <MATERIAL id="steelMaterial">
             <shininess value="30" />
-            <specular r="0.1" g="0.1" b="0.1" a="1" />        
-            <diffuse r="0.3" g="0.3" b="0.3" a="1" />       
-            <ambient r="0.3" g="0.3" b="0.3" a="1" />         
-            <emission r="0.0" g="0.0" b="0.0" a="1" />   
-        </MATERIAL>    
+            <specular r="0.1" g="0.1" b="0.1" a="1" />
+            <diffuse r="0.3" g="0.3" b="0.3" a="1" />
+            <ambient r="0.3" g="0.3" b="0.3" a="1" />
+            <emission r="0.0" g="0.0" b="0.0" a="1" />
+        </MATERIAL>
 
         <MATERIAL id="plasticMaterial">
             <shininess value="5" />
-            <specular r="0" g="0" b="0" a="1" />        
-            <diffuse r="0.3" g="0.3" b="0.3" a="1" />       
-            <ambient r="0.3" g="0.3" b="0.3" a="1" />         
-            <emission r="0.0" g="0.0" b="0.0" a="1" />   
-        </MATERIAL> 
+            <specular r="0" g="0" b="0" a="" />
+            <diffuse r="0.3" g="0.3" b="0.3" a="1" />
+            <ambient r="0.3" g="0.3" b="0.3" a="1" />
+            <emission r="0.0" g="0.0" b="0.0" a="1" />
+        </MATERIAL>
 
         <MATERIAL id="metalicMaterial">
             <shininess value="20" />
-            <specular r="0.1" g="0.1" b="0.1" a="1" />        
-            <diffuse r="0.447" g="0.416" b="0.416" a="1" />       
-            <ambient r="0.447" g="0.416" b="0.416" a="1" />         
-            <emission r="0.0" g="0.0" b="0.0" a="1" />   
-        </MATERIAL>  
+            <specular r="0.1" g="0.1" b="0.1" a="1" />
+            <diffuse r="0.447" g="0.416" b="0.416" a="1" />
+            <ambient r="0.447" g="0.416" b="0.416" a="1" />
+            <emission r="0.0" g="0.0" b="0.0" a="1" />
+        </MATERIAL>
 
         <MATERIAL id="blackMaterial">
             <shininess value="1" />
@@ -115,7 +115,7 @@
             <diffuse r="0" g="0" b="0" a="1" />
             <ambient r="0" g="0" b="0" a="1" />
             <emission r="0" g="0" b="0" a="1" />
-        </MATERIAL>  
+        </MATERIAL>
 
 	    <MATERIAL id="materiak">
         	<shininess value="90" />
@@ -126,22 +126,22 @@
 	    </MATERIAL>
 
         <!-- A default material -->
-        <MATERIAL id="defaultMaterial">                                  
+        <MATERIAL id="defaultMaterial">
             <shininess value="1" />
-            <specular r="0.5" g="0.5" b="0.5" a="1" />        
-            <diffuse r="0.5" g="0.5" b="0.5" a="1" />       
-            <ambient r="0.0" g="0.0" b="0.0" a="1" />         
-            <emission r="0.0" g="0.0" b="0.0" a="1" />        
+            <specular r="0.5" g="0.5" b="0.5" a="1" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1" />
+            <ambient r="0.0" g="0.0" b="0.0" a="1" />
+            <emission r="0.0" g="0.0" b="0.0" a="1" />
         </MATERIAL>
 
 	</MATERIALS>
 
 <LEAVES>
-    <LEAF id="leafRectangle" type="rectangle" args="0 1 1 0" />      
-    <LEAF id="leafCylinder" type="cylinder" args="1 1 1 10 10" />    
-    <LEAF id="leafSphere" type="sphere" args="1 10 10" />            
+    <LEAF id="leafRectangle" type="rectangle" args="0 1 1 0" />
+    <LEAF id="leafCylinder" type="cylinder" args="1 1 1 10 10" />
+    <LEAF id="leafSphere" type="sphere" args="1 10 10" />
     <LEAF id="leafTriangle" type="triangle" args="0 0 0 1 0 0 0 1 0" />
-    <LEAF id="leafCone" type="cylinder" args="1 1 0 10 10" />  
+    <LEAF id="leafCone" type="cylinder" args="1 1 0 10 10" />
     <LEAF id="leafTriangleEquilateral" type="triangle" args="0 1 0 -0.866 -0.5 0 0.866 -0.5 0" />
 </LEAVES>
 
@@ -159,7 +159,6 @@
             <DESCENDANT id="car1" />
             <DESCENDANT id="car2" />
             <DESCENDANT id="road" />
-            <DESCENDANT id="billboard" />
             <DESCENDANT id="lightpost1" />
             <DESCENDANT id="lightpost2" />
             <DESCENDANT id="trafficCone" />
@@ -337,7 +336,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="structure">  
+    <NODE id="structure">
 
         <MATERIAL id="null" />
         <TEXTURE id="null" />
@@ -349,7 +348,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="chassisTop">  
+    <NODE id="chassisTop">
 
         <MATERIAL id="null" />
         <TEXTURE id="null" />
@@ -360,7 +359,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="chassisCore">  
+    <NODE id="chassisCore">
 
         <MATERIAL id="null" />
         <TEXTURE id="null" />
@@ -409,7 +408,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="rightChassisCore"> 
+    <NODE id="rightChassisCore">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="1" y="1" z="0" />
@@ -420,7 +419,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="backChassisCore"> 
+    <NODE id="backChassisCore">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="1" y="0" z="0" />
@@ -430,7 +429,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="frontChassisCore"> 
+    <NODE id="frontChassisCore">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="0" y="0" z="1" />
@@ -440,7 +439,7 @@
     </NODE>
 
 
-    <NODE id="carGlassFront">  
+    <NODE id="carGlassFront">
         <MATERIAL id="materiak" />
         <TEXTURE id="clear" />
         <TRANSLATION x="1.5" y="1.5" z="3.4" />
@@ -449,7 +448,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="carGlassRear"> 
+    <NODE id="carGlassRear">
         <MATERIAL id="materiak" />
         <TEXTURE id="clear" />
         <TRANSLATION x="1.5" y="1.5" z="0.6" />
@@ -459,7 +458,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="carGlass"> 
+    <NODE id="carGlass">
         <MATERIAL id="materiak" />
         <TEXTURE id="clear" />
         <DESCENDANTS>
@@ -469,7 +468,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="glassFace">  
+    <NODE id="glassFace">
         <MATERIAL id="materiak" />
         <TEXTURE id="clear" />
         <SCALE sx="3.0" sy="1.1" sz="2.0" />
@@ -480,7 +479,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="glassLeft">  
+    <NODE id="glassLeft">
         <MATERIAL id="materiak" />
         <TEXTURE id="clear" />
         <TRANSLATION x="-1.5" y="-0.5" z="-0.4" />
@@ -491,7 +490,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="glassRight">  
+    <NODE id="glassRight">
         <MATERIAL id="materiak" />
         <TEXTURE id="clear" />
         <TRANSLATION x="1.5" y="-0.5" z="-0.4" />
@@ -527,7 +526,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="bottom">  
+    <NODE id="bottom">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="1" y="0" z="0" />
@@ -547,7 +546,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="right"> 
+    <NODE id="right">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="1" y="1" z="0" />
@@ -558,7 +557,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="back"> 
+    <NODE id="back">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="1" y="0" z="0" />
@@ -568,7 +567,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="front"> 
+    <NODE id="front">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="0" y="0" z="1" />
@@ -621,7 +620,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="rightOST"> 
+    <NODE id="rightOST">
         <MATERIAL id="null" />
         <TEXTURE id="clear" />
         <TRANSLATION x="1" y="1" z="0" />
@@ -632,7 +631,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="backOST"> 
+    <NODE id="backOST">
         <MATERIAL id="null" />
         <TEXTURE id="clear" />
         <TRANSLATION x="1" y="0" z="0" />
@@ -642,7 +641,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="frontOST"> 
+    <NODE id="frontOST">
         <MATERIAL id="null" />
         <TEXTURE id="null" />
         <TRANSLATION x="0" y="0" z="1" />
@@ -651,7 +650,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="wheels"> 
+    <NODE id="wheels">
         <MATERIAL id="defaultMaterial" />
         <TEXTURE id="clear" />
         <TRANSLATION x="0.25" y="0" z="1" />
@@ -663,7 +662,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="topRightWheel"> 
+    <NODE id="topRightWheel">
         <MATERIAL id="null" />
         <TEXTURE id="clear" />
         <TRANSLATION x="0" y="0" z="3" />
@@ -672,7 +671,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="topLeftWheel"> 
+    <NODE id="topLeftWheel">
         <MATERIAL id="null" />
         <TEXTURE id="clear" />
         <TRANSLATION x="2.5" y="0" z="3" />
@@ -682,7 +681,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="bottomRightWheel"> 
+    <NODE id="bottomRightWheel">
         <MATERIAL id="null" />
         <TEXTURE id="clear" />
         <DESCENDANTS>
@@ -690,17 +689,17 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="bottomLeftWheel"> 
+    <NODE id="bottomLeftWheel">
         <MATERIAL id="null" />
         <TEXTURE id="clear" />
         <TRANSLATION x="2.5" y="0" z="0" />
-        <ROTATION axis="y" angle="180" /> 
+        <ROTATION axis="y" angle="180" />
         <DESCENDANTS>
             <DESCENDANT id="wheel" />
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="wheel"> 
+    <NODE id="wheel">
         <MATERIAL id="null" />
         <TEXTURE id="tire" />
         <SCALE sx="0.5" sy="0.5" sz="0.5" />
@@ -712,7 +711,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="wheelTops"> 
+    <NODE id="wheelTops">
         <MATERIAL id="metalicMaterial" />
         <TEXTURE id="wheelPlates" />
         <TRANSLATION x="0" y="0" z="1" />
@@ -722,7 +721,7 @@
         </DESCENDANTS>
     </NODE>
 
-    <NODE id="wheelBack"> 
+    <NODE id="wheelBack">
         <MATERIAL id="metalicMaterial" />
         <TEXTURE id="clear" />
         <TRANSLATION x="0" y="0" z="0" />

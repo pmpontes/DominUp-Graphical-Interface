@@ -632,25 +632,28 @@ DominupScene.prototype.prepareTurn = function (){
  * Moves the piece selected to the position chosen.
  */
 DominupScene.prototype.makeMove = function (){
-	   console.log("piece and location chosen, make move");
+ console.log("piece and location chosen, make move");
 
-    var requestString;
+  var requestString;
 
-    // make play in Prolog
-    if(this.players[this.turn].human){
-      requestString = "makeMove(" + this.players[this.turn].playerId + ",[" + this.selectedPiece + "]-["
-                                      + this.posA[0] + "," + this.posA[1] + "]-["
-                                      + this.posB[0] + "," + this.posB[1] + "])";
+  // make play in Prolog
+  if(this.players[this.turn].human){
+    requestString = "makeMove(" + this.players[this.turn].playerId + ",[" + this.selectedPiece + "]-["
+                                    + this.posA[0] + "," + this.posA[1] + "]-["
+                                    + this.posB[0] + "," + this.posB[1] + "])";
+  } else requestString = "makeMove(" + this.players[this.turn].playerId + ")";
 
-    } else requestString = "makeMove(" + this.players[this.turn].playerId + ")";
+  this.server.getPrologRequest(requestString);
 
-    this.server.getPrologRequest(requestString);
+  // save move
+  /*var positionSelected = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
+  this.moves.push({player: this.turn, piece: this.selectedPiece, position: positionSelected});*/
 };
 
 
 /**
  * proceedWithMove.
- * Processes a play AFTER communicating with the prolog server
+ * Processes a play AFTER communicating with the prolog server and the animation of the previous move has ended
  */
 DominupScene.prototype.proceedWithMove = function (nextPlayer){
   // check if game over

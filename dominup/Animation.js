@@ -6,6 +6,7 @@
  */
 function Animation(time){
 	this.animationTime = time*1000;
+	this.type;
 	this.animationMatrix = mat4.create();
 	this.startTime = 0;
 	this.timeElapsed = 0;
@@ -29,9 +30,10 @@ Animation.prototype.update = function(currTime){
 				this.state = "CONTINUE";
 				break;
 			case "CONTINUE":
-				if(this.endTime >= currTime)
+				if(this.endTime > currTime){
 					this.timeElapsed = currTime - this.startTime;
-				else{
+				} else{
+					this.timeElapsed = this.endTime - this.startTime;
 					if(this.overtime == false)
 						this.overtime = true;
 					else{

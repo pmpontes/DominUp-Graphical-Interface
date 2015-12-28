@@ -6,6 +6,7 @@ function LinearAnimation(time, points){
 	Animation.call(this, time);
 
 	this.startingPoint = points[0];
+	this.type = "LINEAR";
 
 	this.controlPoints = points.slice(0);
 	this.currentSegment = 0;

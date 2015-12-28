@@ -139,18 +139,23 @@ parse_input(getNextPlayer(CurPlayer), NextPlayer):- get_next_player(CurPlayer, N
 
 %make moves
 parse_input(makeMove(Player), [1, [Domino,[AX,AY],[BX, BY]],D1,D2,NextPlayer]):-
-	table(Table),
-	move_computer(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY], NextPlayer), !,
+	table(Table), move_computer(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY], NextPlayer),
 	set_table(NewTable),
 	player(player1, D1),
 	player(player2, D2).
 
-parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AX,AY],[BX, BY]],D1,D2,NextPlayer]):-
+parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AfX,AfY],[BfX, BfY]],D1,D2,NextPlayer]):-
 	table(Table),
-	move_human(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable, NextPlayer),
+	move_human(Player, Domino-[AX,AY]-[BX, BY], [AfX,AfY]-[BfX, BfY], Table, NewTable, NextPlayer),
 	set_table(NewTable),
 	player(player1, D1),
 	player(player2, D2).
+
+parse_input(listExpansionPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_expansion_plays(Dominoes, Table, Moves).
+parse_input(listVerticalPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_vertical_plays(Dominoes, Table, Moves).
+
+%restore game state TODO check restore game state
+parse_input(Table-XMax-YMax-P1Name-P2Name-P1Dom-P2Dom-P1Type-P2Type, ok) :- set_table_from_data(Table,XMax,YMax,P1Name,P2Name,P1Dom,P2Dom,P1Type,P2Type).
 
 parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [2]).
 

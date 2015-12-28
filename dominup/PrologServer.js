@@ -98,20 +98,29 @@ PrologServer.prototype.parseMove = function(argArray){
     var dominoes1 = argArray[2];
     var dominoes2 = argArray[3];
 
-    var positionSelected = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
+    var position = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
     var domino = [move[0][0], move[0][1]];
 
+<<<<<<< HEAD
     console.log('----------------------------\nMOVE MADE by :' + server.scene.turn);
     console.log(positionSelected);
+=======
+    console.log('----------------------------\nMOVE MADE:');
+    //console.log(positionSelected);
+>>>>>>> e61b7b3b20fc4bf2c89456c9558da0f74bbe84a7
     console.log(domino);
 
     // add piece to game surface
-    server.scene.gameSurface.placePiece(positionSelected, domino);
+    server.scene.gameSurface.placePiece(position, domino);
     // save move
-    server.scene.moves.push({player: server.scene.turn, piece: domino, position: positionSelected});
+    server.scene.moves.push({player: server.scene.turn, piece: domino, position: position});
 
     // TODO set piece animation, calculating final position
-    //server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
+    if(!server.scene.players[server.scene.turn].human){
+      console.log("Not Human");
+      var testPiece = domino[0] + "," + domino[1];
+      server.scene.pieces[domino].createAnimation(3, position);
+    } else server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
 
     // save player's dominoes
     server.scene.players['player1'].pieces = dominoes1.slice();
