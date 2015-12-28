@@ -77,8 +77,19 @@ Player.prototype.setPieces = function (pieces) {
 	}
 };
 
-Player.prototype.getPieces = function () {
-	return this.pieces;
+Player.prototype.getPieces = function (format) {
+	if(format){
+		var string = "[";
+
+		for(var m=0; m<this.pieces.length; m++){
+			string += "[" + this.pieces[m][0] + "," + this.pieces[m][1] + "]";
+			if(m+1 < this.pieces.length)
+				string += ",";
+		}
+
+		string += "]";
+		return string;
+	}else return this.pieces;
 };
 
 Player.prototype.makeMove = function () {

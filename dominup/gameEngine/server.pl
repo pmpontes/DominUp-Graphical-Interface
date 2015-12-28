@@ -1,8 +1,6 @@
 :-use_module(library(sockets)).
 :-use_module(library(lists)).
 :-use_module(library(codesio)).
-%:-include('dominup.pl').
-:- consult(dominup).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%                                        Server                                                   %%%%
@@ -106,13 +104,32 @@ print_header_line(_).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Require your Prolog Files here
+:- consult(dominup).
 
 %parse_input(FunctionCall(Args), Result) :- FunctionCall(Args, Result).
 
 %start game
-parse_input(playerPlayer, [0, Table,D1,D2]):- player_player(Table), set_table(Table), player(player1, D1), player(player2, D2).
-parse_input(playerComputer(Level), [0, Table,D1,D2]):- player_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_difficulty(player2, Level).
-parse_input(computerComputer(Level1,Level2), [0, Table,D1,D2]):- computer_computer(Table), set_table(Table), player(player1, D1), player(player2, D2), set_difficulty(player1, Level1), set_difficulty(player2, Level2).
+parse_input(playerPlayer, [0, Table,D1,D2]):-
+	player_player(Table),
+	set_table(Table),
+	player(player1, D1),
+	player(player2, D2).
+
+parse_input(playerComputer(Level), [0, Table,D1,D2]):-
+	player_computer(Table),
+	set_table(Table),
+	player(player1, D1),
+	player(player2, D2),
+	set_difficulty(player2, Level).
+
+parse_input(computerComputer(Level1,Level2), [0, Table,D1,D2]):-
+	computer_computer(Table),
+	set_table(Table),
+	player(player1, D1),
+	player(player2, D2),
+	set_difficulty(player1, Level1),
+	set_difficulty(player2, Level2).
+
 parse_input(getTable, Table):- table(Table).
 parse_input(set_difficulty(Player, Difficulty), ok):- set_difficulty(Player, Difficulty).
 
@@ -121,19 +138,26 @@ parse_input(getPlayerDominoes(Player), Dominoes):- player(Player, Dominoes).
 parse_input(getNextPlayer(CurPlayer), NextPlayer):- get_next_player(CurPlayer, NextPlayer).
 
 %make moves
-parse_input(makeMove(Player), [1, [Domino,[AX,AY],[BX, BY]],D1,D2,NextPlayer]):- table(Table), move_computer(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY], NextPlayer), set_table(NewTable), player(player1, D1), player(player2, D2).
-parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AX,AY],[BX, BY]],D1,D2,NextPlayer]):- table(Table), move_human(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable, NextPlayer), set_table(NewTable),
-																																																player(player1, D1), player(player2, D2).
-parse_input(listExpansionPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_expansion_plays(Dominoes, Table, Moves).
-parse_input(listVerticalPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_vertical_plays(Dominoes, Table, Moves).
+parse_input(makeMove(Player), [1, [Domino,[AX,AY],[BX, BY]],D1,D2,NextPlayer]):-
+	table(Table),
+	move_computer(Player, Table, NewTable, Domino-[AX,AY]-[BX, BY], NextPlayer), !,
+	set_table(NewTable),
+	player(player1, D1),
+	player(player2, D2).
 
-%restore game state TODO check restore game state
-parse_input(Table-XMax-YMax-P1Name-P2Name-P1Dom-P2Dom-P1Type-P2Type, ok) :- set_table_from_data(Table,XMax,YMax,P1Name,P2Name,P1Dom,P2Dom,P1Type,P2Type).
+parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AX,AY],[BX, BY]],D1,D2,NextPlayer]):-
+	table(Table),
+	move_human(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable, NextPlayer),
+	set_table(NewTable),
+	player(player1, D1),
+	player(player2, D2).
 
+parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [2]).
 
+%set game state
+parse_input(setGameState(Table, D1, D2), ok):-
+	set_table(Table),
+	save_player(player1, D1),
+	save_player(player2, D2).
 
 parse_input(quit, goodbye).
-parse_input(teste, goodbye).
-
-test(_,[],N) :- N =< 0.
-test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).

@@ -21,12 +21,18 @@ PrologServer.prototype.getPrologRequest = function(requestString, onSuccess, onE
 PrologServer.prototype.handleReply = function(data){
 	if(data.target.response != null && data.target.response != "ok" && data.target.response != "Syntax Error" && data.target.response != "Bad Request"){
     var argumentsArray = JSON.parse(data.target.response);
+    console.log('RESPONSE CODE:' + argumentsArray[0]);
     switch(argumentsArray[0]){
       case 0:
         server.parseStartGame(argumentsArray);
         break;
       case 1:
+      case 2:
         server.parseMove(argumentsArray);
+        break;
+      case 3:
+        if(argumentsArray[1]!='ok')
+          console.log('impossible to undoLastMove');
         break;
     }
   } else {
@@ -47,20 +53,34 @@ PrologServer.prototype.parseStartGame = function(argArray){
 };
 
 PrologServer.prototype.parseMove = function(argArray){
-  var move = argArray[1];
-  var dominoes1 = argArray[2];
-  var dominoes2 = argArray[3];
+  if(argArray[0]==2)
+    this.scene.unselectPiece();
+  else if(argArray[0]==1) {
+    var move = argArray[1];
+    var dominoes1 = argArray[2];
+    var dominoes2 = argArray[3];
 
-  var position = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
-  var domino = [move[0][0], move[0][1]];
+    var positionSelected = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
+    var domino = [move[0][0], move[0][1]];
 
-  server.scene.gameSurface.placePiece(position, domino);
+    console.log('----------------------------\nMOVE MADE:');
+    console.log(positionSelected);
+    console.log(domino);
 
-  // TODO set piece animation, calculating final position
-  //server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
+    // add piece to game surface
+    server.scene.gameSurface.placePiece(positionSelected, domino);
+    // save move
+    server.scene.moves.push({player: server.scene.turn, piece: domino, position: positionSelected});
 
-  server.scene.players['player1'].pieces = dominoes1.slice();
-  server.scene.players['player2'].pieces = dominoes2.slice();
+    // TODO set piece animation, calculating final position
+    //server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
 
-  server.scene.proceedWithMove(argArray);
+    // save player's dominoes
+    server.scene.players['player1'].pieces = dominoes1.slice();
+    server.scene.players['player2'].pieces = dominoes2.slice();
+
+    // determine next plane and continue game
+    var nexPlayer = (argArray[4]==1) ? 'player1' : 'player2';
+    server.scene.proceedWithMove(nexPlayer);
+  }
 };

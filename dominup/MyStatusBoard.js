@@ -133,7 +133,8 @@ MyStatusBoard.prototype.showGameState = function () {
 };
 
 MyStatusBoard.prototype.display = function () {
-  if(!this.scene.pickMode && (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW_GAME' || this.scene.state == 'REVIEW_OVER')) {
+  if(!this.scene.pickMode &&
+    (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW_GAME' || this.scene.state == 'REVIEW_OVER')) {
     this.scene.pushMatrix();
       this.scene.scale(7,7,1);
       this.board.apply();
@@ -149,9 +150,11 @@ MyStatusBoard.prototype.display = function () {
     this.scene.pushMatrix();
         this.scene.translate(-2.5,2.5,0);
 
-        if(this.scene.state == 'PLAY') {
+        if(this.scene.state == 'PLAY'
+        && this.scene.players['player1'].initialPieceSet!=undefined
+        && this.scene.players['player2'].initialPieceSet!=undefined) {
           var winner = null;
-          if((winner=this.scene.isGameOver()) && this.scene.players['player1'].initialPieceSet!=undefined) {
+          if((winner=this.scene.isGameOver())!=false) {
             // show game result
             this.showString(this.text);
             this.scene.translate(0,-1.5,0);

@@ -79,17 +79,21 @@ GameSurface.prototype.getPosition = function (id) {
 }
 
 GameSurface.prototype.getTable = function () {
-		var plainTable = [];
+		var plainTable = "[";
 
-		for(var n=0; n< this.sizeY; n++)
+		for(var n=0; n< this.sizeY; n++){
+			plainTable += "["
 			for(var m=0; m<this.sizeX; m++){
-				var content = [];
-				plainTable[n][m] = content.push(this.table[n][m].pop());
-				this.table[n][m].push(plainTable[n][m]);
-
-				content.push(this.table[n][m].length -1);
+				plainTable += "[" + this.table[n][m][this.table[n][m].length-1] + "," + (this.table[n][m].length-1) + "]";
+				if(m+1 < this.sizeX)
+					plainTable += ",";
 			}
+			plainTable += "]";
+			if(n+1 < this.sizeY)
+				plainTable += ",";
+		}
 
+		plainTable += "]";
 		return plainTable;
 };
 
