@@ -354,6 +354,8 @@ DominupScene.prototype.initGameSurface = function () {
 DominupScene.prototype.initGamePlayers = function () {
   this.state = 'PLAY';
   this.gameState = !this.players['player1'].human ? 'AUTO_PLAY' : 'SELECT_PIECE';
+  this.responseTime = 0;
+  this.autoPlayerTimeout = 2000;
 
 	// send player's info, initiate players in PROLOG
   switch(this.gameType){
