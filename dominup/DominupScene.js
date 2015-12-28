@@ -97,48 +97,69 @@ DominupScene.prototype.reviewGame = function (){
   this.moveTime = 3000;
   this.myInterface.destroyGameMenu();
   this.myInterface.createReviewMenu();
+  this.stateBefore = this.state;
   this.state = 'REVIEW_GAME';
 
   // copy game state, saving it
+  this.turnBefore = this.turn;
+  this.turn = 'player1';
+  this.updateCameraPosition(this.turn + ' view');
+
   this.reviewMoves = this.moves.slice();
-  this.reviewTurn = this.reviewMoves[0].player;
-  this.updateCameraPosition(this.reviewTurn + ' view');
-  this.piecesBeforeReview = this.pieces;
 
   // create new set of pieces
+  this.piecesBefore = this.pieces;
   this.pieces = [];
   for(var n=0; n<8; n++)
     for(var m=n; m<8; m++)
       this.pieces[[n,m]] = new MyPiece(this, n, m);
 
-  // create empty game surface
-  this.reviewGameSurface = new GameSurface(this, 10, 10);
+  // save current game surface and create empty game surface
+  this.gameSurfaceBefore = this.gameSurface;
+  this.gameSurface = new GameSurface(this, 10, 10);
+
+  // save current players
+  this.playersBefore = [];
+  this.playersBefore['player1'] = this.players['player1'];
+  this.playersBefore['player2'] = this.players['player2'];
 
   // create copy of players with the initial set of pieces
-  this.reviewPlayers = [];
-  this.reviewPlayers['player1'] = this.players['player1'].clone();
-  this.reviewPlayers['player2'] = this.players['player2'].clone();
+  this.players['player1'] = this.players['player1'].clone();
+  this.players['player2'] = this.players['player2'].clone();
 
   console.log('review started!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-  console.log(this.reviewPlayers);
+  console.log(this.players);
 };
 
 DominupScene.prototype.quitReview = function(){
   console.log('finish review!!!!!!!');
   this.myInterface.destroyReviewMenu();
   this.state='REVIEW_OVER';
-  this.updateCameraPosition(this.turn + ' view');
+
+  // restore game state
+  this.pieces = this.piecesBefore;  // restore pieces
+
+  // restore current game surface and create empty game surface
+  this.gameSurface = this.gameSurfaceBefore;
+
+  // restore current players
+  this.players['player1'] = this.playersBefore['player1'];
+  this.players['player2'] = this.playersBefore['player2'];
+  console.log(this.players);
+  this.playersBefore = null;
+
+  if(!this.isGameOver()) {
+    this.turn = this.turnBefore;
+    this.updateCameraPosition(this.turn + ' view');
+  }
 };
 
 DominupScene.prototype.reviewOver = function(){
   console.log('finish review!!!!!!!');
   this.pauseGame = false;
-  this.pieces = this.piecesBeforeReview;  // restore pieces
-  if(!this.isGameOver()) {
-    console.log('keep playnig');
-    this.state='PLAY';
-    this.myInterface.createGameMenu();
-  }
+
+  this.state=this.stateBefore;
+  this.myInterface.createGameMenu();
 };
 
 DominupScene.prototype.startGame = function(){
@@ -191,7 +212,8 @@ DominupScene.prototype.updateGameState = function(){
       this.newGame();
       break;
     case 'PLAY':
-      this.updateCameraPosition();
+      if(this.gameState!='GAME_OVER')
+        this.updateCameraPosition();
       break;
 		default: break;
 	}
@@ -206,13 +228,14 @@ DominupScene.prototype.update = function(currTime) {
   // update game environment
   if(this.gameEnvironment in this.environments)
     this.environments[this.gameEnvironment].update(currTime);
-
+console.log(this.state);
+console.log(this.gameState);
 	if(!this.pauseGame){
     // update camera's position
     if(this.cameraAnimation!=undefined && this.cameraAnimation.isActive())
         this.cameraAnimation.update(currTime-this.timePaused);
 
-    if(this.timeout!=0 && this.responseTime>=this.timeout*1000){
+    if(this.gameState!='GAME_OVER' && this.timeout!=0 && this.responseTime>=this.timeout*1000){
       console.log('timeout');
       this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
 
@@ -232,10 +255,16 @@ DominupScene.prototype.update = function(currTime) {
         this.pieces[pieceId].update(currTime-this.timePaused);
 
     if(this.gameState=='AUTO_PLAY') {
-      if(this.autoPlayerTimeout >=3000) {
+      if(this.autoPlayerTimeout >=2000) {
         this.autoPlayerTimeout=0;
         this.makeMove();
       }else this.autoPlayerTimeout += currTime-this.previousTime;
+    }
+
+    if(this.gameState=='NEXT_PLAYER') {
+      if(this.animationTimeout >=3000) {
+        this.proceedWithGame();
+      }else this.animationTimeout+= currTime-this.previousTime;
     }
 
 		this.updateGameState();
@@ -355,7 +384,7 @@ DominupScene.prototype.initGamePlayers = function () {
   this.state = 'PLAY';
   this.gameState = !this.players['player1'].human ? 'AUTO_PLAY' : 'SELECT_PIECE';
   this.responseTime = 0;
-  this.autoPlayerTimeout = 2000;
+  this.autoPlayerTimeout = 1000;
 
 	// send player's info, initiate players in PROLOG
   switch(this.gameType){
@@ -459,19 +488,11 @@ DominupScene.prototype.updateLights = function() {
 		this.lights[i].update();
   }
 
-  if(this.state == 'PLAY' && !this.pauseGame){
+  if((this.state == 'PLAY' && !this.pauseGame) || (this.state == 'REVIEW_GAME' && !this.pauseReview)) {
     for(gameLight in this.gameLights){
       if(gameLight == this.turn)
         this.lights[this.gameLights[gameLight]].enable();
       else this.lights[this.gameLights[gameLight]].disable();
-
-      this.lights[this.gameLights[gameLight]].update();
-    }
-  }else if(this.state == 'REVIEW_GAME' && !this.pauseReview){
-    for(gameLight in this.gameLights){
-      if(gameLight == this.reviewTurn)
-        this.lights[this.gameLights[gameLight]].enable();
-      else this.lights[this.xgameLights[gameLight]].disable();
 
       this.lights[this.gameLights[gameLight]].update();
     }
@@ -590,24 +611,19 @@ DominupScene.prototype.undoLastMove = function (){
 
   var lastPlay = this.moves.pop();
 
-  // do animation to piece
-
-
   // remove piece from game surface and return piece to player
   this.gameSurface.unplacePiece(this.pieces[lastPlay['piece']].getValues());
   this.players[lastPlay['player']].addPiece(this.pieces[lastPlay['piece']].getValues());
 
-  // change turn
-  this.turn = (this.moves.length==0) ? 'player1' : this.moves[this.moves.length-1]['player'];
-  this.prepareTurn();
-  if(!this.players[this.turn].human) {
-    this.gameState = 'AUTO_PLAY';
-    this.autoPlayerTimeout = 0;
-  }else this.gameState = 'SELECT_PIECE';
+  // do animation to piece
+  //this.pieces[server.scene.selectedPiece].createAnimation(3, lastPlay.position);
+  server.scene.gameState = 'NEXT_PLAYER';
+  server.scene.animationTimeout = 0;
 
-  console.log(this.turn);
-  console.log(this.gameSurface.getTable()+"");
-  console.log(this.players['player1'].getPieces('string'));
+  // change turn
+  this.nextPlayer = (this.moves.length==0) ? 'player1' : this.moves[this.moves.length-1]['player'];
+
+  // update status on prolog server
   var requestString = "setGameState(" + this.gameSurface.getTable() + "," +
                     this.players['player1'].getPieces('string') + "," +
                     this.players['player2'].getPieces('string') + ")";
@@ -636,6 +652,12 @@ DominupScene.prototype.prepareTurn = function (){
 DominupScene.prototype.makeMove = function (){
  console.log("piece and location chosen, make move");
 
+   if((winner = this.isGameOver())!=false) {
+     console.log('gameOver');
+     this.endGame(winner);
+     return;
+   }
+
   var requestString;
 
   // make play in Prolog
@@ -657,7 +679,7 @@ DominupScene.prototype.makeMove = function (){
  * proceedWithMove.
  * Processes a play AFTER communicating with the prolog server and the animation of the previous move has ended
  */
-DominupScene.prototype.proceedWithMove = function (nextPlayer){
+DominupScene.prototype.proceedWithGame = function (){
   // check if game over
   var winner;
   if((winner = this.isGameOver())!=false) {
@@ -672,7 +694,7 @@ DominupScene.prototype.proceedWithMove = function (nextPlayer){
   }else this.gameState = 'SELECT_PIECE';
 
   // prepare next player
-  this.turn = nextPlayer;
+  this.turn = this.nextPlayer;
   this.prepareTurn();
 }
 
@@ -689,22 +711,22 @@ DominupScene.prototype.reviewMakeMove = function (){
     }
 
     var currentMove = this.reviewMoves.shift();
-    this.reviewTurn = currentMove.player;
+    this.turn = currentMove.player;
     console.log('review move ' + currentMove.player);
     console.log('review move piece moved' + this.pieces[currentMove.piece]);
+
+
     // update set of player's dominoes
-    var newPiecePosition = this.reviewGameSurface.placePiece(currentMove.position, this.pieces[currentMove.piece].getValues());
-    this.reviewPlayers[currentMove.player].removePiece(this.pieces[currentMove.piece].getValues());
+    var newPiecePosition = this.gameSurface.placePiece(currentMove.position, this.pieces[currentMove.piece].getValues());
+    this.players[currentMove.player].removePiece(this.pieces[currentMove.piece].getValues());
+    console.log(this.players[currentMove.player].pieces);
 
-    console.log(this.reviewPlayers[currentMove.player].pieces);
-
-    // TODO set piece animation, calculating final position
-    this.pieces[currentMove.piece].createAnimation(3, newPiecePosition);
+    this.pieces[currentMove.piece].createAnimation(3, currentMove.position);
 
     console.log('review: ' + currentMove);
 
-    if(this.curCameraPosition!=this.reviewTurn + ' view')
-      this.updateCameraPosition(this.reviewTurn + ' view');
+    if(this.curCameraPosition!=this.turn + ' view')
+      this.updateCameraPosition(this.turn + ' view');
 };
 
 /**
@@ -826,7 +848,7 @@ DominupScene.prototype.display = function () {
 
   this.updateLights();
 
-	if(this.state == 'PLAY'){
+	if(this.state == 'PLAY' || this.state == 'REVIEW_GAME' || this.state == 'REVIEW_OVER'){
     this.pushMatrix();
       this.scale(.9,.9,.9);
       this.translate(-5,0,-5);
@@ -834,13 +856,5 @@ DominupScene.prototype.display = function () {
       this.players['player2'].showDominoes();
       this.gameSurface.display();
     this.popMatrix();
-	}else if(this.state == 'REVIEW_GAME' || this.state == 'REVIEW_OVER'){
-    this.pushMatrix();
-      this.scale(.9,.9,.9);
-      this.translate(-5,0,-5);
-      this.reviewPlayers['player1'].showDominoes();
-      this.reviewPlayers['player2'].showDominoes();
-      this.reviewGameSurface.display();
-    this.popMatrix();
-  }
+	}
 };

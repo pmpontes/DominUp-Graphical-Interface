@@ -95,7 +95,7 @@
 
         <MATERIAL id="plasticMaterial">
             <shininess value="5" />
-            <specular r="0" g="0" b="0" a="" />
+            <specular r="0" g="0" b="0" a="1" />
             <diffuse r="0.3" g="0.3" b="0.3" a="1" />
             <ambient r="0.3" g="0.3" b="0.3" a="1" />
             <emission r="0.0" g="0.0" b="0.0" a="1" />

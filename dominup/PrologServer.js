@@ -109,10 +109,9 @@ PrologServer.prototype.parseMove = function(argArray){
     // save move
     server.scene.moves.push({player: server.scene.turn, piece: domino, position: position});
 
-    // TODO set piece animation, calculating final position
+    // set piece animation, calculating final position
     if(!server.scene.players[server.scene.turn].human){
       console.log("Not Human");
-      var testPiece = domino[0] + "," + domino[1];
       server.scene.pieces[domino].createAnimation(3, position);
     } else server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
 
@@ -121,7 +120,8 @@ PrologServer.prototype.parseMove = function(argArray){
     server.scene.players['player2'].pieces = dominoes2.slice();
 
     // determine next plane and continue game
-    var nexPlayer = (argArray[4]==1) ? 'player1' : 'player2';
-    server.scene.proceedWithMove(nexPlayer);
+    server.scene.nextPlayer = (argArray[4]==1) ? 'player1' : 'player2';
+    server.scene.gameState = 'NEXT_PLAYER';
+    server.scene.animationTimeout = 0;
   }
 };

@@ -158,13 +158,13 @@ MyStatusBoard.prototype.showReviewState = function () {
   // show game result
   this.showString(this.text);
   this.scene.translate(0,-1,0);
-  this.showString(this.scene.reviewPlayers['player1'].pieces.length + '-' + this.scene.reviewPlayers['player2'].pieces.length);
+  this.showString(this.scene.players['player1'].pieces.length + '-' + this.scene.players['player2'].pieces.length);
 
   // show player
   this.scene.translate(0,-1.5,0);
-  this.showString(this.scene.reviewTurn, .8);
+  this.showString(this.scene.turn, .8);
   this.scene.translate(0,-0.8,0);
-  this.showString(this.scene.reviewPlayers[this.scene.reviewTurn].pieces.length + ' pieces left', .5);
+  this.showString(this.scene.players[this.scene.turn].pieces.length + ' pieces left', .5);
 
   this.scene.translate(0,-1.5,0);
   this.showString('Game review', .5);

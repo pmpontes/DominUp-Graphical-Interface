@@ -167,11 +167,6 @@ MyPiece.prototype.update = function(currTime){
 };
 
 MyPiece.prototype.createAnimation = function(time, finalPosition){
-  // finalPosition is of type {coords:[x,y,z], rotation}
-  // TODO
-//  this.animation = new CircularAnimation(time, center, radius, angStart, angRot);
   this.animation = new PieceAnimation(time, finalPosition, this.scene, this);
   console.log("animation created");
-
-  //mat4.translate(this.currentMatrix);
 }
