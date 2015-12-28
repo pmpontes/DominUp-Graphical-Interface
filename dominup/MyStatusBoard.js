@@ -1,10 +1,13 @@
 /**
- *
+ * MyStatusBoard
+ * @constructor
+ * @param scene
+ * @param sizeX
+ * @param sizeY
  */
-function MyStatusBoard(scene, position, sizeX, sizeY) {
+function MyStatusBoard(scene, sizeX, sizeY) {
     CGFobject.call(this,scene);
 
-    this.position = position;
     this.sizeX = sizeX;
     this.sizeY = sizeY;
 
@@ -43,37 +46,42 @@ function MyStatusBoard(scene, position, sizeX, sizeY) {
 };
 
 MyStatusBoard.prototype = Object.create(CGFobject.prototype);
-
 MyStatusBoard.prototype.constructor=MyStatusBoard;
 
-MyStatusBoard.prototype.getLocation = function (letter) {
+/**
+ * getLocation.
+ * Get the coordenates of a given character.
+ * @param character.
+ * @return position in format [column, line].
+ */
+function getLocation(character) {
     var line;
     var column;
 
-   if(letter=='-'){
+   if(character=='-'){
         line=2;
         column=13;
-    }else if(letter=='.'){
+    }else if(character=='.'){
           line=2;
           column=14;
-    }else if(letter==':'){
+    }else if(character==':'){
         line=3;
         column=10;
-    }else if(letter>='0' && letter<='9'){
+    }else if(character>='0' && character<='9'){
         line=3;
-        column=parseInt(letter);
-    }else if(letter>='A' && letter<='O'){
+        column=parseInt(character);
+    }else if(character>='A' && character<='O'){
         line=4;
-        column= 1 + letter.charCodeAt(0) - 'A'.charCodeAt(0);
-    }else if(letter>='P' && letter<='Z'){
+        column= 1 + character.charCodeAt(0) - 'A'.charCodeAt(0);
+    }else if(character>='P' && character<='Z'){
         line=5;
-        column= letter.charCodeAt(0) - 'P'.charCodeAt(0);
-    }else if(letter>='a' && letter<='o'){
+        column= character.charCodeAt(0) - 'P'.charCodeAt(0);
+    }else if(character>='a' && character<='o'){
         line=6;
-        column= 1 + letter.charCodeAt(0) - 'a'.charCodeAt(0);
-    }else if(letter>='p' && letter<='z'){
+        column= 1 + character.charCodeAt(0) - 'a'.charCodeAt(0);
+    }else if(character>='p' && character<='z'){
         line=7;
-        column= letter.charCodeAt(0) - 'p'.charCodeAt(0);
+        column= character.charCodeAt(0) - 'p'.charCodeAt(0);
     }else{
         line=2;
         column=0;
@@ -82,16 +90,22 @@ MyStatusBoard.prototype.getLocation = function (letter) {
     return [column, line];
 };
 
-MyStatusBoard.prototype.showString = function (text, small) {
+/**
+ * showString.
+ * Displays a text string according to specified size.
+ * @param text.
+ * @param size.
+ */
+MyStatusBoard.prototype.showString = function (text, size) {
 
     this.scene.pushMatrix();
 
-    if(small)
-        this.scene.scale(small,small,small);
+    if(size)
+        this.scene.scale(size,size,size);
 
     for(var i=0; i<text.length; i++){
 
-      this.scene.activeShader.setUniformsValues({'charCoords': this.getLocation(text[i])});
+      this.scene.activeShader.setUniformsValues({'charCoords': getLocation(text[i])});
       this.plane.display();
 
       this.scene.translate(0.8,0,0);
@@ -100,6 +114,10 @@ MyStatusBoard.prototype.showString = function (text, small) {
     this.scene.popMatrix();
 };
 
+/**
+ * showGameState.
+ * Displays information about the game's state.
+ */
 MyStatusBoard.prototype.showGameState = function () {
   // show game result
   this.showString(this.text);
@@ -132,11 +150,35 @@ MyStatusBoard.prototype.showGameState = function () {
   }
 };
 
+/**
+ * showGameState.
+ * Displays information about the game's state.
+ */
+MyStatusBoard.prototype.showReviewState = function () {
+  // show game result
+  this.showString(this.text);
+  this.scene.translate(0,-1,0);
+  this.showString(this.scene.reviewPlayers['player1'].pieces.length + '-' + this.scene.reviewPlayers['player2'].pieces.length);
+
+  // show player
+  this.scene.translate(0,-1.5,0);
+  this.showString(this.scene.reviewTurn, .8);
+  this.scene.translate(0,-0.8,0);
+  this.showString(this.scene.reviewPlayers[this.scene.reviewTurn].pieces.length + ' pieces left', .5);
+
+  this.scene.translate(0,-1.5,0);
+  this.showString('Game review', .5);
+};
+
+/**
+ * display.
+ * Displays information about the game, according to its state.
+ */
 MyStatusBoard.prototype.display = function () {
   if(!this.scene.pickMode &&
     (this.scene.state == 'PLAY' || this.scene.state == 'REVIEW_GAME' || this.scene.state == 'REVIEW_OVER')) {
     this.scene.pushMatrix();
-      this.scene.scale(7,7,1);
+      this.scene.scale(this.sizeX,this.sizeY,1);
       this.board.apply();
       this.plane.display();
     this.scene.popMatrix();
@@ -161,19 +203,7 @@ MyStatusBoard.prototype.display = function () {
             this.showString(winner + ' won', .6);
           }else this.showGameState();
         }else if(this.scene.state == 'REVIEW_GAME'){
-          // show game result
-          this.showString(this.text);
-          this.scene.translate(0,-1,0);
-          this.showString(this.scene.reviewPlayers['player1'].pieces.length + '-' + this.scene.reviewPlayers['player2'].pieces.length);
-
-          // show player
-          this.scene.translate(0,-1.5,0);
-          this.showString(this.scene.reviewTurn, .8);
-          this.scene.translate(0,-0.8,0);
-          this.showString(this.scene.reviewPlayers[this.scene.reviewTurn].pieces.length + ' pieces left', .5);
-
-          this.scene.translate(0,-1.5,0);
-          this.showString('Game review', .5);
+          this.showReviewState();
         }else if(this.scene.state == 'REVIEW_OVER'){
           // show game result
           this.showString(this.text);

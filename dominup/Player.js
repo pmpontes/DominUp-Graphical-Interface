@@ -1,6 +1,9 @@
 /**
  * Player
  * @constructor
+ * @param scene
+ * @param id
+ * @param level for non human players
  */
 function Player(scene, id, level){
 	this.intLevel = 0;
@@ -24,27 +27,46 @@ function Player(scene, id, level){
 };
 
 Player.prototype = Object.create(CGFobject.prototype);
-
 Player.prototype.constructor=Player;
 
+/**
+ * addPiece
+ * Add specified piece to the player's set of pieces.
+ * @param piece
+ */
 Player.prototype.addPiece = function (piece) {
 	this.pieces.push(piece);
 };
 
+/**
+ * removePiece
+ * Revome specified piece from the player's set of pieces.
+ * @param piece
+ */
 Player.prototype.removePiece = function (piece) {
 	for(var i=0; i<this.pieces.length; i++)
-		if(this.pieces[i]==piece){
+		if(this.pieces[i][0]==piece[0] && this.pieces[i][1]==piece[1]){
 			this.pieces.splice(i,1);
 			break;
 		}
 };
 
+/**
+ * clone
+ * Creates a copy of the player, with the initial set of pieces.
+ * @return newPlayer
+ */
 Player.prototype.clone = function () {
 	var newPlayer = new Player(this.scene, this.playerId, this.level);
 	newPlayer.setPieces(this.initialPieceSet);
 	return newPlayer;
 };
 
+/**
+ * setPieces
+ * Defines the player's initial set of pieces, calculating their initial position.
+ * @param pieces
+ */
 Player.prototype.setPieces = function (pieces) {
 	this.pieces = pieces.slice();
 	this.initialPieceSet = pieces.slice();
@@ -77,6 +99,12 @@ Player.prototype.setPieces = function (pieces) {
 	}
 };
 
+/**
+ * getPieces
+ * Returns the player's set of pieces, in array or string, according to format.
+ * @param format
+ * @return this.pieces
+ */
 Player.prototype.getPieces = function (format) {
 	if(format){
 		var string = "[";
@@ -92,14 +120,10 @@ Player.prototype.getPieces = function (format) {
 	}else return this.pieces;
 };
 
-Player.prototype.makeMove = function () {
-	if(this.human)
-		return false;
-
-	// TODO get valid play from PROLOG
-	return true;
-};
-
+/**
+ * showDominoes
+ * Displays the player's current set of pieces, setting them as selectable, if it is the player's turn.
+ */
 Player.prototype.showDominoes = function (){
 	this.scene.pushMatrix();
 	for(var i=0; i<this.pieces.length; i++){

@@ -1,4 +1,4 @@
-/*
+/**
  * MyGameGraph
  * Opens and reads a file following a specific structure with information about a scene.
  * @constructor
@@ -28,7 +28,7 @@ function MyGameGraph(filename, scene){
 		this.path='themes/' + filename.substring(0, filename.lastIndexOf("/")) + '/';
 };
 
-/*
+/**
  * criticalErrors
  * Handles errors and warnings, displaying messages.
  * @param errors list of errors and warnings of type {[type, message],(...)}
@@ -52,7 +52,7 @@ MyGameGraph.prototype.criticalErrors=function(errors){
 };
 
 
-/*
+/**
  * onXMLReady
  * Callback to be executed after successful reading.
  * Performs parsing of the information read.
@@ -107,7 +107,7 @@ MyGameGraph.prototype.onXMLReady=function(){
  * Auxiliar functions.
  **********************************************************************************************/
 
-/*
+/**
  * getTranslation
  * Retrieves information about a translation.
  * @param element
@@ -122,7 +122,7 @@ MyGameGraph.prototype.getTranslation= function(element, required) {
 	else return coordenates;
 };
 
-/*
+/**
  * getControlPoint
  * Retrieves information about a animation control point.
  * @param element
@@ -137,7 +137,7 @@ MyGameGraph.prototype.getControlPoint= function(element, required) {
 	else return coordenates;
 };
 
-/*
+/**
  * getScale
  * Retrieves information about a scale.
  * @param element
@@ -152,7 +152,7 @@ MyGameGraph.prototype.getScale= function(element, required) {
 	else return scale;
 };
 
-/*
+/**
  * getRotation
  * Retrieves information about a translation.
  * @param element
@@ -169,7 +169,7 @@ MyGameGraph.prototype.getRotation= function(element, required) {
 	else return rotation;
 };
 
-/*
+/**
  * getXYZ
  * Retrieves information about a transformation - translation or scale.
  * @param element
@@ -189,7 +189,7 @@ MyGameGraph.prototype.getXYZ= function(element, tags, required) {
 	return coordenates;
 };
 
-/*
+/**
  * getRGBA
  * Retrieves RGBA information.
  * @param element
@@ -208,7 +208,7 @@ MyGameGraph.prototype.getRGBA= function(element, required) {
 	else return rgba;
 };
 
-/*
+/**
  * checkRGBA
  * Check the RGBA element for completion and errors on values' range
  * @param element
@@ -226,7 +226,7 @@ MyGameGraph.prototype.checkRGBA= function(element) {
 	return !error;
 };
 
-/*
+/**
  * validElement
  * Check an element for completion
  * @param element
@@ -243,7 +243,7 @@ MyGameGraph.prototype.validElement= function(element) {
 	return true;
 };
 
-/*
+/**
  * checkStructure
  * Check an element of elementType for the correct syntax order
  * @param elementType
@@ -265,7 +265,7 @@ MyGameGraph.prototype.checkStructure= function(elementType, element, syntax) {
 		}
 }
 
-/*
+/**
  * setInitials
  * Sets the parameters in Initials to the specified values.
  * @param settings
@@ -275,7 +275,7 @@ MyGameGraph.prototype.setInitials= function(settings) {
 		this.initials[property]=settings[property];
 }
 
-/*
+/**
  * onXMLWarning
  * Callback to be executed on any read warning.
  * @param message
@@ -285,7 +285,7 @@ MyGameGraph.prototype.setInitials= function(settings) {
 	console.warn("LSX Loading Warning: " + message);
 };
 
-/*
+/**
  * onXMLError
  * Callback to be executed on any read error.
  * @param message
@@ -299,7 +299,7 @@ MyGameGraph.prototype.onXMLError=function (message){
  * Parsing functions.
  **********************************************************************************************/
 
-/*
+/**
  * parseInitials
  * Method that parses elements of 'INITIALS' block and stores information in a specific data structure.
  * @param rootElement
@@ -391,7 +391,7 @@ MyGameGraph.prototype.parseInitials= function(rootElement) {
 	return warningMessages;
 };
 
-/*
+/**
  * parseIllumination
  * Method that parses elements of the 'ILLUMINATION' block and stores information in a specific data structure
  * @param rootElement
@@ -441,7 +441,7 @@ MyGameGraph.prototype.parseIllumination = function(rootElement){
 	}
 };
 
-/*
+/**
  * parseLights
  * Method used for parsing the 'LIGHTS' block information
  * @param rootElement
@@ -477,7 +477,7 @@ MyGameGraph.prototype.parseIllumination = function(rootElement){
  	return warningMessages;
  };
 
-/*
+/**
  * parseSingleLight
  * Method used for parsing information about a element light of type { id, enable, position[], ambient[], diffuse[], specular[] }
  * @param element
@@ -559,7 +559,7 @@ MyGameGraph.prototype.parseSingleLight= function(element, lightIndex){
  	this.lights.push(light);
  };
 
-/*
+/**
  * parseTextures
  * Method that parses elements of 'TEXTURES' block and stores information in a specific data structure
  * @param rootElement
@@ -569,7 +569,7 @@ MyGameGraph.prototype.parseTextures= function(rootElement) {
 	return this.parseGenericElement('TEXTURE', rootElement);
 }
 
-/*
+/**
  * parseMaterials
  * Method that parses elements of 'MATERIALS' block and stores information in a specific data structure.
  * @param rootElement
@@ -579,7 +579,7 @@ MyGameGraph.prototype.parseMaterials= function(rootElement) {
 	return this.parseGenericElement('MATERIAL', rootElement);
 }
 
-/*
+/**
  * parseAnimations
  * Method that parses elements of 'ANIMATIONS' block and stores information in a specific data structure.
  * @param rootElement
@@ -589,7 +589,7 @@ MyGameGraph.prototype.parseAnimations= function(rootElement) {
 	return this.parseGenericElement('ANIMATION', rootElement);
 };
 
-/*
+/**
  * parseGenericElement
  * Method that parses elements of type TEXTURE or MATERIAL, as specified by elementType, and stores information in a specific data structure.
  * @param elementType
@@ -640,7 +640,7 @@ MyGameGraph.prototype.parseGenericElement= function(elementType, rootElement) {
 	return warningMessages;
 };
 
-/*
+/**
  * readTexture
  * Reads information about a texture element.
  * @param element
@@ -678,7 +678,7 @@ MyGameGraph.prototype.readTexture= function(element) {
 	return texture;
 }
 
-/*
+/**
  * readMaterial
  * Reads information about a material element.
  * @param element
@@ -726,7 +726,7 @@ MyGameGraph.prototype.readMaterial= function(element) {
 	return material;
 };
 
-/*
+/**
  * readAnimation
  * Reads information about an animation element.
  * @param element
@@ -797,7 +797,7 @@ MyGameGraph.prototype.readAnimation = function(element) {
 	return animation;
 };
 
-/*
+/**
  * parseLeaves
  * Method that parses elements of 'LEAVES' block and stores information in a specific data structure.
  * @param rootElement
@@ -843,7 +843,7 @@ MyGameGraph.prototype.parseLeaves= function(rootElement) {
 	return warningMessages;
 };
 
-/*
+/**
  * readLeaf
  * Reads information about a leaf element.
  * @param element
@@ -953,7 +953,7 @@ MyGameGraph.prototype.readLeaf= function(element) {
 	return leaf;
 }
 
-/*
+/**
  * parseNodes
  * Method that parses elements of 'NODES' block and stores information in a specific data structure.
  * @param rootElement
@@ -1010,7 +1010,7 @@ MyGameGraph.prototype.parseNodes= function(rootElement) {
 	return warningMessages;
 };
 
-/*
+/**
  * readNode
  * Reads information about a node element.
  * @param element
@@ -1099,7 +1099,7 @@ MyGameGraph.prototype.readNode= function(element) {
 	return node;
 }
 
-/*
+/**
  * processGraph
  * Processes node elementId and its descendants, calculating each one's matrix and checking for errors.
  * @param elementId

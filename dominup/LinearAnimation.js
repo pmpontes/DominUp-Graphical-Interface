@@ -1,4 +1,4 @@
-/*
+/**
  * LinearAnimation
  * @constructor
  */
@@ -43,7 +43,7 @@ function LinearAnimation(time, points){
 LinearAnimation.prototype = Object.create(Animation.prototype);
 LinearAnimation.prototype.constructor = LinearAnimation;
 
-/*
+/**
  * reset
  * resets the variables on which the animation cycle depends
  */
@@ -59,7 +59,7 @@ LinearAnimation.prototype.reset = function(){
 	this.previousOrientation = null;
 };
 
-/*
+/**
  * getCurrentTransformation
  * calculates and returns the animation's current transformation matrix
  * @return the transformation matrix
@@ -101,7 +101,7 @@ LinearAnimation.prototype.getCurrentTransformation = function(){
 	return matrx;
 };
 
-/*
+/**
  * getCurrentOrientation
  * calculates and returns the animation's current orientation transformation matrix
  * @return the orientation transformation matrix

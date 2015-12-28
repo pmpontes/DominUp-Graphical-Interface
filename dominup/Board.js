@@ -1,5 +1,14 @@
-
-/** Represents a Board with nrDivs divisions along both axis, with center at (0,0) */
+/**
+ * Board
+ * HUD board.
+ * @constructor
+ * @param scene
+ * @param nrDivs
+ * @param minS
+ * @param maxS
+ * @param minT
+ * @param maxT
+ */
 function Board(scene, nrDivs, minS, maxS, minT, maxT) {
 	CGFobject.call(this,scene);
 
@@ -24,6 +33,10 @@ function Board(scene, nrDivs, minS, maxS, minT, maxT) {
 Board.prototype = Object.create(CGFobject.prototype);
 Board.prototype.constructor = Board;
 
+/**
+ * initBuffers
+ * Initiate the board's geometry.
+ */
 Board.prototype.initBuffers = function() {
 	// Generate vertices, normals, and texCoords
 	this.vertices = [];
@@ -47,7 +60,7 @@ Board.prototype.initBuffers = function() {
 
 		yCoord -= this.patchLength;
 	}
-	
+
 	// Generating indices
 	this.indices = [];
 	var ind = 0;
@@ -65,7 +78,7 @@ Board.prototype.initBuffers = function() {
 			this.indices.push(ind);
 		}
 	}
-	
+
 	this.primitiveType = this.scene.gl.TRIANGLE_STRIP;
 	this.initGLBuffers();
 };

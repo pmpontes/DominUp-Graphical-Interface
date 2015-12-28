@@ -50,10 +50,6 @@ MyPiece.prototype.getValues = function() {
 
 MyPiece.prototype.display = function() {
   // TODO apply this only to top of piece
-  //this.scene.setActiveShader(this.scene.pieceShader);
-  //this.scene.textures[this.scene.gameLook][value].bind(0);
-  //this.scene.textures[this.scene.gameLook][0].bind(1);
-  //this.scene.setActiveShader(this.scene.defaultShader);
 
   this.scene.pushMatrix();
 
@@ -115,6 +111,8 @@ MyPiece.prototype.centerTop = function(value){
         this.material = this.scene.materials[this.scene.gameLook];
         this.material.setTexture(this.scene.textures[this.scene.gameLook][value]);
         this.material.apply();
+        //this.scene.textures[this.scene.gameLook][value].bind(0);
+        //this.scene.textures['default'][value].bind(1);
     } else {
         this.material = this.scene.materials[this.scene.gameLook];
         this.material.setTexture(this.scene.textures[this.scene.gameLook][0]);
@@ -122,12 +120,20 @@ MyPiece.prototype.centerTop = function(value){
     }
     this.scene.rotate(-Math.PI/2, 1, 0, 0);
     this.scene.translate(-0.5, -0.5, 0, 0);
+
+    //if(value!=null)
+      //this.scene.setActiveShader(this.scene.pieceShader);
+
     this.rectangle.display();
+
+    //if(value!=null)
+      //this.scene.setActiveShader(this.scene.defaultShader);
+
     this.material.setTexture(this.scene.textures[this.scene.gameLook][0]);
     this.material.apply();
 };
 
-MyPiece.prototype.centerBottom = function(value){
+MyPiece.prototype.centerBottom = function(){
     this.scene.rotate(-Math.PI/2, 1, 0, 0);
     this.scene.translate(-0.5, -0.5, 0, 0);
     this.rectangle.display();

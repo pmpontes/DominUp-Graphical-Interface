@@ -1,61 +1,61 @@
 <SCENE>
 	<INITIALS>
-		<frustum near="10" far="500" />                     
-		<translation x="-5" y="-3" z="15" />                
-		<rotation axis="x" angle="0" />                   
-		<rotation axis="y" angle="0" />                   
-		<rotation axis="z" angle="0.0" />                   
-		<scale sx="0.1" sy="0.1" sz="0.1" />                
-		<reference length="1" />                           
+		<frustum near="10" far="500" />
+		<translation x="-5" y="-3" z="15" />
+		<rotation axis="x" angle="0" />
+		<rotation axis="y" angle="0" />
+		<rotation axis="z" angle="0.0" />
+		<scale sx="0.1" sy="0.1" sz="0.1" />
+		<reference length="1" />
 	</INITIALS>
 
 	<ILLUMINATION>
-		<ambient r="1" g="1" b="1" a="1" />            	   
-		<background r="0.5" g="0.5" b="0.8" a="1" />       
+		<ambient r="1" g="1" b="1" a="1" />
+		<background r="0.5" g="0.5" b="0.8" a="1" />
 	</ILLUMINATION>
 
 	<LIGHTS>
-		<LIGHT id="sun1">                                  
-			<enable value ="1" />                         
-			<position x="0" y="0" z="50" w="1" />     
-			<ambient r="0" g="0" b="0" a="1" />       
-			<diffuse r="1" g="1" b="1" a="0.2" />     
-			<specular r="1" g="1" b="1" a="0.2" />   
+		<LIGHT id="sun1">
+			<enable value ="1" />
+			<position x="0" y="-15" z="70" w="1" />
+			<ambient r="0" g="0" b="0" a="1" />
+			<diffuse r="1" g="1" b="1" a="0.2" />
+			<specular r="1" g="1" b="1" a="0.2" />
 		</LIGHT>
-		<LIGHT id="sun2">                            
-			<enable value ="1" />                    
-			<position x="-50" y="0" z="0" w="1" />   
-			<ambient r="0" g="0" b="0" a="1" />      
-			<diffuse r="1" g="1" b="1" a="0.2" />    
-			<specular r="1" g="1" b="1" a="0.2" />   
+		<LIGHT id="sun2">
+			<enable value ="1" />
+			<position x="-70" y="-15" z="0" w="1" />
+			<ambient r="0" g="0" b="0" a="1" />
+			<diffuse r="1" g="1" b="1" a="0.2" />
+			<specular r="1" g="1" b="1" a="0.2" />
 		</LIGHT>
-		<LIGHT id="sun3">                            
-			<enable value ="1" />                    
-			<position x="50" y="0" z="0" w="1" />    
-			<ambient r="0" g="0" b="0" a="1" />      
-			<diffuse r="1" g="1" b="1" a="0.2" />    
-			<specular r="1" g="1" b="1" a="0.2" />   
+		<LIGHT id="sun3">
+			<enable value ="1" />
+			<position x="70" y="-15" z="0" w="1" />
+			<ambient r="0" g="0" b="0" a="1" />
+			<diffuse r="1" g="1" b="1" a="0.2" />
+			<specular r="1" g="1" b="1" a="0.2" />
 		</LIGHT>
-		<LIGHT id="sun4">                            
-			<enable value ="1" />                    
-			<position x="0" y="-50" z="0" w="1" />   
-			<ambient r="0" g="0" b="0" a="1" />      
-			<diffuse r="1" g="1" b="1" a="0.2" />    
-			<specular r="1" g="1" b="1" a="0.2" />   
+		<LIGHT id="sun4">
+			<enable value ="1" />
+			<position x="0" y="-15" z="-70" w="1" />
+			<ambient r="0" g="0" b="0" a="1" />
+			<diffuse r="1" g="1" b="1" a="0.2" />
+			<specular r="1" g="1" b="1" a="0.2" />
 		</LIGHT>
-		<LIGHT id="sun5">                            
-			<enable value ="1" />                    
-			<position x="0" y="50" z="0" w="1" />    
-			<ambient r="0" g="0" b="0" a="1" />      
-			<diffuse r="1" g="1" b="1" a="0.2" />    
-			<specular r="1" g="1" b="1" a="0.2" />   
+		<LIGHT id="sun5">
+			<enable value ="1" />
+			<position x="0" y="70" z="0" w="1" />
+			<ambient r="0" g="0" b="0" a="1" />
+			<diffuse r="1" g="1" b="1" a="0.2" />
+			<specular r="1" g="1" b="1" a="0.2" />
 		</LIGHT>
-		<LIGHT id="sun6">                            
-			<enable value ="1" />                    
-			<position x="0" y="0" z="-50" w="1" />   
-			<ambient r="0" g="0" b="0" a="1" />      
-			<diffuse r="1" g="1" b="1" a="0.2" />    
-			<specular r="1" g="1" b="1" a="0.2" />   
+		<LIGHT id="sun6">
+			<enable value ="1" />
+			<position x="0" y="-50" z="0" w="1" />
+			<ambient r="0" g="0" b="0" a="1" />
+			<diffuse r="1" g="1" b="1" a="0.2" />
+			<specular r="1" g="1" b="1" a="0.2" />
 		</LIGHT>
 	</LIGHTS>
 
@@ -105,38 +105,38 @@
 	<MATERIALS>
 		<MATERIAL id="orange">
 			<shininess value="1" />
-			<specular r="1" g="0.5" b="0" a="0.5" />    
-			<diffuse r="1" g="0.5" b="0" a="0.5" />     
-			<ambient r="0" g="0" b="0" a="0.5" />       
-			<emission r="0" g="0" b="0" a="0.5" />      
+			<specular r="1" g="0.5" b="0" a="0.5" />
+			<diffuse r="1" g="0.5" b="0" a="0.5" />
+			<ambient r="0" g="0" b="0" a="0.5" />
+			<emission r="0" g="0" b="0" a="0.5" />
 		</MATERIAL>
 		<MATERIAL id="outerspace">
 			<shininess value="1" />
-			<specular r="1" g="0.5" b="0" a="0.5" />    
-			<diffuse r="1" g="0.5" b="0" a="0.5" />     
-			<ambient r="1" g="1" b="1" a="0.5" />       
-			<emission r="1" g="1" b="1" a="1" />       
+			<specular r="1" g="0.5" b="0" a="0.5" />
+			<diffuse r="1" g="0.5" b="0" a="0.5" />
+			<ambient r="1" g="1" b="1" a="0.5" />
+			<emission r="1" g="1" b="1" a="1" />
 		</MATERIAL>
 		<MATERIAL id="black">
 			<shininess value="60" />
-			<specular r="0" g="0" b="0" a="0.5" />     
-			<diffuse r="0" g="0" b="0" a="0.5" />      
-			<ambient r="0" g="0" b="0" a="0.5" />      
-			<emission r="0" g="0" b="0" a="0.5 " />    
+			<specular r="0" g="0" b="0" a="0.5" />
+			<diffuse r="0" g="0" b="0" a="0.5" />
+			<ambient r="0" g="0" b="0" a="0.5" />
+			<emission r="0" g="0" b="0" a="0.5 " />
 		</MATERIAL>
 		<MATERIAL id="blue">
 			<shininess value="60" />
 			<specular r="0.55" g="0.91" b="0.35" a="0.5" />
-			<diffuse r="0.55" g="0.91" b="0.35" a="0.5" /> 
-			<ambient r="0.55" g="0.91" b="0.35" a="0.5" /> 
+			<diffuse r="0.55" g="0.91" b="0.35" a="0.5" />
+			<ambient r="0.55" g="0.91" b="0.35" a="0.5" />
 			<emission r="0.55" g="0.91" b="0.35" a="0.5 " />
 		</MATERIAL>
 		<MATERIAL id="brown">
 			<shininess value="60" />
-			<specular r="0.65" g="0.49" b="0.18" a="0.5" /> 
-			<diffuse r="0.65" g="0.49" b="0.18" a="0.5" />  
-			<ambient r="0" g="0" b="0" a="0.5" />         
-			<emission r="0" g="0" b="0" a="0.5 " />       
+			<specular r="0.65" g="0.49" b="0.18" a="0.5" />
+			<diffuse r="0.65" g="0.49" b="0.18" a="0.5" />
+			<ambient r="0" g="0" b="0" a="0.5" />
+			<emission r="0" g="0" b="0" a="0.5 " />
 		</MATERIAL>
 	</MATERIALS>
 
@@ -250,8 +250,8 @@
 			</DESCENDANTS>
 		</NODE>
 
-		<NODE id="jupiter"> 
-			<MATERIAL id="brown" /> 
+		<NODE id="jupiter">
+			<MATERIAL id="brown" />
 			<TEXTURE id="jupiterText" />
 			<ANIMATIONSEQ>
 				<ANIMATION id="jupiter" />

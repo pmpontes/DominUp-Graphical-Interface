@@ -58,6 +58,8 @@ GameSurface.prototype.placePiece = function (position, piece) {
 	this.table[position.aY][position.aX].push(piece[0]);
 	this.table[position.bY][position.bX].push(piece[1]);
 
+	console.log(piece[0]);
+
 	console.log(this.placedPieces);
 	console.log(piecePosition);
 	return piecePosition;
@@ -76,7 +78,7 @@ GameSurface.prototype.unplacePiece = function (piece) {
 
 GameSurface.prototype.getPosition = function (id) {
 	return this.positionID[id];
-}
+};
 
 GameSurface.prototype.getTable = function () {
 		var plainTable = "[";
@@ -122,7 +124,7 @@ GameSurface.prototype.display = function () {
 				for(var m=0; m<this.sizeX; m++){
 					this.scene.pushMatrix();
 						this.scene.registerForPick(hitBoxId++, this.positions[[m, n]]);
-						this.scene.translate(m, (this.table[n][m].length - 1) + 0.1, n, 1);
+						this.scene.translate(m, (this.table[n][m].length - 1)*.5 + 0.01, n, 1);
 						this.scene.translate(0.5, 0, 0.5, 1);
 						this.positions[[m, n]].display();
 					this.scene.popMatrix();

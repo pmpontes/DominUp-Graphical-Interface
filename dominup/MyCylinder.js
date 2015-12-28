@@ -1,4 +1,4 @@
-/*
+/**
  * MyCylinder
  * @constructor
  * @param scene
@@ -19,11 +19,14 @@
  };
 
  MyCylinder.prototype = Object.create(CGFobject.prototype);
-
  MyCylinder.prototype.constructor = MyCylinder;
 
+ /**
+  * initBuffers
+  * Initiate the cylinder's geometry.
+  */
  MyCylinder.prototype.initBuffers = function() {
- 
+
  	this.vertices = [];
  	var z = 0;
 
@@ -36,7 +39,7 @@
  	this.texelYInterval = 1/(this.stacks);
 
  	this.texelY = 1;
- 	
+
  	for (var n = 0; n <= this.stacks; z+=(1/this.stacks)*this.height) {
  	    var tempAngle = 0;
  	    this.texelX = 0;

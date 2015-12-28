@@ -1,4 +1,4 @@
-/*
+/**
  * MyEnvironment
  * @constructor
  * @param scene
@@ -26,7 +26,7 @@ MyEnvironment.prototype.update = function(currTime) {
  		this.animations[id].update(currTime);
 };
 
-/*
+/**
  * activateEnvironment
  * Set the scene to the settings specified on file.
  */
@@ -43,7 +43,7 @@ function degToRad(degrees) {
    return degrees * Math.PI / 180;
 }
 
-/*
+/**
  * setInitials
  * Set the scene's definitions to the specified values.
  */
@@ -74,7 +74,7 @@ MyEnvironment.prototype.setInitials = function () {
 	mat4.scale(this.matrix, this.matrix, this.graph.initials['scale']);
 };
 
-/*
+/**
  * setIllumunation
  * Create the scene's illumination accoording to the specified settings.
  */
@@ -90,20 +90,14 @@ MyEnvironment.prototype.setIllumination = function () {
 };
 
 
-/*
+/**
  * createLights
  * Create the scene's lights accoording to the specified settings.
  */
 MyEnvironment.prototype.createLights = function(){
 
-	for(var i = 0; i < this.graph.lights.length && i<8; i++){
-		this.scene.lights[i].name = this.graph.lights[i]['id'];
-
-		this[this.scene.lights[i].name] = this.graph.lights[i]['enable'];
-
-		if(this.graph.lights[i]['enable'])
-			this.scene.lights[i].enable();
-		else this.scene.lights[i].disable();
+	for(var i = 0; i < this.graph.lights.length && i<5; i++){
+		this.scene.lights[i].enable();
 
 		this.scene.lights[i].setPosition( this.graph.lights[i]['position'][0],
 									this.graph.lights[i]['position'][1],
@@ -127,7 +121,7 @@ MyEnvironment.prototype.createLights = function(){
 	}
 };
 
-/*
+/**
  * initGeometry
  * Initiate the scene's geometry according to the information read.
  */
@@ -170,7 +164,7 @@ MyEnvironment.prototype.initGeometry = function () {
  		}
 };
 
-/*
+/**
  * initAnimations
  * Initiate the scene's animations according to the information read.
  */
@@ -202,7 +196,7 @@ MyEnvironment.prototype.initAnimations = function () {
  	}
  };
 
-/*
+/**
  * loadTextures
  * Load the scene's textures.
  */
@@ -217,7 +211,7 @@ MyEnvironment.prototype.loadTextures = function () {
  	}
 };
 
-/*
+/**
  * loadMaterials
  * Create the scene's materials.
  */
@@ -262,7 +256,7 @@ MyEnvironment.prototype.loadMaterials = function () {
  	}
 };
 
-/*
+/**
  * initShaders
  * Initiate the shaders.
  */
@@ -272,7 +266,7 @@ MyEnvironment.prototype.initShaders = function () {
 	this.terrainShader.setUniformsValues({uSampler2: 1});
 };
 
-/*
+/**
  * display
  * Display the scene.
  */
@@ -288,7 +282,7 @@ MyEnvironment.prototype.display = function () {
   this.scene.popMatrix();
 };
 
- /*
+ /**
   * processGraph
   * Processes the scene's elements.
   */
@@ -300,7 +294,7 @@ MyEnvironment.prototype.display = function () {
   	this.processElement(this.graph.root);
   };
 
- /*
+ /**
   * drawElement
   * Draws the element with elementId with current appearance and tranformation.
   */
@@ -328,7 +322,7 @@ MyEnvironment.prototype.display = function () {
  	this.texturesUsed.push(texture);
  };
 
- /*
+ /**
   * processElement
   * Processes element elementId and its descendants.
   * @param elementId

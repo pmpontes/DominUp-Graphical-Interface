@@ -1,5 +1,6 @@
 var interface = null;
-/*
+
+/**
  * MyInterface
  * @constructor
  */
@@ -9,10 +10,9 @@ function MyInterface() {
 };
 
 MyInterface.prototype = Object.create(CGFinterface.prototype);
-
 MyInterface.prototype.constructor = MyInterface;
 
-/*
+/**
  * init
  * @param CGFapplication application
  * @return true upon success
@@ -22,6 +22,10 @@ MyInterface.prototype.init = function(application) {
 	return true;
 };
 
+/**
+ * createMainMenu
+ * Create a new main menu.
+ */
 MyInterface.prototype.createMainMenu = function() {
 	this.mainMenu = new dat.GUI();
 
@@ -51,15 +55,14 @@ MyInterface.prototype.createMainMenu = function() {
 	});
 };
 
+/**
+ * newGame
+ * Create a new game menu, destroying all other menus but the main menu.
+ */
 MyInterface.prototype.newGame = function() {
-	if(this.gameMenu!=undefined)
-		this.destroyGameMenu();
-
-	if(this.newGameMenu!=undefined)
-		this.newGameMenu.destroy();
-
-	if(this.reviewMenu!=undefined)
-		this.destroyReviewMenu();
+	this.destroyGameMenu();
+	this.newGameMenu.destroy();
+	this.destroyReviewMenu();
 
 	this.scene.gameType = this.scene.gameTypes[0];
 	this.scene.gameLevel = this.scene.gameLevels[0];
@@ -73,9 +76,24 @@ MyInterface.prototype.newGame = function() {
 	this.startGameMenu.close();
 };
 
+/**
+ * showGameLevels
+ * Creates input field with game levels options.
+ */
+MyInterface.prototype.showGameLevels = function(Player){
+	this.scene.gameLevel = this.scene.gameLevels[0];
+	this.gameLevel = this.newGameMenu.addFolder('Level for ' + Player);
+	this.gameLevel.add(this.scene, 'gameLevel', this.scene.gameLevels);
+	this.gameLevel.open();
+};
+
+/**
+ * createGameMenu
+ * Create a game menu, destroying other game menus.
+ */
 MyInterface.prototype.createGameMenu = function() {
-	if(this.gameMenu!=undefined)
-		this.destroyGameMenu();
+	this.destroyGameMenu();
+	this.newGameMenu.destroy();
 
 	this.gameMenu = new dat.GUI();
 
@@ -89,12 +107,24 @@ MyInterface.prototype.createGameMenu = function() {
 	this.gameOptions.add(this.scene, 'reviewGame');
 };
 
+/**
+ * make360turn
+ * Sets the scene's camera to make a 360º turn.
+ */
 MyInterface.prototype.make360turn = function() {
 	this.scene.updateCameraPosition('360 view');
 };
 
+/**
+ * createReviewMenu
+ * Create a review menu, destroying other game menus.
+ */
 MyInterface.prototype.createReviewMenu = function() {
+	this.destroyGameMenu();
+	this.newGameMenu.destroy();
+
 	this.reviewMenu = new dat.GUI();
+
 	// play menu
 	this.reviewOptions = this.reviewMenu.addFolder("Review menu");
 	this.reviewOptions.add(this.scene, 'pauseReview');
@@ -103,6 +133,10 @@ MyInterface.prototype.createReviewMenu = function() {
 	this.reviewOptions.open();
 };
 
+/**
+ * destroyGameMenu
+ * Eliminates game menu.
+ */
 MyInterface.prototype.destroyGameMenu = function() {
 	if(this.gameMenu!=undefined){
 		this.gameMenu.destroy();
@@ -110,6 +144,10 @@ MyInterface.prototype.destroyGameMenu = function() {
 	}
 };
 
+/**
+ * destroyReviewMenu
+ * Eliminates review menu.
+ */
 MyInterface.prototype.destroyReviewMenu = function() {
 	if(this.reviewMenu!=undefined){
 		this.reviewMenu.destroy();
@@ -117,16 +155,13 @@ MyInterface.prototype.destroyReviewMenu = function() {
 	}
 };
 
+/**
+ * destroyNewGameMenu
+ * Eliminates new game menu.
+ */
 MyInterface.prototype.destroyNewGameMenu = function() {
 	if(this.newGameMenu!=undefined){
 		this.newGameMenu.destroy();
 		this.newGameMenu=undefined;
 	}
-};
-
-MyInterface.prototype.showGameLevels = function(Player){
-	this.scene.gameLevel = this.scene.gameLevels[0];
-	this.gameLevel = this.newGameMenu.addFolder('Level for ' + Player);
-	this.gameLevel.add(this.scene, 'gameLevel', this.scene.gameLevels);
-	this.gameLevel.open();
 };

@@ -19,9 +19,12 @@ function MyRectangle(scene, coordinates) {
 };
 
 MyRectangle.prototype = Object.create(CGFobject.prototype);
-
 MyRectangle.prototype.constructor=MyRectangle;
 
+/**
+ * initBuffers
+ * Initiate the rectangle's geometry.
+ */
 MyRectangle.prototype.initBuffers = function () {
 	this.vertices = [
             this.minX, this.minY, 0,
@@ -31,10 +34,10 @@ MyRectangle.prototype.initBuffers = function () {
 			];
 
 	this.indices = [
-           0, 1, 2, 
+           0, 1, 2,
 		   3, 2, 1
         ];
-		
+
 	this.normals = [
     0,0,1,
     0,0,1,
@@ -44,8 +47,8 @@ MyRectangle.prototype.initBuffers = function () {
 
     this.width = this.maxX - this.minX;
     this.height= this.maxY - this.minY;
-	
-	
+
+
 	this.texCoords = [
 	0.0, 1.0 * this.height / this.amplifT,
 	 	1.0 * this.width / this.amplifS, 1.0 * this.height / this.amplifT,
@@ -53,7 +56,7 @@ MyRectangle.prototype.initBuffers = function () {
       	1.0 * this.width / this.amplifS, 0.0
 	];
 
-	this.primitiveType=this.scene.gl.TRIANGLES;	
+	this.primitiveType=this.scene.gl.TRIANGLES;
 	this.initGLBuffers();
 };
 

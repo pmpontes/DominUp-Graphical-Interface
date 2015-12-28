@@ -1,6 +1,11 @@
-/*
+/**
  * CircularAnimation
  * @constructor
+ * @param time
+ * @param center
+ * @param radius
+ * @param angStart
+ * @param angRot
  */
 function CircularAnimation(time, center, radius, angStart, angRot){
 	Animation.call(this, time);
@@ -18,6 +23,10 @@ function CircularAnimation(time, center, radius, angStart, angRot){
 CircularAnimation.prototype = Object.create(Animation.prototype);
 CircularAnimation.prototype.constructor = CircularAnimation;
 
+/**
+ * reset
+ * Resets this animation's parameters, so it is restarted.
+ */
 CircularAnimation.prototype.reset = function(){
 	this.animationMatrix = mat4.create();
 	this.startTime = 0;
@@ -28,9 +37,9 @@ CircularAnimation.prototype.reset = function(){
 	this.overtime = false;
 };
 
-/*
+/**
  * getCurrentTransformation
- * calculates and returns the animation's current transformation matrix
+ * Calculates and returns the animation's current transformation matrix.
  * @return the transformation matrix
  */
 CircularAnimation.prototype.getCurrentTransformation = function(){
@@ -62,9 +71,9 @@ CircularAnimation.prototype.getCurrentTransformation = function(){
 };
 
 
-/*
+/**
  * getCurrentOrientation
- * calculates and returns the animation's current orientation transformation matrix
+ * Calculates and returns the animation's current orientation transformation matrix.
  * @return the orientation transformation matrix
  */
 CircularAnimation.prototype.getCurrentOrientation = function(){

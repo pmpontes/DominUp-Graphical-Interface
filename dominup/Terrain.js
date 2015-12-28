@@ -13,9 +13,12 @@ function Terrain(scene, texture, heightMap) {
 };
 
 Terrain.prototype = Object.create(CGFobject.prototype);
-
 Terrain.prototype.constructor=Terrain;
 
+/**
+ * display
+ * Displays the terrain on the scene.
+ */
 Terrain.prototype.display = function () {
 	this.texture.bind(0);
 	this.heightMap.bind(1);
@@ -23,7 +26,7 @@ Terrain.prototype.display = function () {
 };
 
 
-/*
+/**
  * updateTextelCoordinates
  * No need to update the textel's coordinates according to amplifS and amplifT.
  *

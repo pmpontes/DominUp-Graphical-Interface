@@ -20,9 +20,12 @@ function Patch(scene, order, partsU, partsV, controlPoints) {
 };
 
 Patch.prototype = Object.create(CGFobject.prototype);
-
 Patch.prototype.constructor=Patch;
 
+/**
+ * initBuffers
+ * Initiate the patch's geometry.
+ */
 Patch.prototype.initBuffers = function () {
 	var knots = [];
 	var controlPointsOrdered = [];
@@ -45,7 +48,7 @@ Patch.prototype.initBuffers = function () {
 		var group = [];
 		for(var i=0; i<=this.order; i++)
 			group.push(this.controlPoints[n+i]);
-		
+
 		controlPointsOrdered.push(group);
 	}
 
@@ -58,8 +61,12 @@ Patch.prototype.initBuffers = function () {
 	this.surface =	new CGFnurbsObject(this.scene, getSurfacePoint, this.partsU, this.partsV);
 };
 
+/**
+ * display
+ * Displays the patch on the scene.
+ */
 Patch.prototype.display = function () {
-	this.surface.display();	
+	this.surface.display();
 };
 
 

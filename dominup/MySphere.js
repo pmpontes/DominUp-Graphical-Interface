@@ -1,4 +1,4 @@
-/*
+/**
  * MySphere
  * @constructor
  * @param scene
@@ -6,7 +6,7 @@
  */
  function MySphere(scene, arguments) {
  	CGFobject.call(this,scene);
-	
+
 	this.radius=arguments[0];
 	this.stacks=arguments[1];
 	this.slices=arguments[2];
@@ -17,9 +17,12 @@
  };
 
  MySphere.prototype = Object.create(CGFobject.prototype);
-
  MySphere.prototype.constructor = MySphere;
 
+ /**
+  * initBuffers
+  * Initiate the sphere's geometry.
+  */
  MySphere.prototype.initBuffers = function() {
 
  	this.texCoords = [];
@@ -32,7 +35,7 @@
 	this.texelY = 0;
 
  	this.vertices = [];
- 	
+
  	var alpha = -Math.PI/2;
  	for (var n = 0; n <= this.stacks;n++, alpha+=(Math.PI/(this.stacks))) {
  	    var tempAngle = 0;
