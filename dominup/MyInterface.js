@@ -42,6 +42,7 @@ MyInterface.prototype.createMainMenu = function() {
 	var toggleEnviromnent = this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
 	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
+	this.gameLookFolder.add(this.scene, 'pieceGeometry');
 
 	toggleCamera.onFinishChange(function(staticCamera) {
 		if(staticCamera)
@@ -61,7 +62,7 @@ MyInterface.prototype.createMainMenu = function() {
  */
 MyInterface.prototype.newGame = function() {
 	this.destroyGameMenu();
-	this.newGameMenu.destroy();
+	this.destroyNewGameMenu();
 	this.destroyReviewMenu();
 
 	this.scene.gameType = this.scene.gameTypes[0];
@@ -93,7 +94,7 @@ MyInterface.prototype.showGameLevels = function(Player){
  */
 MyInterface.prototype.createGameMenu = function() {
 	this.destroyGameMenu();
-	this.newGameMenu.destroy();
+	this.destroyNewGameMenu();
 
 	this.gameMenu = new dat.GUI();
 
@@ -121,7 +122,7 @@ MyInterface.prototype.make360turn = function() {
  */
 MyInterface.prototype.createReviewMenu = function() {
 	this.destroyGameMenu();
-	this.newGameMenu.destroy();
+	this.destroyNewGameMenu();
 
 	this.reviewMenu = new dat.GUI();
 

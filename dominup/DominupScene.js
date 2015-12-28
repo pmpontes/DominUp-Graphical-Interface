@@ -39,7 +39,7 @@ DominupScene.prototype.init = function (application) {
   this.enableTextures(true);
 
   this.pieceShader = new CGFshader(this.gl, "shaders/piecesShader.vert", "shaders/piecesShader.frag");
-	this.pieceShader.setUniformsValues({normScale: 1.0});
+	this.pieceShader.setUniformsValues({normScale: 1});
   this.pieceShader.setUniformsValues({uSampler2: 1});
 
 	this.setUpdatePeriod(30);
@@ -283,6 +283,7 @@ DominupScene.prototype.initGame = function () {
 	this.moves = [];
   this.players = [];
 
+  this.pieceGeometry = false;
 	this.pauseGame=false;
 	this.timePaused = 0;
 	this.previousTime;
@@ -815,7 +816,7 @@ DominupScene.prototype.display = function () {
 	this.clearPickRegistration();
 
   // display game environment when ready
-  if(!this.pickMode && (this.gameEnvironment in this.environments) && this.gameEnvironment!='none')
+  if(!this.pickMode && (this.gameEnvironment in this.environments))
 	  this.environments[this.gameEnvironment].display();
 
   this.updateLights();
