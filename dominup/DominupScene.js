@@ -600,8 +600,8 @@ DominupScene.prototype.makeMove = function (){
     }
 
     // save move
-    var positionSelected = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
-    this.moves.push({player: this.turn, piece: this.selectedPiece, position: positionSelected});
+    /*var positionSelected = {aX: this.posA[0], aY: this.posA[1], bX: this.posB[0], bY: this.posB[1]};
+    this.moves.push({player: this.turn, piece: this.selectedPiece, position: positionSelected});*/
 };
 
 

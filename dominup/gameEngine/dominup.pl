@@ -484,21 +484,21 @@ make_move(Player, Table, NewTable, Move):-
 %			  	Human Player 			%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-move_human(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable, NextPlayerInt) :-
+move_human(Player, Domino-[AX,AY]-[BX, BY], [AfX,AfY]-[BfX, BfY], Table, NewTable, NextPlayerInt) :-
                 try_vertical_play(Player, Table),
-                make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable),
+                make_move(Player, Domino-[AX,AY]-[BX, BY], [AfX,AfY]-[BfX, BfY], Table, NewTable),
                 player_int(Player, NextPlayerInt).
 
-move_human(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable, NextPlayerInt) :-
+move_human(Player, Domino-[AX,AY]-[BX, BY], [AfX,AfY]-[BfX, BfY], Table, NewTable, NextPlayerInt) :-
                 \+ try_vertical_play(Player, Table),
-                make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable),
+                make_move(Player, Domino-[AX,AY]-[BX, BY], [AfX,AfY]-[BfX, BfY], Table, NewTable),
                 next_player(Player, NextPlayer, 2),
                 player_int(NextPlayer, NextPlayerInt).
 
 % make move, if the player is human
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % If it's the first play, force move to the center of the table
-make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
+make_move(Player, Domino-[AX,AY]-[BX, BY], [AfX,AfY]-[BfX, BfY], Table, NewTable):-
 			type(Player, human),
       player(Player, Dominoes),
       startingTable(Table),
@@ -507,7 +507,7 @@ make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
 			delete(Dominoes, Domino, NewDominoes),
 			save_player(Player, NewDominoes), !.
 
-make_move(Player, Domino-[AX,AY]-[BX, BY], Table, NewTable):-
+make_move(Player, Domino-[AX,AY]-[BX, BY], [AX,AY]-[BX, BY], Table, NewTable):-
 			type(Player, human),
       player(Player, Dominoes),
       \+ startingTable(Table),

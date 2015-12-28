@@ -51,13 +51,18 @@ PrologServer.prototype.parseMove = function(argArray){
   var dominoes1 = argArray[2];
   var dominoes2 = argArray[3];
 
+  console.log(move);
   var position = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
   var domino = [move[0][0], move[0][1]];
 
   server.scene.gameSurface.placePiece(position, domino);
 
   // TODO set piece animation, calculating final position
-  //server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
+  if(!server.scene.players[server.scene.turn].human){
+    console.log("Not Human");
+    var testPiece = domino[0] + "," + domino[1];
+    server.scene.pieces[domino].createAnimation(3, position);
+  } else server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
 
   server.scene.players['player1'].pieces = dominoes1.slice();
   server.scene.players['player2'].pieces = dominoes2.slice();

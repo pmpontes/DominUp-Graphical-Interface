@@ -61,18 +61,25 @@ Player.prototype.setPieces = function (pieces) {
 
 		var matrx = mat4.create();
 		mat4.identity(matrx);
+		var position = vec3.create();
 
 		if(this.playerId=='player1'){
-			if(i>15)
-				mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 3 + 2/3.0 -column));
-			else mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.5, 9 -column));
+			if(i>15){
+				mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.25, 3 + 2/3.0 -column));
+				vec3.add(position, position, vec3.fromValues(10 + line, 0.25, 3 + 2/3.0 -column));
+			} else {
+				mat4.translate(matrx, matrx, vec3.fromValues(10 + line, 0.25, 9 -column));
+				vec3.add(position, position, vec3.fromValues(10 + line, 0.25, 9 -column));
+			}
 			mat4.rotateY(matrx, matrx, -Math.PI/2);
 		}else if(this.playerId=='player2'){
-			mat4.translate(matrx, matrx, vec3.fromValues(-line, 0.5, 9 -column));
+			mat4.translate(matrx, matrx, vec3.fromValues(-line, 0.25, 9 -column));
+			vec3.add(position, position, vec3.fromValues(-line, 0.25, 9 -column));
 			mat4.rotateY(matrx, matrx, Math.PI/2);
 		}
 
 		this.scene.pieces[this.pieces[i]].setInitialPosition(matrx);
+		this.scene.pieces[this.pieces[i]].setReferenceCoordinates(position);
 		column+=2 + 2/3.0;
 	}
 };

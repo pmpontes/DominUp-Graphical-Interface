@@ -15,7 +15,7 @@ serialInclude(['../lib/CGF.js', 'DominupScene.js',  'MyInterface.js', 'MyRectang
 
     'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'Plane.js', 'Patch.js', 'Terrain.js', 'MyPiece.js',
 
-    'MyEnvironment.js', 'Player.js', 'MyGameGraph.js', 'GameSurface.js', 'MyStatusBoard.js', 'Board.js', 'PrologServer.js',
+    'MyEnvironment.js', 'Player.js', 'MyGameGraph.js', 'GameSurface.js', 'MyStatusBoard.js', 'Board.js', 'PrologServer.js', 'PieceAnimation.js',
 
 main=function(){
 	  // Standard application, scene and interface setup
