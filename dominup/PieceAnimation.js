@@ -17,8 +17,9 @@ function PieceAnimation(time, tablePosition, scene, piece){
 	this.activate();
 	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 3, 0]]);
 	this.elevationAnimation.activate();
-	var bottomValue = ((this.angleTotal == Math.PI/2) || (scene.turn == "player1" && this.angleTotal == 0) || (scene.turn == "player2" && this.angleTotal == Math.PI)) ? 3.5 : 4;
-	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, scene.gameSurface.table[tablePosition.aX][tablePosition.aY].length * 0.5 - bottomValue, 0]]);
+	//var bottomValue = ((this.angleTotal == Math.PI/2) || (scene.turn == "player1" && this.angleTotal == 0) || (scene.turn == "player2" && this.angleTotal == Math.PI)) ? 3.5 : 4;
+	console.log("Levels: " + scene.gameSurface.table[tablePosition.aX][tablePosition.aY].length);
+	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, scene.gameSurface.table[tablePosition.aX][tablePosition.aY].length * 0.5 - 3.5, 0]]);
 };
 
 PieceAnimation.prototype = Object.create(Animation.prototype);
@@ -44,7 +45,6 @@ PieceAnimation.prototype.getCurrentTransformation = function(){
 	mat4.multiply(matrx, matrx, this.elevationAnimation.getCurrentTransformation());
 	if(this.phase == "DROP"){
 		mat4.multiply(matrx, matrx, this.dropAnimation.getCurrentTransformation());
-		console.log(this.dropAnimation.getCurrentTransformation());
 	}
 
 	if(this.timeElapsed >= 500){
@@ -57,8 +57,8 @@ PieceAnimation.prototype.getCurrentTransformation = function(){
 		mat4.translate(matrx, matrx, vec3.fromValues(0, 0, this.radius));
 		mat4.rotateX(matrx, matrx, this.arcIt*(arcTimeElapsed-500));
 		mat4.translate(matrx, matrx, vec3.fromValues(0, 0, - this.radius));
-		mat4.rotateY(matrx, matrx, -this.arcAngle*(arcTimeElapsed-500)/this.arcTime);
 		mat4.rotateX(matrx, matrx, -Math.PI*(arcTimeElapsed-500)/this.arcTime);
+		mat4.rotateY(matrx, matrx, this.arcAngle);
 		mat4.rotateY(matrx, matrx, this.angleIt*(arcTimeElapsed-500));
 		mat4.translate(matrx, matrx, vec3.fromValues(0, -0.25, 0));
 
