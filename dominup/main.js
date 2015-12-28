@@ -13,7 +13,7 @@ function getUrlVars() {
 
 serialInclude(['../lib/CGF.js', 'DominupScene.js',  'MyInterface.js', 'MyRectangle.js', 'MyCylinder.js', 'MySphere.js', 'MyTriangle.js',
 
-    'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'Plane.js', 'Patch.js', 'Terrain.js', 'MyPiece.js',
+    'Animation.js', 'LinearAnimation.js', 'CircularAnimation.js', 'Plane.js', 'Patch.js', 'Terrain.js', 'MyPiece.js', 'Vehicle.js',
 
     'MyEnvironment.js', 'Player.js', 'MyGameGraph.js', 'GameSurface.js', 'MyStatusBoard.js', 'Board.js', 'PrologServer.js', 'PieceAnimation.js',
 
@@ -32,9 +32,9 @@ main=function(){
 
     // create and load graph, and associate it to scene.
   	// loading errors are printed on console
-  	var defaultEnvironment = new MyGameGraph('default', myScene);
-    //var spaceEnvironment = new MyGameGraph('space', myScene);
-    //var desertEnvironment = new MyGameGraph('desert', myScene);
+    var spaceEnvironment = new MyGameGraph('space', myScene);
+  	var roadEnvironment = new MyGameGraph('road', myScene);
+    var airfieldEnvironment = new MyGameGraph('airfield', myScene);
 
 	  // start
     app.run();

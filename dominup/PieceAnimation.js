@@ -18,8 +18,8 @@ function PieceAnimation(time, tablePosition, scene, piece){
 	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 3, 0]]);
 	this.elevationAnimation.activate();
 	//var bottomValue = ((this.angleTotal == Math.PI/2) || (scene.turn == "player1" && this.angleTotal == 0) || (scene.turn == "player2" && this.angleTotal == Math.PI)) ? 3.5 : 4;
-	console.log("Levels: " + scene.gameSurface.table[tablePosition.aX][tablePosition.aY].length);
-	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, scene.gameSurface.table[tablePosition.aX][tablePosition.aY].length * 0.5 - 3.5, 0]]);
+	console.log("Levels: " + scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length);
+	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length * 0.5 - 4, 0]]);
 };
 
 PieceAnimation.prototype = Object.create(Animation.prototype);

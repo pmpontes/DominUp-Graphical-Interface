@@ -35,7 +35,7 @@ MyInterface.prototype.createMainMenu = function() {
 	this.gameSettings.add(this.scene, 'timeout', 0, 180).step(5);
 	var toggleCamera = this.gameSettings.add(this, 'staticCamera');
 	this.gameEnvironment = this.gameSettings.addFolder("Environment");
-	this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
+	var toggleEnviromnent = this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
 	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
 
@@ -44,21 +44,26 @@ MyInterface.prototype.createMainMenu = function() {
 			interface.setActiveCamera(interface.scene.camera);
 		else interface.setActiveCamera(null);
 	});
+
+	toggleEnviromnent.onFinishChange(function() {
+		if(interface.scene && interface.scene.environments[interface.scene.gameEnvironment]!=undefined)
+			interface.scene.environments[interface.scene.gameEnvironment].activateEnvironment();
+	});
 };
 
 MyInterface.prototype.newGame = function() {
-	if(this.gameMenu!=undefined){
-		this.scene.state='SELECT_GAME_TYPE';
+	if(this.gameMenu!=undefined)
 		this.destroyGameMenu();
-	}
 
-	if(this.newGameMenu!=undefined){
-		this.scene.state='SELECT_GAME_TYPE';
+	if(this.newGameMenu!=undefined)
 		this.newGameMenu.destroy();
-	}
+
+	if(this.reviewMenu!=undefined)
+		this.destroyReviewMenu();
 
 	this.scene.gameType = this.scene.gameTypes[0];
 	this.scene.gameLevel = this.scene.gameLevels[0];
+	this.scene.state='SELECT_GAME_TYPE';
 
 	this.newGameMenu = new dat.GUI();
 	this.newGameFolder = this.newGameMenu.addFolder("Start new game");

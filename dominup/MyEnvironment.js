@@ -6,6 +6,7 @@
 function MyEnvironment(scene, gameGraph) {
  	this.scene = scene;
   this.graph = gameGraph;
+  this.loop = true;
 
   // create matrix
   this.matrix = mat4.create();
@@ -98,9 +99,6 @@ MyEnvironment.prototype.createLights = function(){
 	for(var i = 0; i < this.graph.lights.length && i<8; i++){
 		this.scene.lights[i].name = this.graph.lights[i]['id'];
 
-		// debug
-		this.scene.lights[i].setVisible(true);
-
 		this[this.scene.lights[i].name] = this.graph.lights[i]['enable'];
 
 		if(this.graph.lights[i]['enable'])
@@ -146,6 +144,9 @@ MyEnvironment.prototype.initGeometry = function () {
  		case 'sphere':
  			this.leaves[id] = new MySphere(this.scene, this.graph.leaves[id]['args']);
  			break;
+    case 'sphereReversed':
+      this.leaves[id] = new MySphereReversed(this.scene, this.graph.leaves[id]['args']);
+      break;
  		case 'triangle':
  			this.leaves[id] = new MyTriangle(this.scene, this.graph.leaves[id]['args']);
  			break;
@@ -321,7 +322,7 @@ MyEnvironment.prototype.display = function () {
  	this.leaves[elementId].display();
 
  	if(this.graph.leaves[elementId]['type']=='terrain')
- 		this.scene.setActiveShader(this.defaultShader);
+ 		this.scene.setActiveShader(this.scene.defaultShader);
 
  	this.materialsUsed.push(material);
  	this.texturesUsed.push(texture);

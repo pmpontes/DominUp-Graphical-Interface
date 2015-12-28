@@ -164,6 +164,7 @@ MyPiece.prototype.createAnimation = function(time, finalPosition){
   // TODO
 //  this.animation = new CircularAnimation(time, center, radius, angStart, angRot);
   this.animation = new PieceAnimation(time, finalPosition, this.scene, this);
+  console.log("animation created");
 
   //mat4.translate(this.currentMatrix);
 }

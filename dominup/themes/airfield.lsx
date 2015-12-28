@@ -1,0 +1,380 @@
+<SCENE>
+	<INITIALS>
+        <frustum near=".1" far="500"/>
+        <translation x="-13" y="-1" z="-35" />
+        <rotation axis="x" angle="0" />
+        <rotation axis="y" angle="0" />
+        <rotation axis="z" angle="0" />
+        <scale sx="5.0" sy="5.0" sz="5.0" />
+        <reference length="1" />
+    </INITIALS>
+
+	<ILLUMINATION>
+	    <ambient r="0.1" g="0.1" b="0.1" a="1" />
+	    <background r="0.1" g="0.1" b="0.1" a="1" />
+	</ILLUMINATION>
+
+	<LIGHTS>
+	    <LIGHT id="light1">
+	        <enable value="1" />
+	        <position x="15" y="25" z="7" w="1" />
+	        <ambient r="0.9" g="0.9" b="0.9" a="1" />
+	        <diffuse r="0.9" g="0.9" b="0.9" a="1" />
+	        <specular r="0.9" g="0.9" b="0.9" a="1" />
+	    </LIGHT>
+
+        <LIGHT id="litght2">
+            <enable value="1" />
+            <position x="25" y="11.6" z="10" w="1" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.5" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="0.5" />
+            <specular r="0.3" g="0.3" b="0.3" a="0.5" />
+        </LIGHT>
+
+        <LIGHT id="litght3">
+            <enable value="1" />
+            <position x="15" y="11.6" z="5" w="1" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.5" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="0.5" />
+            <specular r="0.3" g="0.3" b="0.3" a="0.5" />
+        </LIGHT>
+	</LIGHTS>
+
+	<TEXTURES>
+	    <TEXTURE id="blackPaint">
+            <file path="textures/blackbox.jpeg" />
+            <amplif_factor s="1" t="1" />
+        </TEXTURE>
+
+        <TEXTURE id="terrain">
+            <file path="textures/terrain.jpg" />
+            <amplif_factor s="1" t="1" />
+        </TEXTURE>
+
+        <TEXTURE id="waterLevel">
+            <file path="textures/water.jpg" />
+            <amplif_factor s="1" t="1" />
+        </TEXTURE>
+
+        <TEXTURE id="runwayTexture">
+            <file path="textures/runway.jpg" />
+            <amplif_factor s="1" t="1" />
+        </TEXTURE>
+
+        <TEXTURE id="aircraftMetalTexture">
+            <file path="textures/aircraftMetal.jpg" />
+            <amplif_factor s="1" t="1" />
+        </TEXTURE>
+
+         <TEXTURE id="terrainTexture">
+            <file path="textures/terrain2.JPG" />
+            <amplif_factor s="1" t="1" />
+        </TEXTURE>
+
+        <TEXTURE id="hangarTexture">
+            <file path="textures/hangarTexture.jpg" />
+            <amplif_factor s=".1" t=".1" />
+        </TEXTURE>
+	</TEXTURES>
+
+
+	<MATERIALS>
+
+        <MATERIAL id="steelMaterial">
+            <shininess value="30" />
+            <specular r="0.1" g="0.1" b="0.1" a="1" />
+            <diffuse r="0.3" g="0.3" b="0.3" a="1" />
+            <ambient r="0.3" g="0.3" b="0.3" a="1" />
+            <emission r="0.0" g="0.0" b="0.0" a="1" />
+        </MATERIAL>
+
+        <MATERIAL id="defaultMaterial">
+            <shininess value="1" />
+            <specular r="0.5" g="0.5" b="0.5" a="1" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="1" />
+            <ambient r="0.0" g="0.0" b="0.0" a="1" />
+            <emission r="0.0" g="0.0" b="0.0" a="1" />
+        </MATERIAL>
+
+	</MATERIALS>
+
+    <ANIMATIONS>
+        <ANIMATION id="waterRise" type="linear" span="180">
+            <CONTROLPOINT x="0" y="0.31" z="0" />
+            <CONTROLPOINT x="0" y="0.45" z="0" />
+            <CONTROLPOINT x="0" y="0.31" z="0" />
+            <CONTROLPOINT x="0" y="0.45" z="0" />
+            <CONTROLPOINT x="0" y="0.31" z="0" />
+            <CONTROLPOINT x="0" y="0.45" z="0" />
+            <CONTROLPOINT x="0" y="0.31" z="0" />
+        </ANIMATION>
+        <ANIMATION id="landing" type="linear" span="8">
+            <CONTROLPOINT x="8" y="4" z="4.5" />
+            <CONTROLPOINT x="4" y="2" z="4.5" />
+            <CONTROLPOINT x="2" y="0" z="4.5" />
+        </ANIMATION>
+        <ANIMATION id="takeOff1" type="linear" span="5">
+            <CONTROLPOINT x="2" y="0" z="4.5" />
+            <CONTROLPOINT x="-2" y="0" z="4.5" />
+        </ANIMATION>
+        <ANIMATION id="takeOff2" type="linear" span="5">
+            <CONTROLPOINT x="-2" y="0" z="4.5" />
+            <CONTROLPOINT x="-4" y="1.5" z="4.5" />
+            <CONTROLPOINT x="-7" y="4" z="4.5" />
+        </ANIMATION>
+        <ANIMATION id="mainCourse" type="linear" span="8">
+            <CONTROLPOINT x="-7" y="4" z="-4.5" />
+            <CONTROLPOINT x="8" y="4" z="-4.5" />
+        </ANIMATION>
+        <ANIMATION id="holdPath1" type="circular" span="8" center="-7 4 0" radius="4.5" startang="270" rotang="-180" />
+        <ANIMATION id="holdPath2" type="circular" span="8" center="8 4 0" radius="4.5" startang="90" rotang="-180" />
+    </ANIMATIONS>
+
+<LEAVES>
+    <LEAF id="leafRectangle" type="rectangle" args="0 1 1 0" />
+    <LEAF id="runway" type="plane" parts="5" />
+    <LEAF id="plane" type="plane" parts="5" />
+    <LEAF id="terrain" type="terrain" texture="textures/terrain.jpg" heightMap="textures/heightmap.jpg" />
+    <LEAF id="airplaneObject" type="vehicle"/>
+</LEAVES>
+
+<NODES>
+
+    <ROOT id="rootNode" />
+
+    <NODE id="rootNode">
+        <MATERIAL id="defaultMaterial" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="airport" />
+            <DESCENDANT id="mountains" />
+            <DESCENDANT id="baseTerrain" />
+            <DESCENDANT id="airplaneAnimation" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="airplane">
+        <MATERIAL id="null" />
+        <TEXTURE id="aircraftMetalTexture" />
+            <SCALE sx=".15" sy=".15" sz=".15" />
+        <DESCENDANTS>
+            <DESCENDANT id="airplaneObject" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="airplaneAnimation">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+
+        <ANIMATIONSEQ>
+            <ANIMATION id="takeOff1" />
+            <ANIMATION id="takeOff2" />
+            <ANIMATION id="holdPath1" />
+            <ANIMATION id="mainCourse" />
+            <ANIMATION id="holdPath2" />
+            <ANIMATION id="landing" />
+        </ANIMATIONSEQ>
+
+        <DESCENDANTS>
+            <DESCENDANT id="airplane" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="airport">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="runwayNode" />
+            <DESCENDANT id="tower" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="tower">
+        <MATERIAL id="steelMaterial" />
+        <TEXTURE id="null" />
+            <TRANSLATION x="-5" y="0" z="3" />
+            <SCALE sx=".6" sy=".7" sz=".6" />
+        <DESCENDANTS>
+            <DESCENDANT id="towerUp" />
+            <DESCENDANT id="towerDown" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="towerDown">
+        <MATERIAL id="null" />
+        <TEXTURE id="hangarTexture" />
+        <SCALE sx=".5" sy="1.2" sz=".5" />
+        <DESCENDANTS>
+            <DESCENDANT id="cube" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="towerUp">
+        <MATERIAL id="null" />
+        <TEXTURE id="blackPaint" />
+        <TRANSLATION x="-.25" y="1" z="-.25" />
+        <SCALE sx="1" sy=".6" sz="1" />
+        <DESCENDANTS>
+            <DESCENDANT id="cube" />
+        </DESCENDANTS>
+    </NODE>
+
+
+    <NODE id="runwayNode">
+        <MATERIAL id="null" />
+        <TEXTURE id="runwayTexture" />
+        <TRANSLATION x="0" y="0" z="4.5" />
+        <SCALE sx="14" sy="1" sz="2" />
+        <ROTATION axis="y" angle="180" />
+        <DESCENDANTS>
+            <DESCENDANT id="plane" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="mountains">
+        <MATERIAL id="null" />
+        <TEXTURE id="terrain" />
+            <TRANSLATION x="0" y="-.3" z="0" />
+        <DESCENDANTS>
+            <DESCENDANT id="mountain1" />
+            <DESCENDANT id="mountain2" />
+        </DESCENDANTS>
+    </NODE>
+
+      <NODE id="mountain1">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+            <SCALE sx="7" sy="1" sz="7" />
+        <DESCENDANTS>
+            <DESCENDANT id="terrain" />
+            <DESCENDANT id="waterLevel" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="mountain2">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+            <TRANSLATION x="-3" y="-.15" z="8" />
+            <SCALE sx="5" sy="1.5" sz="5" />
+            <ROTATION axis="y" angle="90" />
+        <DESCENDANTS>
+            <DESCENDANT id="terrain" />
+            <DESCENDANT id="waterLevel" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="baseTerrain">
+        <MATERIAL id="null" />
+        <TEXTURE id="terrainTexture" />
+            <TRANSLATION x="0" y="-0.01" z="4" />
+            <SCALE sx="15" sy="1" sz="15" />
+        <DESCENDANTS>
+            <DESCENDANT id="plane" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="waterLevel">
+        <MATERIAL id="null" />
+        <TEXTURE id="waterLevel" />
+                <SCALE sx=".8" sy="1" sz=".8" />
+        <ANIMATIONSEQ>
+            <ANIMATION id="waterRise" />
+        </ANIMATIONSEQ>
+        <DESCENDANTS>
+            <DESCENDANT id="plane" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="parallelRoad">
+        <MATERIAL id="defaultMaterial" />
+        <TEXTURE id="null" />
+
+        <TRANSLATION x="0" y="0" z="15" />
+        <SCALE sx=".2" sy=".2" sz=".2" />
+
+        <DESCENDANTS>
+            <DESCENDANT id="lamp" />
+            <DESCENDANT id="car" />
+            <DESCENDANT id="tree" />
+            <DESCENDANT id="grass" />
+            <DESCENDANT id="road" />
+            <DESCENDANT id="billboard" />
+            <DESCENDANT id="milestone" />
+        </DESCENDANTS>
+    </NODE>
+    <NODE id="cube">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <DESCENDANTS>
+            <DESCENDANT id="top" />
+            <DESCENDANT id="bottom" />
+            <DESCENDANT id="left" />
+            <DESCENDANT id="right" />
+            <DESCENDANT id="front" />
+            <DESCENDANT id="back" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="top">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="0" y="1" z="0" />
+        <ROTATION axis="z" angle="-90" />
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="leafRectangle" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="bottom">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="1" y="0" z="0" />
+        <ROTATION axis="z" angle="90" />
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="leafRectangle" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="left">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="leafRectangle" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="right">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="1" y="1" z="0" />
+        <ROTATION axis="z" angle="180" />
+        <ROTATION axis="y" angle="-90" />
+        <DESCENDANTS>
+            <DESCENDANT id="leafRectangle" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="back">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="1" y="0" z="0" />
+        <ROTATION axis="y" angle="180" />
+        <DESCENDANTS>
+            <DESCENDANT id="leafRectangle" />
+        </DESCENDANTS>
+    </NODE>
+
+    <NODE id="front">
+        <MATERIAL id="null" />
+        <TEXTURE id="null" />
+        <TRANSLATION x="0" y="0" z="1" />
+        <DESCENDANTS>
+            <DESCENDANT id="leafRectangle" />
+        </DESCENDANTS>
+    </NODE>
+
+</NODES>
+</SCENE>

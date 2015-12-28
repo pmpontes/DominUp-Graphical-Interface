@@ -145,6 +145,9 @@
     <LEAF id="leafTriangleEquilateral" type="triangle" args="0 1 0 -0.866 -0.5 0 0.866 -0.5 0" />
 </LEAVES>
 
+<ANIMATIONS>
+</ANIMATIONS>
+
 <NODES>
 
     <ROOT id="rootNode" />
@@ -337,7 +340,6 @@
 
         <MATERIAL id="null" />
         <TEXTURE id="null" />
-        <TRANSFORMATION x="0" y="0.5" z="0" />
         <DESCENDANTS>
             <DESCENDANT id="chassisTop" />
             <DESCENDANT id="chassisCore" />
