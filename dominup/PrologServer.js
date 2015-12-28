@@ -101,13 +101,8 @@ PrologServer.prototype.parseMove = function(argArray){
     var position = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
     var domino = [move[0][0], move[0][1]];
 
-<<<<<<< HEAD
     console.log('----------------------------\nMOVE MADE by :' + server.scene.turn);
     console.log(positionSelected);
-=======
-    console.log('----------------------------\nMOVE MADE:');
-    //console.log(positionSelected);
->>>>>>> e61b7b3b20fc4bf2c89456c9558da0f74bbe84a7
     console.log(domino);
 
     // add piece to game surface
