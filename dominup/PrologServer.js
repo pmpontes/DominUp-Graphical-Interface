@@ -13,7 +13,6 @@ function PrologServer(scene){
 /**
  * getPrologRequest
  * Generates a request to Prolog server.
- * @constructor
  * @param requestString
  */
 PrologServer.prototype.getPrologRequest = function(requestString){
@@ -32,7 +31,6 @@ PrologServer.prototype.getPrologRequest = function(requestString){
 /**
  * handleReply
  * Handles a reply to a Prolog request.
- * @constructor
  * @param data
  * @return data.target.response
  */
@@ -56,6 +54,12 @@ PrologServer.prototype.handleReply = function(data){
         if(argumentsArray[1]!='ok')
           console.log('impossible to undoLastMove');
         break;
+      case 4:
+        server.parseHint(argumentsArray);
+        break;
+      case 5:
+        console.log('impossible to hint play');
+        break;
       default:
         console.log('unkown error on server');
         break;
@@ -71,7 +75,6 @@ PrologServer.prototype.handleReply = function(data){
 /**
  * parseStartGame
  * Parses information sent by Prolog server about a new game.
- * @constructor
  * @param argArray
  */
 PrologServer.prototype.parseStartGame = function(argArray){
@@ -87,13 +90,14 @@ PrologServer.prototype.parseStartGame = function(argArray){
 /**
  * parseMove
  * Parses information sent by Prolog server about a move, updating game status accordingly.
- * @constructor
  * @param argArray
  */
 PrologServer.prototype.parseMove = function(argArray){
-  if(argArray[0]==2)
-    this.scene.unselectPiece();
-  else if(argArray[0]==1) {
+  if(argArray[0]==2){
+    console.log('BAD MOVE!!!!!!!!!!!!!!!!!!!!!!');
+    server.scene.unselectPiece();
+    server.scene.cameraManager.changePosition(server.scene.turn + ' view');
+  }else if(argArray[0]==1) {
     var move = argArray[1];
     var dominoes1 = argArray[2];
     var dominoes2 = argArray[3];
@@ -125,4 +129,22 @@ PrologServer.prototype.parseMove = function(argArray){
     server.scene.gameState = 'NEXT_PLAYER';
     server.scene.animationTimeout = 0;
   }
+};
+
+/**
+ * parseHint
+ * Parses information sent by Prolog server about a possible move, updating game status accordingly.
+ * @param argArray
+ */
+PrologServer.prototype.parseHint = function(argArray){
+    var domino = [argArray[1][0], argArray[1][1]];
+    console.log(domino);
+
+    if(server.scene.selectedPiece)
+      server.scene.pieces[server.scene.selectedPiece].unselected();
+
+    server.scene.gameState = 'SELECT_LOCATION_A';
+    server.scene.selectedPiece = domino;
+    server.scene.pieces[domino].selected();
+    server.scene.cameraManager.changePosition('board view', 5000);
 };

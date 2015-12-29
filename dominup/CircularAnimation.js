@@ -7,9 +7,10 @@
  * @param angStart
  * @param angRot
  */
-function CircularAnimation(time, center, radius, angStart, angRot){
+function CircularAnimation(time, center, radius, angStart, angRot, axis){
 	Animation.call(this, time);
 	this.center = center;
+	this.axis = axis || 'yy';
 	this.radius = radius;
 	this.startAngle = angStart;
 	this.rotAngle = angRot;
@@ -57,7 +58,19 @@ CircularAnimation.prototype.getCurrentTransformation = function(){
 	mat4.translate(matrx, matrx, vectr);
 
 	// Rotates the object the calculated amount, taking the animation time into account
-	mat4.rotateY(matrx, matrx, currAngle);
+	switch (this.axis) {
+		case 'xx':
+			mat4.rotateX(matrx, matrx, currAngle);
+			break;
+		case 'yy':
+			mat4.rotateY(matrx, matrx, currAngle);
+			break;
+		case 'zz':
+			mat4.rotateZ(matrx, matrx, currAngle);
+			break;
+		default:
+			break;
+	}
 
 	// Translates the element to the point in the x axis with "radius" distance to the origin
 	vectr = vec3.fromValues(this.radius, 0, 0);
@@ -65,7 +78,19 @@ CircularAnimation.prototype.getCurrentTransformation = function(){
 
 	// Rotates the object for it to face the rotation direction
 	if(this.orientation == 1){
-		mat4.rotateY(matrx, matrx, Math.PI);
+		switch (this.axis) {
+			case 'xx':
+				mat4.rotateX(matrx, matrx, Math.PI);
+				break;
+			case 'yy':
+				mat4.rotateY(matrx, matrx, Math.PI);
+				break;
+			case 'zz':
+				mat4.rotateZ(matrx, matrx, Math.PI);
+				break;
+			default:
+				break;
+		}
 	}
 	return matrx;
 };

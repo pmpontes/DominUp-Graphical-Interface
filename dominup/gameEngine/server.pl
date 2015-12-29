@@ -1,6 +1,7 @@
 :-use_module(library(sockets)).
 :-use_module(library(lists)).
 :-use_module(library(codesio)).
+:-use_module(library(random)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%                                        Server                                                   %%%%
@@ -151,13 +152,33 @@ parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [1, [Domino,[AfX,AfY],[Bf
 	player(player1, D1),
 	player(player2, D2).
 
-parse_input(listExpansionPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_expansion_plays(Dominoes, Table, Moves).
-parse_input(listVerticalPlays(Player), Moves):- player(Player, Dominoes), table(Table), list_vertical_plays(Dominoes, Table, Moves).
-
-%restore game state TODO check restore game state
-parse_input(Table-XMax-YMax-P1Name-P2Name-P1Dom-P2Dom-P1Type-P2Type, ok) :- set_table_from_data(Table,XMax,YMax,P1Name,P2Name,P1Dom,P2Dom,P1Type,P2Type).
-
 parse_input(makeMove(Player, Domino-[AX,AY]-[BX, BY]), [2]).
+
+parse_input(hintPlay(Player), [4, Domino]):-
+	startingTable(Table),
+	player(Player, Dominoes),
+	length(Dominoes, MaxLength),
+	MaxLength \= 0, random(0, MaxLength, Piece),
+	nth0(Piece, Dominoes, Domino).
+
+parse_input(hintPlay(Player), [4, Domino]):-
+	player(Player, Dominoes),
+	table(Table),
+	list_vertical_plays(Dominoes, Table, Moves),
+	length(Moves, MaxLength),
+	MaxLength \= 0, random(0, MaxLength, Piece),
+	nth0(Piece, Moves, Domino-P1-P2).
+
+parse_input(hintPlay(Player), [4, Domino]):-
+	player(Player, Dominoes),
+	table(Table),
+	list_expansion_plays(Dominoes, Table, Moves),
+	length(Moves, MaxLength),
+	MaxLength \=0, random(0, MaxLength, Piece),
+	nth0(Piece, Moves, Domino-P1-P2).
+
+parse_input(hintPlay(Player), [5]).
+
 
 %set game state
 parse_input(setGameState(Table, D1, D2), ok):-

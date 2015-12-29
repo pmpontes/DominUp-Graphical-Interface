@@ -34,10 +34,9 @@ MyInterface.prototype.createMainMenu = function() {
 	this.startGameMenu.add(this, 'newGame');
 
 	// add game settings
-	this.staticCamera = true;
 	this.gameSettings = this.mainMenu.addFolder("Settings");
 	this.gameSettings.add(this.scene, 'timeout', 0, 180).step(5);
-	var toggleCamera = this.gameSettings.add(this, 'staticCamera');
+	var toggleCamera = this.gameSettings.add(this.scene.cameraManager, 'staticCamera');
 	this.gameEnvironment = this.gameSettings.addFolder("Environment");
 	var toggleEnviromnent = this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
 	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
@@ -101,11 +100,17 @@ MyInterface.prototype.createGameMenu = function() {
 	// play menu
 	this.gameOptions = this.gameMenu.addFolder("Game menu");
 	this.gameOptions.add(this.scene, 'pauseGame');
+	this.gameOptions.add(this.scene, 'hintMove');
 	this.gameOptions.add(this.scene, 'undoLastMove');
 	this.cameraFolder = this.gameOptions.addFolder("Camera");
-	this.cameraFolder.add(this.scene, 'cameraPosition', this.scene.cameraPositions);
+	toggleCameraPosition = this.cameraFolder.add(this.scene.cameraManager,
+		'cameraPosition', this.scene.cameraManager.cameraPositions);
 	this.cameraFolder.add(this, 'make360turn');
 	this.gameOptions.add(this.scene, 'reviewGame');
+
+	toggleCameraPosition.onFinishChange(function(newPosition) {
+		interface.scene.cameraManager.changePosition(newPosition);
+	});
 };
 
 /**
@@ -113,7 +118,7 @@ MyInterface.prototype.createGameMenu = function() {
  * Sets the scene's camera to make a 360º turn.
  */
 MyInterface.prototype.make360turn = function() {
-	this.scene.updateCameraPosition('360 view');
+	this.scene.cameraManager.changePosition('360 view');
 };
 
 /**
@@ -129,7 +134,6 @@ MyInterface.prototype.createReviewMenu = function() {
 	// play menu
 	this.reviewOptions = this.reviewMenu.addFolder("Review menu");
 	this.reviewOptions.add(this.scene, 'pauseReview');
-	//this.reviewOptions.add(this.scene, 'reviewSpeed', 0.5, 4).step(.5);
 	this.reviewOptions.add(this.scene, 'quitReview');
 	this.reviewOptions.open();
 };

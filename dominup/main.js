@@ -17,6 +17,8 @@ serialInclude(['../lib/CGF.js', 'DominupScene.js',  'MyInterface.js', 'MyRectang
 
     'MyEnvironment.js', 'Player.js', 'MyGameGraph.js', 'GameSurface.js', 'MyStatusBoard.js', 'Board.js', 'PrologServer.js', 'PieceAnimation.js',
 
+    'MyCameraManager.js',
+
 main=function(){
 	  // Standard application, scene and interface setup
     var app = new CGFapplication(document.body);

@@ -1,6 +1,10 @@
-/*
+/**
  * PieceAnimation
  * @constructor
+ * @param time
+ * @param tablePosition
+ * @param scene
+ * @param piece
  */
 function PieceAnimation(time, tablePosition, scene, piece){
 	Animation.call(this, time);
@@ -17,7 +21,7 @@ function PieceAnimation(time, tablePosition, scene, piece){
 	this.activate();
 	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 3, 0]]);
 	this.elevationAnimation.activate();
-	
+
 	console.log("Levels: " + scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length);
 	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length * 0.5 - 4, 0]]);
 };
@@ -25,6 +29,11 @@ function PieceAnimation(time, tablePosition, scene, piece){
 PieceAnimation.prototype = Object.create(Animation.prototype);
 PieceAnimation.prototype.constructor = PieceAnimation;
 
+/**
+ * update
+ * Updates the animation according to currTime and its state.
+ * @param currTime
+ */
 PieceAnimation.prototype.update = function(currTime){
 	Animation.prototype.update.call(this, currTime);
 	this.elevationAnimation.update(currTime);
@@ -32,7 +41,7 @@ PieceAnimation.prototype.update = function(currTime){
 		this.dropAnimation.update(currTime);
 };
 
-/*
+/**
  * getCurrentTransformation
  * calculates and returns the animation's current transformation matrix
  * @return the transformation matrix
@@ -70,9 +79,10 @@ PieceAnimation.prototype.getCurrentTransformation = function(){
 	return matrx;
 };
 
-/*
+/**
  * getOrientation
- * get Piece orientation
+ * Get piece orientation.
+ * @param tablePosition
  */
 PieceAnimation.prototype.getOrientation = function(tablePosition){
 	var a = tablePosition.aX - tablePosition.bX;
@@ -103,9 +113,10 @@ PieceAnimation.prototype.getOrientation = function(tablePosition){
 	return base;
 }
 
-/*
+/**
  * getPlaceCoordinates
- * calculates the coordinates of the final piece (centered) tablePosition considering the center of the table as the origin
+ * Calculates the coordinates of the final piece (centered) tablePosition considering the center of the table as the origin.
+ * @param tablePosition
  */
 PieceAnimation.prototype.getPlaceCoordinates = function(tablePosition){
 	var Ax = tablePosition.aX;

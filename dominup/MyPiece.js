@@ -1,7 +1,10 @@
 /**
- * Created by Gil on 19/11/2015.
+ * MyPiece
+ * @constructor
+ * @param scene
+ * @param valueR
+ * @param valueL
  */
-
 function MyPiece(scene, valueR, valueL) {
     CGFobject.call(this,scene);
 
@@ -17,41 +20,77 @@ function MyPiece(scene, valueR, valueL) {
     this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
 };
 
+/**
+ * setReferenceCoordinates
+ * @param vectr
+ */
 MyPiece.prototype.setReferenceCoordinates = function(vectr){
   this.referenceCoordinates = vectr;
 };
 
+/**
+ * setInitialPosition
+ * @param newPosition
+ */
 MyPiece.prototype.setInitialPosition = function(newPosition) {
   this.initialPosition = newPosition;
   this.currentMatrix = this.initialPosition;
 };
 
+/**
+ * setId
+ * @param newId
+ */
 MyPiece.prototype.setId = function(newId) {
   this.id=newId;
 };
 
+/**
+ * getId
+ * @return id
+ */
 MyPiece.prototype.getId = function() {
     return this.id;
 };
 
+/**
+ * selected
+ * Add selected animation to piece.
+ */
 MyPiece.prototype.selected = function() {
     this.animation = new LinearAnimation(0.2, [[0,0,0], [0,0.5,0]]);
     this.animation.activate();
 };
 
+/**
+ * unselected
+ * Add unselected animation to piece.
+ */
 MyPiece.prototype.unselected = function() {
     this.animation = new LinearAnimation(0.2, [[0,0.5, 0], [0,0,0]]);
     this.animation.activate();
 };
 
+/**
+ * setSelectable
+ * Set piece as selectable.
+ */
 MyPiece.prototype.setSelectable = function() {
     this.scene.registerForPick(this.id, this);
 };
 
+/**
+ * getValues
+ * @return this piece's values.
+ */
 MyPiece.prototype.getValues = function() {
     return [this.valueR, this.valueL];
 };
 
+/**
+ * display
+ * Display the piece.
+ */
 MyPiece.prototype.display = function() {
 
   this.scene.pushMatrix();
@@ -150,6 +189,7 @@ MyPiece.prototype.centerBottom = function(){
     this.scene.translate(-0.5, -0.5, 0, 0);
     this.rectangle.display();
 };
+
 
 MyPiece.prototype.update = function(currTime){
   if(this.animation!=undefined)

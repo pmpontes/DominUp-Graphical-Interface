@@ -1,6 +1,12 @@
-/*
+/**
  * ReversePieceAnimation
  * @constructor
+ * @param time
+ * @param tablePosition
+ * @param scene
+ * @param piece
+ * @param player
+ * @param initialPosition
  */
 function ReversePieceAnimation(time, tablePosition, scene, piece, player, initialPosition){
 	Animation.call(this, time);
@@ -9,22 +15,21 @@ function ReversePieceAnimation(time, tablePosition, scene, piece, player, initia
 	this.arcTime = 2000;
 	this.scene = scene;
 	this.initialPosition = initialPosition;
-
-	//TODO
 	this.getPlaceCoordinates(tablePosition);
 
 	this.angleTotal = this.getOrientation(tablePosition);
 	this.angleIt = this.angleTotal / this.arcTime;
+	console.log('angleIt' + this.angleIt);
 
-	this.arcAngle = Math.atan((this.finalZ-piece.referenceCoordinates[2])/(this.finalX-piece.referenceCoordinates[0]));
-	console.log(this.arcAngle);
-//????
+	this.arcAngle = Math.atan((this.finalZ - piece.referenceCoordinates[2])/(this.finalX - piece.referenceCoordinates[0]));
+	console.log('arcAngle' + this.arcAngle);
 	this.arcIt = Math.PI / this.arcTime;
+
+console.log('arcIt' + this.arcIt);
 
 	this.radius = vec3.distance(vec3.fromValues(this.finalX, 0, this.finalZ), piece.referenceCoordinates) / 2;
 
 	this.phase = "ELEVATE";
-
 	this.activate();
 
 	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 4-(scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length+1) * 0.5, 0]]);
@@ -38,6 +43,11 @@ function ReversePieceAnimation(time, tablePosition, scene, piece, player, initia
 ReversePieceAnimation.prototype = Object.create(Animation.prototype);
 ReversePieceAnimation.prototype.constructor = ReversePieceAnimation;
 
+/**
+ * update
+ * Updates the animation according to currTime and its state.
+ * @param currTime
+ */
 ReversePieceAnimation.prototype.update = function(currTime){
 	Animation.prototype.update.call(this, currTime);
 	this.elevationAnimation.update(currTime);
@@ -46,9 +56,9 @@ ReversePieceAnimation.prototype.update = function(currTime){
 		this.dropAnimation.update(currTime);
 };
 
-/*
+/**
  * getCurrentTransformation
- * calculates and returns the animation's current transformation matrix
+ * Calculates and returns the animation's current transformation matrix.
  * @return the transformation matrix
  */
 ReversePieceAnimation.prototype.getCurrentTransformation = function(){
@@ -88,9 +98,10 @@ ReversePieceAnimation.prototype.getCurrentTransformation = function(){
 	return matrx;
 };
 
-/*
+/**
  * getOrientation
- * get Piece orientation
+ * Get piece orientation.
+ * @param tablePosition
  */
 ReversePieceAnimation.prototype.getOrientation = function(tablePosition){
 	var a = tablePosition.aX - tablePosition.bX;
@@ -123,9 +134,10 @@ ReversePieceAnimation.prototype.getOrientation = function(tablePosition){
 	return base;
 }
 
-/*
+/**
  * getPlaceCoordinates
- * calculates the coordinates of the final piece (centered) tablePosition considering the center of the table as the origin
+ * Calculates the coordinates of the final piece (centered) tablePosition considering the center of the table as the origin.
+ * @param tablePosition
  */
 ReversePieceAnimation.prototype.getPlaceCoordinates = function(tablePosition){
 	var Ax = tablePosition.aX;
