@@ -67,7 +67,8 @@ GameSurface.prototype.placePiece = function (position, piece) {
 
 GameSurface.prototype.unplacePiece = function (piece) {
 	for(var i=0; i<this.placedPieces.length; i++)
-		if(this.placedPieces[i].domino == piece){
+		if(this.placedPieces[i].domino[0] == piece[0] &&
+			 this.placedPieces[i].domino[1] == piece[1] ){
 			var position = this.placedPieces[i].coords;
 			this.table[position.aY][position.aX].pop();
 			this.table[position.bY][position.bX].pop();

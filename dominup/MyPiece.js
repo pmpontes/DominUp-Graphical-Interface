@@ -53,28 +53,18 @@ MyPiece.prototype.getValues = function() {
 };
 
 MyPiece.prototype.display = function() {
-  // TODO apply this only to top of piece
 
   this.scene.pushMatrix();
 
   if(this.animation!=undefined){
     if(this.animation.type == "LINEAR")
       this.scene.multMatrix(this.animation.getCurrentTransformation());
-    if(this.animation.type == "PIECE"){
-      //this.currentMatrix = mat4.clone(this.initialPosition);
-      //mat4.multiply(this.currentMatrix, this.currentMatrix, this.animation.getCurrentTransformation());
-      //this.scene.multMatrix(this.currentMatrix);
-      //this.scene.multMatrix(this.animation.getCurrentTransformation());
-    }
   }
 
   this.scene.multMatrix(this.initialPosition);
 
   if(this.animation!=undefined){
-    if(this.animation.type == "PIECE"){
-      //this.currentMatrix = mat4.clone(this.initialPosition);
-      //mat4.multiply(this.currentMatrix, this.currentMatrix, this.animation.getCurrentTransformation());
-      //this.scene.multMatrix(this.currentMatrix);
+    if(this.animation.type == "PIECE" || this.animation.type == "REVERSE_PIECE"){
       this.scene.multMatrix(this.animation.getCurrentTransformation());
     }
   }
@@ -169,4 +159,9 @@ MyPiece.prototype.update = function(currTime){
 MyPiece.prototype.createAnimation = function(time, finalPosition){
   this.animation = new PieceAnimation(time, finalPosition, this.scene, this);
   console.log("animation created");
-}
+};
+
+MyPiece.prototype.unplaceAnimation = function(time, finalPosition, player){
+  this.animation = new ReversePieceAnimation(time, finalPosition, this.scene, this, player, this.animation.getCurrentTransformation());
+  console.log("undo animation created");
+};

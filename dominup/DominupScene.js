@@ -148,10 +148,8 @@ DominupScene.prototype.quitReview = function(){
   console.log(this.players);
   this.playersBefore = null;
 
-  if(!this.isGameOver()) {
-    this.turn = this.turnBefore;
-    this.updateCameraPosition(this.turn + ' view');
-  }
+  this.turn = this.turnBefore;
+  this.updateCameraPosition(this.turn + ' view');
 };
 
 DominupScene.prototype.reviewOver = function(){
@@ -225,11 +223,11 @@ DominupScene.prototype.updateGameState = function(){
  * @param currTime.
  */
 DominupScene.prototype.update = function(currTime) {
+
   // update game environment
   if(this.gameEnvironment in this.environments)
     this.environments[this.gameEnvironment].update(currTime);
-console.log(this.state);
-console.log(this.gameState);
+
 	if(!this.pauseGame){
     // update camera's position
     if(this.cameraAnimation!=undefined && this.cameraAnimation.isActive())
@@ -487,16 +485,6 @@ DominupScene.prototype.updateLights = function() {
     }
 		this.lights[i].update();
   }
-
-  if((this.state == 'PLAY' && !this.pauseGame) || (this.state == 'REVIEW_GAME' && !this.pauseReview)) {
-    for(gameLight in this.gameLights){
-      if(gameLight == this.turn)
-        this.lights[this.gameLights[gameLight]].enable();
-      else this.lights[this.gameLights[gameLight]].disable();
-
-      this.lights[this.gameLights[gameLight]].update();
-    }
-  }
 }
 
 /**
@@ -616,12 +604,12 @@ DominupScene.prototype.undoLastMove = function (){
   this.players[lastPlay['player']].addPiece(this.pieces[lastPlay['piece']].getValues());
 
   // do animation to piece
-  //this.pieces[server.scene.selectedPiece].createAnimation(3, lastPlay.position);
+  this.pieces[lastPlay['piece']].unplaceAnimation(3, lastPlay.position, lastPlay['player']);
   server.scene.gameState = 'NEXT_PLAYER';
   server.scene.animationTimeout = 0;
-
+console.log('play undone ' + lastPlay['player']);
   // change turn
-  this.nextPlayer = (this.moves.length==0) ? 'player1' : this.moves[this.moves.length-1]['player'];
+  this.nextPlayer = lastPlay['player'];
 
   // update status on prolog server
   var requestString = "setGameState(" + this.gameSurface.getTable() + "," +
@@ -717,7 +705,7 @@ DominupScene.prototype.reviewMakeMove = function (){
 
 
     // update set of player's dominoes
-    var newPiecePosition = this.gameSurface.placePiece(currentMove.position, this.pieces[currentMove.piece].getValues());
+    this.gameSurface.placePiece(currentMove.position, this.pieces[currentMove.piece].getValues());
     this.players[currentMove.player].removePiece(this.pieces[currentMove.piece].getValues());
     console.log(this.players[currentMove.player].pieces);
 

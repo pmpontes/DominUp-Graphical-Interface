@@ -103,6 +103,7 @@ PrologServer.prototype.parseMove = function(argArray){
 
     console.log('----------------------------\nMOVE MADE by :' + server.scene.turn);
     console.log(domino);
+  console.log(position);
 
     // add piece to game surface
     server.scene.gameSurface.placePiece(position, domino);
