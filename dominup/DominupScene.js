@@ -336,7 +336,6 @@ DominupScene.prototype.reviewGame = function (){
 DominupScene.prototype.quitReview = function(){
   console.log('finish review!!!!!!!');
   this.myInterface.destroyReviewMenu();
-  this.state='REVIEW_OVER';
 
   // restore game state
   this.pieces = this.piecesBefore;  // restore pieces
@@ -352,13 +351,7 @@ DominupScene.prototype.quitReview = function(){
 
   this.turn = this.turnBefore;
   this.cameraManager.changePosition(this.turn + ' view');
-};
 
-/**
- * quitReview.
- * Restore game to previous status.
- */
-DominupScene.prototype.reviewOver = function(){
   console.log('finish review!!!!!!!, state reset');
   this.pauseGame = false;
 
@@ -463,12 +456,7 @@ DominupScene.prototype.update = function(currTime) {
 		this.updateGameState();
 	}else this.timePaused += (currTime - this.previousTime);
 
-  if(this.state=='REVIEW_OVER') {
-    // update camera's animation
-    if(!this.cameraManager.update(currTime-this.timePaused))
-      this.reviewOver();
-
-  }else if(this.state=='REVIEW_GAME'){
+  if(this.state=='REVIEW_GAME'){
     if(!this.pauseReview){
       console.log('update review');
 
@@ -571,6 +559,8 @@ DominupScene.prototype.prepareTurn = function (){
  * Make request to Prolog server for possible plays.
  */
 DominupScene.prototype.hintMove = function (){
+  if(!this.players[this.turn].human)
+    return;
 
   // make play in Prolog
   var requestString = "hintPlay(" + this.players[this.turn].playerId + ")";
