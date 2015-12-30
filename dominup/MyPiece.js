@@ -17,7 +17,7 @@ function MyPiece(scene, valueR, valueL) {
 		mat4.identity(this.initialPosition);
     this.currentMatrix = this.initialPosition;
 
-    this.rectangle = new MyRectangle(this.scene, [0, 1, 1 ,0]);
+    this.rectangle = new Plane(this.scene, 5, [0.5,0.5,0], 'xy');
 };
 
 /**
@@ -159,9 +159,9 @@ MyPiece.prototype.centerSide = function(){
 MyPiece.prototype.centerTop = function(value){
     if(value != null){
       if(this.scene.pieceGeometry){
-        //this.scene.setActiveShaderSimple(this.scene.pieceShader);
-        //this.scene.textures[this.scene.gameLook][value].bind(0);
-        //this.scene.textures['default'][value].bind(1);
+        this.scene.setActiveShaderSimple(this.scene.pieceShader);
+        this.scene.textures[this.scene.gameLook][value].bind(0);
+        this.scene.textures['default'][value].bind(1);
       }
 
       this.material = this.scene.materials[this.scene.gameLook];

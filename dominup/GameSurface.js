@@ -10,7 +10,7 @@ function GameSurface(scene, sizeX, sizeY) {
 	this.sizeX = sizeX;
 	this.sizeY = sizeY;
 
-	this.suface = new Plane(scene, sizeX, sizeY);
+	this.suface = new Plane(scene, sizeX);
 
 	this.placedPieces = [];
 
@@ -26,7 +26,7 @@ function GameSurface(scene, sizeX, sizeY) {
 	var hitBoxId = 200;
 	for(var n=0; n< this.sizeY; n++)
 		for(var m=0; m<this.sizeX; m++){
-			this.positions[[m, n]] = new Patch(scene, 1, 1, 1, [[-0.5, 0, 0.5], [-0.5, 0, -0.5], [0.5, 0, 0.5], [0.5, 0,-0.5]]);
+			this.positions[[m, n]] = new Plane(scene, 1);
 			this.positionID[hitBoxId++] = [m,n];
 		}
 };
