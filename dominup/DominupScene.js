@@ -787,8 +787,9 @@ DominupScene.prototype.display = function () {
   this.loadIdentity();
 
   this.pushMatrix();
-    this.translate(-3.65,1.2,-10);
-    this.scale(0.2,0.2,0.2);
+    //this.translate(-3.65,1.2,-10);
+    this.translate(-12,3,-40);
+    //this.scale(0.2,0.2,0.2);
     this.statusBoard.display();
   this.popMatrix();
 
