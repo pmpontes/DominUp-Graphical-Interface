@@ -40,7 +40,7 @@ PrologServer.prototype.handleReply = function(data){
 
     // parse server response
     var argumentsArray = JSON.parse(data.target.response);
-    console.log('RESPONSE CODE:' + argumentsArray[0]);
+    console.log('Response code:' + argumentsArray[0]);
     // handle reply
     switch(argumentsArray[0]){
       case 0:
@@ -52,16 +52,16 @@ PrologServer.prototype.handleReply = function(data){
         break;
       case 3:
         if(argumentsArray[1]!='ok')
-          console.log('impossible to undoLastMove');
+          console.log('Impossible to undo last move.');
         break;
       case 4:
         server.parseHint(argumentsArray);
         break;
       case 5:
-        console.log('impossible to hint play');
+        console.log('Impossible to hint play.');
         break;
       default:
-        console.log('unkown error on server');
+        console.log('Unkown server error.');
         break;
     }
   } else {
@@ -94,7 +94,7 @@ PrologServer.prototype.parseStartGame = function(argArray){
  */
 PrologServer.prototype.parseMove = function(argArray){
   if(argArray[0]==2){
-    console.log('BAD MOVE!!!!!!!!!!!!!!!!!!!!!!');
+    console.log('Invalid move.');
     server.scene.unselectPiece();
     server.scene.cameraManager.changePosition(server.scene.turn + ' view');
   }else if(argArray[0]==1) {
@@ -105,9 +105,7 @@ PrologServer.prototype.parseMove = function(argArray){
     var position = {aX: move[1][0], aY: move[1][1], bX: move[2][0], bY: move[2][1]};
     var domino = [move[0][0], move[0][1]];
 
-    console.log('----------------------------\nMOVE MADE by :' + server.scene.turn);
-    console.log(domino);
-  console.log(position);
+    console.log('Valid move.');
 
     // add piece to game surface
     server.scene.gameSurface.placePiece(position, domino);
@@ -116,7 +114,6 @@ PrologServer.prototype.parseMove = function(argArray){
 
     // set piece animation, calculating final position
     if(!server.scene.players[server.scene.turn].human){
-      console.log("Not Human");
       server.scene.pieces[domino].createAnimation(3, position);
     } else server.scene.pieces[server.scene.selectedPiece].createAnimation(3, position);
 
@@ -138,7 +135,6 @@ PrologServer.prototype.parseMove = function(argArray){
  */
 PrologServer.prototype.parseHint = function(argArray){
     var domino = [argArray[1][0], argArray[1][1]];
-    console.log(domino);
 
     if(server.scene.selectedPiece)
       server.scene.pieces[server.scene.selectedPiece].unselected();

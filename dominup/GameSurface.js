@@ -58,10 +58,6 @@ GameSurface.prototype.placePiece = function (position, piece) {
 	this.table[position.aY][position.aX].push(piece[0]);
 	this.table[position.bY][position.bX].push(piece[1]);
 
-	console.log(piece[0]);
-
-	console.log(this.placedPieces);
-	console.log(piecePosition);
 	return piecePosition;
 };
 
@@ -74,7 +70,6 @@ GameSurface.prototype.unplacePiece = function (piece) {
 			this.table[position.bY][position.bX].pop();
 			this.placedPieces.splice(i,1);
 		}
-		console.log(this.placedPieces);
 };
 
 GameSurface.prototype.getPosition = function (id) {
