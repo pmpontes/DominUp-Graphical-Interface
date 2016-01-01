@@ -23,8 +23,6 @@ function ReversePieceAnimation(time, scene, piece, player){
 	this.elevationAnimation = new LinearAnimation(0.5, [[0, (piece.level - 1) * 0.5, 0], [0, 3, 0]]);
 	this.elevationAnimation.activate();
 
-	console.log(this.player);
-
 	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, -3, 0]]);
 };
 
