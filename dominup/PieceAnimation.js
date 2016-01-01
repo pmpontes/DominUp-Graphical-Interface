@@ -37,6 +37,7 @@ PieceAnimation.prototype.constructor = PieceAnimation;
 PieceAnimation.prototype.update = function(currTime){
 	Animation.prototype.update.call(this, currTime);
 	this.elevationAnimation.update(currTime);
+
 	if(this.phase != "ARC" && this.phase != "ELEVATE")
 		this.dropAnimation.update(currTime);
 };
@@ -57,8 +58,9 @@ PieceAnimation.prototype.getCurrentTransformation = function(){
 	}
 
 	if(this.timeElapsed >= 500){
-		if(this.phase == "ELEVATE")
+		if(this.phase == "ELEVATE"){
 			this.phase = "ARC";
+		}
 		var arcTimeElapsed = (this.timeElapsed >= (this.arcTime + 500)) ? (this.arcTime + 500) : this.timeElapsed;
 
 		mat4.translate(matrx, matrx, vec3.fromValues(0, 0.25, 0));

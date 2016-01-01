@@ -23,7 +23,7 @@ function ReversePieceAnimation(time, tablePosition, scene, piece, player, initia
 
 	this.arcAngle = Math.atan((this.finalZ - piece.referenceCoordinates[2])/(this.finalX - piece.referenceCoordinates[0]));
 	console.log('arcAngle' + this.arcAngle);
-	this.arcIt = Math.PI / this.arcTime;
+	this.arcIt = -Math.PI / this.arcTime;
 
 console.log('arcIt' + this.arcIt);
 
@@ -69,14 +69,11 @@ ReversePieceAnimation.prototype.getCurrentTransformation = function(){
 	mat4.multiply(matrx, matrx, this.initialPosition);
 	mat4.multiply(matrx, matrx, this.elevationAnimation.getCurrentTransformation());
 
-	if(this.phase == "DROP"){
-		mat4.multiply(matrx, matrx, this.dropAnimation.getCurrentTransformation());
-		console.log('drop');
-	}
 
 	if(this.timeElapsed >= 500){
-		if(this.phase == "ELEVATE")
+		if(this.phase == "ELEVATE"){
 			this.phase = "ARC";
+		}
 		var arcTimeElapsed = (this.timeElapsed >= (this.arcTime + 500)) ? (this.arcTime + 500) : this.timeElapsed;
 
 		mat4.translate(matrx, matrx, vec3.fromValues(0, 0.25, 0));
@@ -95,6 +92,12 @@ ReversePieceAnimation.prototype.getCurrentTransformation = function(){
 			this.dropAnimation.activate();
 		}
 	}
+
+	if(this.phase == "DROP"){
+		mat4.multiply(matrx, matrx, this.dropAnimation.getCurrentTransformation());
+		console.log('drop');
+	}
+
 	return matrx;
 };
 

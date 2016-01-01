@@ -515,9 +515,9 @@ DominupScene.prototype.isGameOver = function (){
  */
 DominupScene.prototype.undoLastMove = function (){
 
-  console.log('undo');
-  if(this.moves.length==0)
+  if(this.moves.length==0 || this.pauseGame)
     return;
+  console.log('undo');
 
   var lastPlay = this.moves.pop();
 
@@ -559,7 +559,7 @@ DominupScene.prototype.prepareTurn = function (){
  * Make request to Prolog server for possible plays.
  */
 DominupScene.prototype.hintMove = function (){
-  if(!this.players[this.turn].human)
+  if(this.pauseGame || !this.players[this.turn].human)
     return;
 
   // make play in Prolog
