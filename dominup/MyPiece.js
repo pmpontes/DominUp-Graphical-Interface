@@ -203,6 +203,6 @@ MyPiece.prototype.createAnimation = function(time, finalPosition){
 };
 
 MyPiece.prototype.unplaceAnimation = function(time, finalPosition, player){ //TODO removed final position)
-  this.animation = new ReversePieceAnimation(time, this.scene, this, player, this.animation.getCurrentTransformation());
+  this.animation = new ReversePieceAnimation(time, this.scene, this, player);
   console.log("undo animation created");
 };

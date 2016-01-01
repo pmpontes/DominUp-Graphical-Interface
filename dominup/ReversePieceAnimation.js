@@ -6,11 +6,12 @@
  * @param scene
  * @param piece
  */
-function ReversePieceAnimation(time, scene, piece){
+function ReversePieceAnimation(time, scene, piece, player){
 	Animation.call(this, time);
 	this.arcTime = 2000;
 	this.scene = scene;
-	this.piece = piece
+	this.piece = piece;
+	this.player = player;
 	this.angleTotal = piece.orientationAngle;
 	this.angleIt = this.angleTotal / this.arcTime;
 	this.arcAngle = Math.atan((piece.piecePlacement[2] - piece.referenceCoordinates[2])/(piece.piecePlacement[0] - piece.referenceCoordinates[0]));
@@ -19,10 +20,12 @@ function ReversePieceAnimation(time, scene, piece){
 	this.type = "PIECE";
 	this.phase = "ELEVATE";
 	this.activate();
-	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 3, 0]]);
+	this.elevationAnimation = new LinearAnimation(0.5, [[0, (piece.level - 1) * 0.5, 0], [0, 3, 0]]);
 	this.elevationAnimation.activate();
 
-	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, piece.level * 0.5 - 4, 0]]);
+	console.log(this.player);
+
+	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, -3, 0]]);
 };
 
 ReversePieceAnimation.prototype = Object.create(Animation.prototype);
@@ -50,11 +53,11 @@ ReversePieceAnimation.prototype.getCurrentTransformation = function(){
 	var matrx = mat4.create();
 	mat4.identity(matrx);
 
-	mat4.translate(matrx, matrx, vec3.fromValues(this.piece.piecePlacement[2] - this.piece.referenceCoordinates[2], 0, this.piece.referenceCoordinates[0] - this.piece.piecePlacement[0]));
-
-	/*mat4.translate(matrx, matrx, vec3.fromValues(this.piece.piecePlacement[0] - this.piece.referenceCoordinates[0],
-																								0,
-																								this.piece.piecePlacement[2] - this.piece.referenceCoordinates[2]));*/
+	if(this.player == "player2")
+		mat4.translate(matrx, matrx, vec3.fromValues(-(this.piece.piecePlacement[2] - this.piece.referenceCoordinates[2]), 0, -(this.piece.referenceCoordinates[0] - this.piece.piecePlacement[0])));
+	else{
+		mat4.translate(matrx, matrx, vec3.fromValues(this.piece.piecePlacement[2] - this.piece.referenceCoordinates[2], 0, this.piece.referenceCoordinates[0] - this.piece.piecePlacement[0]));
+	}
 
 	mat4.multiply(matrx, matrx, this.elevationAnimation.getCurrentTransformation());
 	if(this.phase == "DROP"){
