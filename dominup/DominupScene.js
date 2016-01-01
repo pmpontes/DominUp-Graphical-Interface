@@ -42,10 +42,6 @@ DominupScene.prototype.init = function (application) {
   this.gl.depthFunc(this.gl.LEQUAL);
   this.enableTextures(true);
 
-  this.pieceShader = new CGFshader(this.gl, "shaders/piecesShader.vert", "shaders/piecesShader.frag");
-	this.pieceShader.setUniformsValues({normScale: 1});
-  this.pieceShader.setUniformsValues({uSampler2: 1});
-
 	this.setUpdatePeriod(30);
 	this.setPickEnabled(true);
 
@@ -58,7 +54,7 @@ DominupScene.prototype.init = function (application) {
  * Initiate lights over game surface.
  */
 DominupScene.prototype.initLights = function () {
-  var positions = [[0,10,0],[10,10,0], [-10,10,0]];
+  var positions = [[0,15,0],[10,10,0], [-10,10,0]];
 
   for(var i = 7; i<this.lights.length, i>=5; i--){
     this.lights[i].setPosition(positions[7-i][0],positions[7-i][1],positions[7-i][2],1);
@@ -81,7 +77,6 @@ DominupScene.prototype.initGame = function () {
 	this.moves = [];
   this.players = [];
 
-  this.pieceGeometry = false;
 	this.pauseGame=false;
 	this.timePaused = 0;
 	this.previousTime;
@@ -421,7 +416,7 @@ DominupScene.prototype.update = function(currTime) {
     // update camera's position
     this.cameraManager.update(currTime-this.timePaused);
 
-    if(this.gameState!='GAME_OVER' && this.timeout!=0 && this.responseTime>=this.timeout*1000){
+    if(this.state=='PLAY' && this.gameState!='GAME_OVER' && this.timeout!=0 && this.responseTime>=this.timeout*1000){
       console.log('timeout');
       this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
 
@@ -440,6 +435,7 @@ DominupScene.prototype.update = function(currTime) {
     for(pieceId in this.pieces)
         this.pieces[pieceId].update(currTime-this.timePaused);
 
+        console.log(this.gameState);
     if(this.gameState=='AUTO_PLAY') {
       if(this.autoPlayerTimeout >=2000) {
         this.autoPlayerTimeout=0;
@@ -589,7 +585,7 @@ DominupScene.prototype.makeMove = function (){
                                     + this.posA[0] + "," + this.posA[1] + "]-["
                                     + this.posB[0] + "," + this.posB[1] + "])";
   } else requestString = "makeMove(" + this.players[this.turn].playerId + ")";
-
+console.log(this.turn);
   this.server.getPrologRequest(requestString);
 };
 
@@ -606,13 +602,13 @@ DominupScene.prototype.proceedWithGame = function (){
     return;
   }
 
+  // prepare next player
+  this.turn = this.nextPlayer;
   if(!this.players[this.turn].human){
     this.autoPlayerTimeout = 0;
     this.gameState = 'AUTO_PLAY';
   }else this.gameState = 'SELECT_PIECE';
 
-  // prepare next player
-  this.turn = this.nextPlayer;
   this.prepareTurn();
 }
 
@@ -691,7 +687,7 @@ DominupScene.prototype.pieceSelected = function (id, timout){
      break;
    }
 
-   this.cameraManager.changePosition('board view', 1000);
+   this.cameraManager.changePosition('board view', 500);
 };
 
 /**

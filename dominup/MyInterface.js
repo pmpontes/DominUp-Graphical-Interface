@@ -41,7 +41,6 @@ MyInterface.prototype.createMainMenu = function() {
 	var toggleEnviromnent = this.gameEnvironment.add(this.scene, 'gameEnvironment', this.scene.gameEnvironments);
 	this.gameLookFolder = this.gameSettings.addFolder("Appearance");
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
-	this.gameLookFolder.add(this.scene, 'pieceGeometry');
 
 	toggleCamera.onFinishChange(function(staticCamera) {
 		if(staticCamera)
@@ -106,6 +105,8 @@ MyInterface.prototype.createGameMenu = function() {
 	toggleCameraPosition = this.cameraFolder.add(this.scene.cameraManager,
 		'cameraPosition', this.scene.cameraManager.cameraPositions);
 	this.cameraFolder.add(this, 'make360turn');
+	this.cameraFolder.add(this.scene.cameraManager, 'zoomIn');
+	this.cameraFolder.add(this.scene.cameraManager, 'zoomOut');
 	this.gameOptions.add(this.scene, 'reviewGame');
 
 	toggleCameraPosition.onFinishChange(function(newPosition) {

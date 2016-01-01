@@ -19,7 +19,41 @@ function MyCameraManager(scene){
 
   this.cameraAnimation = undefined;
   this.animationSeq = [];
+  this.zoom=0;
 }
+
+/**
+ * zoomIn
+ */
+MyCameraManager.prototype.zoomIn = function(){
+  if(this.animationSeq==undefined)
+    this.animationSeq=[];
+
+  if(this.zoom<3){
+    this.zoom++;
+    this.animationSeq.push(new LinearAnimation(0.5, [[0, 0, 0], [0, 1, 0]]));
+
+    if(this.animationSeq.length==1)
+      this.animationSeq[0].activate();
+  }
+};
+
+/**
+ * zoomOut
+ */
+MyCameraManager.prototype.zoomOut = function(){
+  if(this.animationSeq==undefined)
+    this.animationSeq=[];
+
+  if(this.zoom>-3){
+    this.zoom--;
+    this.animationSeq.push(new LinearAnimation(0.5, [[0, 0, 0], [0, -1, 0]]));
+
+    if(this.animationSeq.length==1)
+      this.animationSeq[0].activate();
+  }
+};
+
 
 /**
  * changePosition
@@ -70,9 +104,9 @@ MyCameraManager.prototype.changePosition = function(newPosition, delay){
 
             //this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/4, 'zz', true));
             if(this.boardSide=='player1 view')
-              this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/4, 'zz', true));
+              this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/5, 'zz', true));
             else if(this.boardSide=='player2 view')
-              this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, -Math.PI/4, 'zz'));
+              this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, -Math.PI/5, 'zz'));
 
             // if necessary to change position
             if(this.boardSide != this.desiredPosition){
@@ -93,9 +127,9 @@ MyCameraManager.prototype.changePosition = function(newPosition, delay){
           break;
         case 'board view':
           if(this.boardSide=='player1 view')
-            this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, -Math.PI/4, 'zz'));
+            this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, -Math.PI/5, 'zz'));
           else if(this.boardSide=='player2 view')
-            this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/4, 'zz', true));
+            this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/5, 'zz', true));
           break;
       }
 

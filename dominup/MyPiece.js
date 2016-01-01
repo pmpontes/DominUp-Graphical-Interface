@@ -158,12 +158,6 @@ MyPiece.prototype.centerSide = function(){
 
 MyPiece.prototype.centerTop = function(value){
     if(value != null){
-      if(this.scene.pieceGeometry){
-        this.scene.setActiveShaderSimple(this.scene.pieceShader);
-        this.scene.textures[this.scene.gameLook][value].bind(0);
-        this.scene.textures['default'][value].bind(1);
-      }
-
       this.material = this.scene.materials[this.scene.gameLook];
       this.material.setTexture(this.scene.textures[this.scene.gameLook][value]);
       this.material.apply();
@@ -176,9 +170,6 @@ MyPiece.prototype.centerTop = function(value){
     this.scene.translate(-0.5, -0.5, 0, 0);
 
     this.rectangle.display();
-
-    if(value!=null && this.scene.pieceGeometry)
-      this.scene.setActiveShaderSimple(this.scene.defaultShader);
 
     this.material.setTexture(this.scene.textures[this.scene.gameLook][0]);
     this.material.apply();
