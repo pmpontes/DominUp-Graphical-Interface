@@ -691,7 +691,7 @@ DominupScene.prototype.pieceSelected = function (id, timout){
      break;
    }
 
-   this.cameraManager.changePosition('board view', 3000);
+   this.cameraManager.changePosition('board view', 1000);
 };
 
 /**

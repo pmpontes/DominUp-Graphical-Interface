@@ -56,6 +56,7 @@ MyCameraManager.prototype.changePosition = function(newPosition, delay){
 
       console.log('cameraPositionChanged to ' + this.desiredPosition);
       console.log('from ' + this.currentPosition);
+      console.log(this.animationSeq);
 
       switch (this.desiredPosition) {
         case 'start':
@@ -67,11 +68,18 @@ MyCameraManager.prototype.changePosition = function(newPosition, delay){
         case 'player2 view':
           if(this.currentPosition=='board view') {
 
-          //  this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/4, 'zz'));
+            //this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/4, 'zz', true));
+            if(this.boardSide=='player1 view')
+              this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/4, 'zz', true));
+            else if(this.boardSide=='player2 view')
+              this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, -Math.PI/4, 'zz'));
 
             // if necessary to change position
-//            if(this.boardSide != this.desiredPosition)
-  //            this.animationSeq.push(new CircularAnimation(2, [0,0,0], 0, 0, -Math.PI));
+            if(this.boardSide != this.desiredPosition){
+              console.log('change side');
+              this.boardSide = this.desiredPosition;
+              this.animationSeq.push(new CircularAnimation(2, [0,0,0], 0, 0, -Math.PI));
+            }
 
           }else if(this.currentPosition=='start') {
             console.log('PPPPPPPPPPPPPPPPPPP');
@@ -84,12 +92,17 @@ MyCameraManager.prototype.changePosition = function(newPosition, delay){
           }
           break;
         case 'board view':
-        //  this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, -Math.PI/4, 'zz'));
+          if(this.boardSide=='player1 view')
+            this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, -Math.PI/4, 'zz'));
+          else if(this.boardSide=='player2 view')
+            this.animationSeq.push(new CircularAnimation(1, [0,0,0], 0, 0, Math.PI/4, 'zz', true));
           break;
       }
 
-      if(this.animationSeq.length>0)
+      if(this.animationSeq.length>0){
         this.animationSeq[0].activate();
+        console.log(this.animationSeq[0]);
+      }
       this.currentPosition = this.desiredPosition;
 
       console.log('status' + this.currentPosition);
@@ -119,7 +132,7 @@ MyCameraManager.prototype.update = function(currTime){
     else{
       mat4.mul(this.cameraMatrix, this.cameraMatrix, this.animationSeq[0].getCurrentTransformation());
       this.animationSeq.shift();
-
+console.log(this.animationSeq);
       if(this.animationSeq.length>0)
         this.animationSeq[0].activate();
       else return false;
