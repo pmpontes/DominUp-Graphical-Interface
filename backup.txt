@@ -1,61 +1,77 @@
 /**
- * PieceAnimation
+ * ReversePieceAnimation
  * @constructor
  * @param time
  * @param tablePosition
  * @param scene
  * @param piece
+ * @param player
+ * @param initialPosition
  */
-function PieceAnimation(time, tablePosition, scene, piece){
+function ReversePieceAnimation(time, tablePosition, scene, piece, player, initialPosition){
 	Animation.call(this, time);
+	this.playerId = player;
+	this.type = "REVERSE_PIECE";
 	this.arcTime = 2000;
-	this.piece = piece;
 	this.scene = scene;
+	this.initialPosition = initialPosition;
 	this.getPlaceCoordinates(tablePosition);
-	this.angleTotal = piece.orientationAngle = this.getOrientation(tablePosition);
+
+	this.angleTotal = this.getOrientation(tablePosition);
 	this.angleIt = this.angleTotal / this.arcTime;
+	console.log('angleIt' + this.angleIt);
+
 	this.arcAngle = Math.atan((this.finalZ - piece.referenceCoordinates[2])/(this.finalX - piece.referenceCoordinates[0]));
+	console.log('arcAngle' + this.arcAngle);
 	this.arcIt = Math.PI / this.arcTime;
+
+console.log('arcIt' + this.arcIt);
+
 	this.radius = vec3.distance(vec3.fromValues(this.finalX, 0, this.finalZ), piece.referenceCoordinates) / 2;
-	this.type = "PIECE";
+
 	this.phase = "ELEVATE";
 	this.activate();
-	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 3, 0]]);
-	this.elevationAnimation.activate();
-	this.piece.level = scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length;
 
-	console.log("Levels: " + scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length);
-	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, this.piece.level * 0.5 - 4, 0]]);
+	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 4-(scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length+1) * 0.5, 0]]);
+	this.elevationAnimation.activate();
+
+	console.log('Ytrans'+(4-(scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length+1) * 0.5));
+
+	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, -3, 0]]);
 };
 
-PieceAnimation.prototype = Object.create(Animation.prototype);
-PieceAnimation.prototype.constructor = PieceAnimation;
+ReversePieceAnimation.prototype = Object.create(Animation.prototype);
+ReversePieceAnimation.prototype.constructor = ReversePieceAnimation;
 
 /**
  * update
  * Updates the animation according to currTime and its state.
  * @param currTime
  */
-PieceAnimation.prototype.update = function(currTime){
+ReversePieceAnimation.prototype.update = function(currTime){
 	Animation.prototype.update.call(this, currTime);
 	this.elevationAnimation.update(currTime);
+
 	if(this.phase != "ARC" && this.phase != "ELEVATE")
 		this.dropAnimation.update(currTime);
 };
 
 /**
  * getCurrentTransformation
- * calculates and returns the animation's current transformation matrix
+ * Calculates and returns the animation's current transformation matrix.
  * @return the transformation matrix
  */
-PieceAnimation.prototype.getCurrentTransformation = function(){
+ReversePieceAnimation.prototype.getCurrentTransformation = function(){
 
 	var matrx = mat4.create();
 	mat4.identity(matrx);
 
+	mat4.multiply(matrx, matrx, this.initialPosition);
 	mat4.multiply(matrx, matrx, this.elevationAnimation.getCurrentTransformation());
+
 	if(this.phase == "DROP"){
 		mat4.multiply(matrx, matrx, this.dropAnimation.getCurrentTransformation());
+		console.log('drop');
 	}
 
 	if(this.timeElapsed >= 500){
@@ -75,6 +91,7 @@ PieceAnimation.prototype.getCurrentTransformation = function(){
 
 		if(this.phase == "ARC" && this.timeElapsed >= (this.arcTime + 500)){
 			this.phase = "DROP";
+			console.log('drop started');
 			this.dropAnimation.activate();
 		}
 	}
@@ -86,10 +103,11 @@ PieceAnimation.prototype.getCurrentTransformation = function(){
  * Get piece orientation.
  * @param tablePosition
  */
-PieceAnimation.prototype.getOrientation = function(tablePosition){
+ReversePieceAnimation.prototype.getOrientation = function(tablePosition){
 	var a = tablePosition.aX - tablePosition.bX;
 	var b = tablePosition.aY - tablePosition.bY;
-	if(this.scene.turn == "player1"){
+
+	if(this.playerId=='player1'){
 		var base = -Math.PI/2;
 		if(a > 0)
 			base = Math.PI/2;
@@ -112,6 +130,7 @@ PieceAnimation.prototype.getOrientation = function(tablePosition){
 			}
 		}
 	}
+	console.log('orientation ' + base);
 	return base;
 }
 
@@ -120,7 +139,7 @@ PieceAnimation.prototype.getOrientation = function(tablePosition){
  * Calculates the coordinates of the final piece (centered) tablePosition considering the center of the table as the origin.
  * @param tablePosition
  */
-PieceAnimation.prototype.getPlaceCoordinates = function(tablePosition){
+ReversePieceAnimation.prototype.getPlaceCoordinates = function(tablePosition){
 	var Ax = tablePosition.aX;
 	var Az = tablePosition.aY;
 	var Bx = tablePosition.bX;
@@ -141,5 +160,6 @@ PieceAnimation.prototype.getPlaceCoordinates = function(tablePosition){
 	this.finalX = baseX + closerX;
 	this.finalZ = baseZ + closerZ;
 
-	this.piece.setPiecePlacement(vec3.fromValues(this.finalX, 0, this.finalZ));
+	console.log('finalX: ' + this.finalX);
+	console.log('finalZ: ' + this.finalZ);
 }
