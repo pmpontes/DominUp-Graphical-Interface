@@ -320,8 +320,7 @@ DominupScene.prototype.reviewGame = function (){
   this.players['player1'] = this.players['player1'].clone();
   this.players['player2'] = this.players['player2'].clone();
 
-  console.log('review started!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-  console.log(this.players);
+  console.log('Review started.');
 };
 
 /**
@@ -329,7 +328,7 @@ DominupScene.prototype.reviewGame = function (){
  * Restore game to previous status.
  */
 DominupScene.prototype.quitReview = function(){
-  console.log('finish review!!!!!!!');
+  console.log('Review finished.');
   this.myInterface.destroyReviewMenu();
 
   // restore game state
@@ -341,17 +340,14 @@ DominupScene.prototype.quitReview = function(){
   // restore current players
   this.players['player1'] = this.playersBefore['player1'];
   this.players['player2'] = this.playersBefore['player2'];
-  console.log(this.players);
   this.playersBefore = null;
 
   this.turn = this.turnBefore;
   this.cameraManager.changePosition(this.turn + ' view');
 
-  console.log('finish review!!!!!!!, state reset');
   this.pauseGame = false;
 
   this.state=this.stateBefore;
-  console.log(this.state);
   this.myInterface.createGameMenu();
 };
 
@@ -417,7 +413,7 @@ DominupScene.prototype.update = function(currTime) {
     this.cameraManager.update(currTime-this.timePaused);
 
     if(this.state=='PLAY' && this.gameState!='GAME_OVER' && this.timeout!=0 && this.responseTime>=this.timeout*1000){
-      console.log('timeout');
+      console.log('Timeout occurred.');
       this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
 
       if(!this.players[this.turn].human){
@@ -453,7 +449,6 @@ DominupScene.prototype.update = function(currTime) {
 
   if(this.state=='REVIEW_GAME'){
     if(!this.pauseReview){
-      console.log('update review');
 
       // update camera's animation
       this.cameraManager.update(currTime-this.reviewTimePaused);
@@ -461,7 +456,6 @@ DominupScene.prototype.update = function(currTime) {
       if(this.moveTime<5000 && this.previousTime!=undefined)
           this.moveTime += currTime-this.previousTime;
       else{
-        console.log('make move time:' + this.moveTime);
         this.moveTime=0;
         this.reviewMakeMove();
       }
@@ -512,7 +506,8 @@ DominupScene.prototype.undoLastMove = function (){
 
   if(this.moves.length==0 || this.pauseGame)
     return;
-  console.log('undo');
+
+  console.log('Undo last move.');
 
   var lastPlay = this.moves.pop();
 
@@ -525,7 +520,6 @@ DominupScene.prototype.undoLastMove = function (){
   server.scene.gameState = 'NEXT_PLAYER';
   server.scene.animationTimeout = 0;
 
-  console.log('play undone ' + lastPlay['player']);
   // change turn
   this.nextPlayer = lastPlay['player'];
 
@@ -556,6 +550,7 @@ DominupScene.prototype.prepareTurn = function (){
 DominupScene.prototype.hintMove = function (){
   if(this.pauseGame || !this.players[this.turn].human)
     return;
+  console.log('Hint move.');
 
   // make play in Prolog
   var requestString = "hintPlay(" + this.players[this.turn].playerId + ")";
@@ -568,10 +563,8 @@ DominupScene.prototype.hintMove = function (){
  */
 DominupScene.prototype.makeMove = function (){
 
- console.log("piece and location chosen, make move");
-
   if((winner = this.isGameOver())!=false) {
-   console.log('gameOver');
+   console.log('Game over.');
    this.gameState = 'GAME_OVER';
    return;
   }
@@ -584,7 +577,7 @@ DominupScene.prototype.makeMove = function (){
                                     + this.posA[0] + "," + this.posA[1] + "]-["
                                     + this.posB[0] + "," + this.posB[1] + "])";
   } else requestString = "makeMove(" + this.players[this.turn].playerId + ")";
-console.log(this.turn);
+
   this.server.getPrologRequest(requestString);
 };
 
@@ -596,7 +589,7 @@ DominupScene.prototype.proceedWithGame = function (){
   // check if game over
   var winner;
   if((winner = this.isGameOver())!=false) {
-    console.log('gameOver');
+    console.log('Game over.');
     this.gameState = 'GAME_OVER';
     return;
   }
@@ -618,24 +611,18 @@ DominupScene.prototype.proceedWithGame = function (){
 DominupScene.prototype.reviewMakeMove = function (){
     // check if game over
     if(this.reviewMoves.length==0) {
-      console.log('review over');
       this.quitReview();
       return;
     }
 
     var currentMove = this.reviewMoves.shift();
     this.turn = currentMove.player;
-    console.log('review move ' + currentMove.player);
-    console.log('review move piece moved' + this.pieces[currentMove.piece]);
 
     // update set of player's dominoes
     this.gameSurface.placePiece(currentMove.position, this.pieces[currentMove.piece].getValues());
     this.players[currentMove.player].removePiece(this.pieces[currentMove.piece].getValues());
-    console.log(this.players[currentMove.player].pieces);
 
     this.pieces[currentMove.piece].createAnimation(3, currentMove.position);
-
-    console.log('review: ' + currentMove);
 
     this.cameraManager.changePosition(this.turn + ' view');
 };
@@ -682,7 +669,7 @@ DominupScene.prototype.pieceSelected = function (id, timout){
    if(this.pieces[piece].getId()==id){
      this.selectedPiece=this.pieces[piece].getValues();
      this.pieces[piece].selected();
-     console.log("pieceSelected " + piece);
+     console.log("Piece selected: " + piece);
      break;
    }
 
@@ -720,15 +707,12 @@ DominupScene.prototype.pickManager = function (id){
 
 	// if a piece was picked
 	if(id>=500){
-    console.log("piecetouched " + id);
     if(this.selectedPieceId==id){
       this.unselectPiece();
       this.cameraManager.changePosition(this.turn + ' view');
     }else this.pieceSelected(id);
 
 	}else{
-    console.log('position selected' + this.gameSurface.getPosition(id));
-
   	// if a position was picked
 		if(this.gameState=='SELECT_LOCATION_A'){
 			this.posA = this.gameSurface.getPosition(id);
