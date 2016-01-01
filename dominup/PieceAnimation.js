@@ -9,9 +9,10 @@
 function PieceAnimation(time, tablePosition, scene, piece){
 	Animation.call(this, time);
 	this.arcTime = 2000;
+	this.piece = piece;
 	this.scene = scene;
 	this.getPlaceCoordinates(tablePosition);
-	this.angleTotal = this.getOrientation(tablePosition);
+	this.angleTotal = piece.orientationAngle = this.getOrientation(tablePosition);
 	this.angleIt = this.angleTotal / this.arcTime;
 	this.arcAngle = Math.atan((this.finalZ - piece.referenceCoordinates[2])/(this.finalX - piece.referenceCoordinates[0]));
 	this.arcIt = Math.PI / this.arcTime;
@@ -21,9 +22,10 @@ function PieceAnimation(time, tablePosition, scene, piece){
 	this.activate();
 	this.elevationAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, 3, 0]]);
 	this.elevationAnimation.activate();
+	this.piece.level = scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length;
 
 	console.log("Levels: " + scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length);
-	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, scene.gameSurface.table[tablePosition.aY][tablePosition.aX].length * 0.5 - 4, 0]]);
+	this.dropAnimation = new LinearAnimation(0.5, [[0, 0, 0], [0, this.piece.level * 0.5 - 4, 0]]);
 };
 
 PieceAnimation.prototype = Object.create(Animation.prototype);
@@ -140,4 +142,6 @@ PieceAnimation.prototype.getPlaceCoordinates = function(tablePosition){
 
 	this.finalX = baseX + closerX;
 	this.finalZ = baseZ + closerZ;
+
+	this.piece.setPiecePlacement(vec3.fromValues(this.finalX, 0, this.finalZ));
 }

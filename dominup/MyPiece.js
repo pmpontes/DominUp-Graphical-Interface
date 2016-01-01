@@ -11,6 +11,8 @@ function MyPiece(scene, valueR, valueL) {
     this.valueL = valueL;
     this.valueR = valueR;
     this.id = -1;
+    this.orientationAngle = null;
+    this.level = null;
 
     this.animation = null;
     this.initialPosition = mat4.create();
@@ -26,6 +28,14 @@ function MyPiece(scene, valueR, valueL) {
  */
 MyPiece.prototype.setReferenceCoordinates = function(vectr){
   this.referenceCoordinates = vectr;
+};
+
+/**
+ * setPiecePlacement
+ * @param vectr
+ */
+MyPiece.prototype.setPiecePlacement = function(vectr){
+  this.piecePlacement = vectr;
 };
 
 /**
@@ -192,7 +202,7 @@ MyPiece.prototype.createAnimation = function(time, finalPosition){
   console.log("animation created");
 };
 
-MyPiece.prototype.unplaceAnimation = function(time, finalPosition, player){
-  this.animation = new ReversePieceAnimation(time, finalPosition, this.scene, this, player, this.animation.getCurrentTransformation());
+MyPiece.prototype.unplaceAnimation = function(time, finalPosition, player){ //TODO removed final position)
+  this.animation = new ReversePieceAnimation(time, this.scene, this, player, this.animation.getCurrentTransformation());
   console.log("undo animation created");
 };
