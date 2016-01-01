@@ -435,7 +435,6 @@ DominupScene.prototype.update = function(currTime) {
     for(pieceId in this.pieces)
         this.pieces[pieceId].update(currTime-this.timePaused);
 
-        console.log(this.gameState);
     if(this.gameState=='AUTO_PLAY') {
       if(this.autoPlayerTimeout >=2000) {
         this.autoPlayerTimeout=0;

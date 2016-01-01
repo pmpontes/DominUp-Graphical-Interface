@@ -43,7 +43,8 @@ MyInterface.prototype.createMainMenu = function() {
 	this.gameLookFolder.add(this.scene, 'gameLook', this.scene.gameLooks);
 
 	toggleCamera.onFinishChange(function(staticCamera) {
-		if(staticCamera)
+		console.log(staticCamera);
+		if(!staticCamera)
 			interface.setActiveCamera(interface.scene.camera);
 		else interface.setActiveCamera(null);
 	});

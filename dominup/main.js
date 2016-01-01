@@ -28,8 +28,6 @@ main=function(){
     app.init();
     app.setScene(myScene);
     app.setInterface(myInterface);
-
-    myInterface.setActiveCamera(myScene.camera);
     myScene.setMyInterface(myInterface);
 
     // create and load graph, and associate it to scene.
