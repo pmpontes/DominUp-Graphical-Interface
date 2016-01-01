@@ -135,7 +135,7 @@ Player.prototype.showDominoes = function (){
 	this.scene.pushMatrix();
 	for(var i=0; i<this.pieces.length; i++){
 		if(this.scene.pickMode){
-			if(this.scene.turn == this.playerId && this.scene.state!='REVIEW_GAME'){
+			if(this.scene.turn == this.playerId && this.human && this.scene.state!='REVIEW_GAME'){
 				this.scene.pieces[this.pieces[i]].setSelectable();
 				this.scene.pieces[this.pieces[i]].display();
 			}

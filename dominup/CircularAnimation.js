@@ -7,7 +7,7 @@
  * @param angStart
  * @param angRot
  */
-function CircularAnimation(time, center, radius, angStart, angRot, axis){
+function CircularAnimation(time, center, radius, angStart, angRot, axis, noOrientation){
 	Animation.call(this, time);
 	this.center = center;
 	this.axis = axis || 'yy';
@@ -19,6 +19,8 @@ function CircularAnimation(time, center, radius, angStart, angRot, axis){
 	else
 		this.orientation = 0;
 
+		if(noOrientation)
+			this.orientation = 0;
 };
 
 CircularAnimation.prototype = Object.create(Animation.prototype);
