@@ -135,7 +135,7 @@ MyStatusBoard.prototype.showGameState = function () {
     this.showString(this.scene.players[this.scene.turn].pieces.length + ' pieces left', .5);
 
     // show time left to make move
-    if(this.scene.timeout!=0){
+    if(this.scene.timeout!=0 && this.scene.players[this.scene.turn].human){
       var responseTime = Math.round(this.scene.timeout - this.scene.responseTime/1000);
       this.scene.translate(0,-1,0);
 

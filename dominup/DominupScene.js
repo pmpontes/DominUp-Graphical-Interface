@@ -412,7 +412,7 @@ DominupScene.prototype.update = function(currTime) {
     // update camera's position
     this.cameraManager.update(currTime-this.timePaused);
 
-    if(this.state=='PLAY' && this.gameState!='GAME_OVER' && this.timeout!=0 && this.responseTime>=this.timeout*1000){
+    if(this.state=='PLAY' && this.gameState!='GAME_OVER' && this.timeout!=0 && this.responseTime>=this.timeout*1000 && !this.players[this.turn].human){
       console.log('Timeout occurred.');
       this.turn = (this.turn == 'player1') ? 'player2' : 'player1';
 
@@ -439,7 +439,7 @@ DominupScene.prototype.update = function(currTime) {
     }
 
     if(this.gameState=='NEXT_PLAYER') {
-      if(this.animationTimeout >=3000) {
+      if(this.animationTimeout >=2000) {
         this.proceedWithGame();
       }else this.animationTimeout+= currTime-this.previousTime;
     }
@@ -562,6 +562,7 @@ DominupScene.prototype.hintMove = function (){
  * Moves the piece selected to the position chosen.
  */
 DominupScene.prototype.makeMove = function (){
+  this.gameState = "MAKING_MOVE";
 
   if((winner = this.isGameOver())!=false) {
    console.log('Game over.');
@@ -582,7 +583,7 @@ DominupScene.prototype.makeMove = function (){
 };
 
 /**
- * proceedWithMove.
+ * proceedWithGame.
  * Processes a play AFTER communicating with the prolog server and the animation of the previous move has ended
  */
 DominupScene.prototype.proceedWithGame = function (){
