@@ -1,6 +1,6 @@
 #DominUp-Graphical-Interface
 
-Graphic interface for the game Dominup developed in Prolog. The communication between the game logic and the GUI was achieved through sockets. The graphic interface is WebGL based.
+Developed for a Graphic Programing course - LAIG - this is a graphical interface for the game DominUp. The communication between the game logic - developed in Prolog - and the GUI was achieved through sockets. The graphic interface is WebGL based.
 
 ##Game Rules
 
@@ -9,7 +9,7 @@ In this case, it was considered a set of pieces numbered from 0 to 7, making a t
 Additionally, it was considered only the existence of 2 or 4 players, although the game can be played by more players.
 The player with the double-7 piece will start the game, placing a piece of its choice in the middle of the playing surface.
 
-Dominup's rules provide for two types of placement, both of which imply the alignment of the pieces with an imaginary orthogonal grid:
+DominUp's rules provide for two types of placement, both of which imply the alignment of the pieces with an imaginary orthogonal grid:
 - Vertical placement - the piece is placed on two adjacent pieces of the same level, so that the piece's symbols correspond to the symbols below;
 - Horizontal placement - the piece is placed on the table, orthogonally and adjacent to at least one piece already placed.
 
