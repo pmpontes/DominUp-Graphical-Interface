@@ -52,7 +52,7 @@ To run the game, the following software is required:
 
 -SICStus Prolog - to run the game's logic in Prolog;
 
--Mongoose - web server to connect; save the .exe file in the project folder
+-Mongoose - web server to connect; save the .exe file in the project folder.
 
 ###Installing
 
