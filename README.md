@@ -1,4 +1,4 @@
-#DominUp-Graphic-Interface
+#DominUp-Graphical-Interface
 
 Graphic interface for the game Dominup developed in Prolog. The communication between the game logic and the GUI was achieved through sockets. The graphic interface is WebGL based.
 
