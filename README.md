@@ -21,7 +21,7 @@ If, after his turn, a player has no pieces, that player has won, and the game en
 
 ##Interface
 
-The interface allows costumization of some game options listed below.
+The interface allows customization of some game options listed below.
 
 ###Pause
 To pause the gameplay, to avoid loosing a turn;
