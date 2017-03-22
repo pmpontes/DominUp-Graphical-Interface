@@ -1,8 +1,8 @@
-#DominUp-Graphical-Interface
+# DominUp-Graphical-Interface
 
 Developed for a Graphic Programing course - LAIG - this is a graphical interface for the game DominUp. The communication between the game logic - developed in Prolog - and the GUI was achieved through sockets. The graphic interface is WebGL based.
 
-##Game Rules
+## Game Rules
 
 At each match - which can last from 10 to 30 minutes - starts with the random distribution of the pieces among players, as in the game of Domino. 
 In this case, it was considered a set of pieces numbered from 0 to 7, making a total of 36 pieces.
@@ -19,34 +19,34 @@ The following rounds will be played in turn, until the game ends:
 
 If, after his turn, a player has no pieces, that player has won, and the game ends.
 
-##Interface
+## Interface
 
 The interface allows customization of some game options listed below.
 
-###Pause
+### Pause
 To pause the gameplay, to avoid loosing a turn;
 
-###Undo
+### Undo
 To undo the last move(s);
 
-###Theme
+### Theme
 To choose a theme (Space, Airport, Road);
 
-###Look
+### Look
 To choose the pieces look (Wood, Marble, Plastic);
 
-###Hint
+### Hint
 To get a hint for a valid move;
 
-###Game mode
+### Game mode
 To play, there are three different modes (Human vs. Human/Human vs. Computer/Computer vs Computer);
 
-###Review
+### Review
 To review the gameplay, as an animation;
 
-##Getting Started
+## Getting Started
 
-###Prerequisites
+### Prerequisites
 
 To run the game, the following software is required:
 
@@ -54,7 +54,7 @@ To run the game, the following software is required:
 
 -Mongoose - web server to connect; save the .exe file in the project folder.
 
-###Installing
+### Installing
 
 To get the game up and running follow these steps:
 
